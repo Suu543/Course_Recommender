@@ -42,21 +42,6 @@ const Signup = ({ over, setOver }) => {
     }
   };
 
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
-  //   if (password === confirmed) {
-  //     // console.table({ name, email, password, confirmed });
-  //     axios
-  //       .post("http://localhost:8000/api/register", {
-  //         name,
-  //         email,
-  //         password,
-  //       })
-  //       .then((res) => console.log(res))
-  //       .catch((err) => console.log(err));
-  //   }
-  // };
-
   return (
     <SignupWrapper over={over}>
       <Field>
