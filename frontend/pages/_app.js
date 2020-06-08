@@ -1,8 +1,16 @@
+import React from "react";
 import App from "next/app";
 import Head from "next/head";
-import React from "react";
+import Router from "next/router";
+import NProgress from "nprogress";
+import "nprogress/nprogress.css";
 
-import Navbar from "../components/Navber";
+Router.onRouteChangeStart = (url) => NProgress.start();
+Router.onRouteChangeComplete = (url) => NProgress.done();
+Router.onRouteChangeError = (url) => NProgress.done();
+
+// Components
+import Navbar from "../components/Navbar/Navbar";
 
 export default class RootApp extends App {
   render() {
