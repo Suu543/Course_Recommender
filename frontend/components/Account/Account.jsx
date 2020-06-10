@@ -21,23 +21,25 @@ const AccountWrapper = styled.div`
 const AccountSigninWrapper = styled.div`
   position: absolute;
   width: 90%;
-  height: 500px;
+  height: 550px;
   background-color: #f2f2f2;
   display: grid;
   z-index: ${({ over }) => (over ? 1 : 2)};
   grid-template-columns: repeat(2, 1fr);
+  align-items: center;
+  justify-content: center;
 
   @media screen and (max-width: 600px) {
     grid-template-columns: 1fr;
     grid-template-rows: 310px 310px;
-    height: 620px;
+    height: 700px;
   }
 `;
 
 const AccountSignupWrapper = styled.div`
   position: absolute;
   width: 90%;
-  height: 500px;
+  height: 550px;
   background-color: #f2f2f2;
   display: grid;
   z-index: ${({ over }) => (over ? 2 : 1)};
@@ -45,25 +47,37 @@ const AccountSignupWrapper = styled.div`
 
   @media screen and (max-width: 600px) {
     grid-template-columns: 1fr;
-    grid-template-rows: 310px 310px;
-    height: 620px;
+    grid-template-rows: 350px 310px;
+    height: 700px;
   }
+`;
+
+// For the Purpose of Event Delegation
+const Overlay = styled.div`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  visibility: ${({ open }) => (open ? "visible" : "hidden")};
+  z-index: 2;
 `;
 
 const Account = ({ open, setOpen }) => {
   const [over, setOver] = useState(false);
 
   return (
-    <AccountWrapper open={open}>
-      <AccountSigninWrapper over={over}>
-        <Signin over={over} setOver={setOver} />
-        <SocialAccount open={open} setOpen={setOpen} />
-      </AccountSigninWrapper>
-      <AccountSignupWrapper over={over}>
-        <Signup over={over} setOver={setOver} />
-        <SocialAccount open={open} setOpen={setOpen} />
-      </AccountSignupWrapper>
-    </AccountWrapper>
+    <React.Fragment>
+      <Overlay onClick={() => setOpen(!open)} open={open} />
+      <AccountWrapper open={open}>
+        <AccountSigninWrapper over={over}>
+          <Signin over={over} setOver={setOver} />
+          <SocialAccount open={open} setOpen={setOpen} />
+        </AccountSigninWrapper>
+        <AccountSignupWrapper over={over}>
+          <Signup over={over} setOver={setOver} />
+          <SocialAccount open={open} setOpen={setOpen} />
+        </AccountSignupWrapper>
+      </AccountWrapper>
+    </React.Fragment>
   );
 };
 

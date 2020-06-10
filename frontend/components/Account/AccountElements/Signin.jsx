@@ -7,6 +7,8 @@ import {
   Input,
 } from "./AccountComponents";
 
+import { showSuccessAlert, showErrorAlert } from "./alert";
+
 const Signin = ({ over, setOver }) => {
   return (
     <SigninWrapper over={over}>
@@ -17,12 +19,12 @@ const Signin = ({ over, setOver }) => {
       </Field>
       <form>
         <Field>
-          <label>Username</label>
-          <Input type="text" />
+          <label>Email</label>
+          <Input type="text" placeholder="이메일을 입력해주세요..." />
         </Field>
         <Field>
           <label>Password</label>
-          <Input type="password" />
+          <Input type="password" placeholder="비밀번호를 입력해주세요..." />
         </Field>
         <Field>
           <Button>Sign In</Button>

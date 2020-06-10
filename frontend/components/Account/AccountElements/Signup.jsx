@@ -8,17 +8,28 @@ import {
   Input,
 } from "./AccountComponents";
 
+import { ShowSuccessAlert, ShowErrorAlert } from "./alert";
+
 const Signup = ({ over, setOver }) => {
   const [state, setState] = useState({
-    name: "",
-    email: "",
+    name: "abc",
+    email: "abcdefg@something.com",
     password: "",
     confirmed: "",
     error: "",
     success: "",
+    buttonText: "Register",
   });
 
-  const { name, email, password, confirmed, error, success } = state;
+  const {
+    name,
+    email,
+    password,
+    confirmed,
+    error,
+    success,
+    buttonText,
+  } = state;
 
   const handleChange = (name) => (e) => {
     setState({ ...state, [name]: e.target.value, error: "", success: "" });
@@ -27,17 +38,31 @@ const Signup = ({ over, setOver }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setState({ ...state, buttonText: "Registering..." });
     if (password == confirmed) {
       try {
-        let req = await axios.post("http://localhost:8000/api/register", {
+        let response = await axios.post("http://localhost:8000/api/register", {
           name,
           email,
           password,
         });
-
-        console.log(req.data.message);
-      } catch (err) {
-        console.log(err);
+        console.log("Signup-Response", response);
+        setState({
+          ...state,
+          name: "",
+          email: "",
+          password: "",
+          confirmed: "",
+          buttonText: "Submitted",
+          success: response.data.message,
+        });
+      } catch (error) {
+        console.log("Signup-Error", error);
+        setState({
+          ...state,
+          buttonText: "Register",
+          error: error.response.data.error,
+        });
       }
     }
   };
@@ -47,6 +72,8 @@ const Signup = ({ over, setOver }) => {
       <Field>
         <b>Register</b> <br />
         <small>Create Your Account</small>
+        {success && <ShowSuccessAlert>{success}</ShowSuccessAlert>}
+        {error && <ShowErrorAlert>{error}</ShowErrorAlert>}
       </Field>
       <form onSubmit={handleSubmit}>
         <Field>
@@ -85,9 +112,8 @@ const Signup = ({ over, setOver }) => {
             placeholder="비밀번호를 한 번 더 입력해주세요!"
           />
         </Field>
-
         <Field>
-          <Button>Register Now!</Button>
+          <Button>{buttonText}</Button>
         </Field>
       </form>
       <Field>

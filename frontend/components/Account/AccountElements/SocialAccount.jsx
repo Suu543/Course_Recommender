@@ -7,11 +7,18 @@ const SocialWrapper = styled.div`
   align-items: center;
   justify-content: center;
   display: relative;
+
+  @media screen and (max-width: 600px) {
+    align-items: flex-end;
+    justify-content: flex-end;
+  }
 `;
 
 const SocialTitle = styled.h2`
   font-size: 1.5rem;
   padding-bottom: 2rem;
+  display: block;
+  align-self: center;
 `;
 
 const SocialField = styled.div`
@@ -28,28 +35,31 @@ const SocialField = styled.div`
 const SocialFacebook = styled.a`
   display: block;
   color: white;
-  font-size: 1.1rem;
+  font-size: 1.3rem;
   text-decoration: none;
   background-color: #3b5998;
   padding: 0.2rem;
+  text-align: center;
 `;
 
 const SocialGoogle = styled.a`
   display: block;
   color: white;
-  font-size: 1.1rem;
+  font-size: 1.3rem;
   text-decoration: none;
   background-color: #dd4b39;
   padding: 0.2rem;
+  text-align: center;
 `;
 
 const SocialGithub = styled.a`
   display: block;
   color: white;
-  font-size: 1.1rem;
+  font-size: 1.3rem;
   text-decoration: none;
   background-color: #24292e;
   padding: 0.2rem;
+  text-align: center;
 `;
 
 const PopupClose = styled.div`
