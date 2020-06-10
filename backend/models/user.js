@@ -52,7 +52,7 @@ const userSchema = new mongoose.Schema(
 
 userSchema.methods = {
   makeSalt: async function () {
-    return await bcrypt.getSalt(10);
+    return await bcrypt.genSalt(10);
   },
 
   encryptPassword: async function (password) {

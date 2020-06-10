@@ -2,6 +2,7 @@ const { User } = require("../models/user");
 const jwt = require("jsonwebtoken");
 const AWS = require("aws-sdk");
 const { registerEmailParams } = require("../helpers/email");
+const shortId = require("shortid");
 const dotenv = require("dotenv");
 dotenv.config();
 
@@ -52,4 +53,43 @@ exports.register = async (req, res) => {
         message: `We could not verify your email. Please try again...`,
       });
     });
+};
+
+exports.activateRegistration = (req, res) => {
+  const { token } = req.body;
+  // console.log(token);
+  jwt.verify(token, process.env.JWT_ACCOUNT_ACTIVATION, async function (
+    err,
+    decoded
+  ) {
+    if (err) {
+      return res.status(401).json({
+        error: "Expired Link. Try Again!",
+      });
+    }
+    // unique한 username 생성을 위해 userid package 사용
+    const { name, email, password } = jwt.decode(token);
+    const username = shortId.generate();
+    let user = await User.findOne({ email });
+
+    if (user) {
+      return res.status(401).json({
+        error: "Email is already taken",
+      });
+    }
+
+    try {
+      user = new User({ name, username, email });
+      user.salt = await user.makeSalt();
+      user.hashed_password = await user.encryptPassword(password);
+      await user.save();
+      return res.json({
+        message: "Registration Success. Please Login...",
+      });
+    } catch (error) {
+      return res.status(401).json({
+        error: "Error Saving User in Database. Try Again or Later",
+      });
+    }
+  });
 };

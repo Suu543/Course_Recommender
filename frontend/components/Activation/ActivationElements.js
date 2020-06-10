@@ -27,4 +27,38 @@ const ActivationButton = styled.button`
   }
 `;
 
-export { ActivationWrapper, ActivationHeading, ActivationButton };
+const ActivationSuccessAlert = styled.div`
+  height: 10vh;
+  width: 100%;
+  font-size: 3rem;
+  background: #007bff;
+  text-align: center;
+  border: none;
+  margin-top: 1rem;
+  outline: none;
+  border-radius: 5px;
+  text-shadow: 0 -1px #00506b;
+  padding: 0;
+`;
+
+const ActivationErrorAlert = styled.div`
+  height: 10vh;
+  width: 100%;
+  font-size: 3rem;
+  background: #ee5a66;
+  text-align: center;
+  border: none;
+  margin-top: 1rem;
+  outline: none;
+  border-radius: 5px;
+  text-shadow: 0 -1px #00506b;
+  padding: 0;
+`;
+
+export {
+  ActivationWrapper,
+  ActivationHeading,
+  ActivationButton,
+  ActivationSuccessAlert,
+  ActivationErrorAlert,
+};

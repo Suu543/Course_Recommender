@@ -10,6 +10,8 @@ import {
   ActivationWrapper,
   ActivationHeading,
   ActivationButton,
+  ActivationSuccessAlert,
+  ActivationErrorAlert,
 } from "../../../components/Activation/ActivationElements";
 import { API } from "../../../config";
 
@@ -40,7 +42,7 @@ const ActivateAccount = ({ router }) => {
 
     try {
       const response = await axios.post(`${API}/register/activate`, { token });
-      //  console.log("account activate response", response);
+      console.log("account activate response", response);
       setState({
         ...state,
         name: "",
@@ -59,12 +61,12 @@ const ActivateAccount = ({ router }) => {
 
   return (
     <ActivationWrapper>
+      {success && <ActivationSuccessAlert>{success}</ActivationSuccessAlert>}
+      {error && <ActivationErrorAlert>{error}</ActivationErrorAlert>}
       <ActivationHeading>
         Hello {name}, Are you ready to activate your account?
       </ActivationHeading>
       <br />
-      {success && <ShowSuccessAlert>{success}</ShowSuccessAlert>}
-      {error && <ShowErrorAlert>{error}</ShowErrorAlert>}
       <ActivationButton onClick={clickSubmit}>{buttonText}</ActivationButton>
     </ActivationWrapper>
   );

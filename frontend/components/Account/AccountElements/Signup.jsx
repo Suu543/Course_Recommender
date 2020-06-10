@@ -61,6 +61,11 @@ const Signup = ({ over, setOver }) => {
           buttonText: "Submitted",
           success: response.data.message,
         });
+
+        setTimeout(() => {
+          alert("Please Login...!");
+          
+        });
       } catch (error) {
         console.log("Signup-Error", error);
 
