@@ -1,14 +1,14 @@
 import styled from "styled-components";
 
 const ShowSuccessAlert = styled.div`
-  line-height: 45px;
+  /* line-height: 45px; */
   color: white;
   font-size: 15px;
   background: #007bff;
   width: 100%;
   margin: auto;
   text-align: center;
-  height: 45px;
+  /* height: 45px; */
   border: none;
   margin-top: 1rem;
   outline: none;
@@ -18,14 +18,14 @@ const ShowSuccessAlert = styled.div`
 `;
 
 const ShowErrorAlert = styled.div`
-  line-height: 30px;
+  /* line-height: 30px; */
   color: black;
   font-size: 15px;
   background: #ee5a66;
   width: 100%;
   margin: auto;
   text-align: center;
-  height: 35px;
+  /* height: 35px; */
   border: none;
   margin-top: 1rem;
   outline: none;

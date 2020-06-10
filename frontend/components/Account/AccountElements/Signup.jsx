@@ -10,7 +10,7 @@ import {
   Input,
 } from "./AccountComponents";
 
-import { ShowSuccessAlert, ShowErrorAlert } from "./alert";
+import { ShowSuccessAlert, ShowErrorAlert } from "../../Helper/alert";
 
 const Signup = ({ over, setOver }) => {
   const [state, setState] = useState({
@@ -44,7 +44,7 @@ const Signup = ({ over, setOver }) => {
 
     if (password == confirmed) {
       try {
-        let response = await axios.post(`${API}/register`, {
+        const response = await axios.post(`${API}/register`, {
           name,
           email,
           password,

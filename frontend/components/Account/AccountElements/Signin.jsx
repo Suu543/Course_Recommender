@@ -7,7 +7,7 @@ import {
   Input,
 } from "./AccountComponents";
 
-import { showSuccessAlert, showErrorAlert } from "./alert";
+import { showSuccessAlert, showErrorAlert } from "../../Helper/alert";
 
 const Signin = ({ over, setOver }) => {
   return (
