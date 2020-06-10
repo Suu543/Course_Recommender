@@ -28,7 +28,7 @@ const ActivationButton = styled.button`
 `;
 
 const ActivationSuccessAlert = styled.div`
-  height: 10vh;
+  min-height: 10vh;
   width: 100%;
   font-size: 3rem;
   background: #007bff;
@@ -42,7 +42,7 @@ const ActivationSuccessAlert = styled.div`
 `;
 
 const ActivationErrorAlert = styled.div`
-  height: 10vh;
+  min-height: 10vh;
   width: 100%;
   font-size: 3rem;
   background: #ee5a66;

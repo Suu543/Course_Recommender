@@ -1,15 +1,17 @@
 # Signup to AWS
+
 1. Create New User
 2. Use SES (Simple Email Service)
 3. AWS Free Tier for new accounts for first 12 months
 4. After 12 months your free tier will end and you will be charged for the services
 5. You might get charged even during your free tier so keep an eye on your billing
 
-
 # AWS SES Costing
+
 - https://aws.amazon.com/ses/pricing
 
 # Register Activation Email
+
 1. Server Setup
 
 2. Install npm packages
@@ -33,3 +35,19 @@
 11. Use mongo atlas / signup / get mongo_uri
 
 ##### that's it for user Registration
+
+# Login / Server
+
+1. Create Validator
+
+2. Create Route
+
+3. Create Controller > generate token > send user and token to client as response
+
+# Login / Client
+
+1. Login Form
+
+2. Show Success/Error Message
+
+3. Receive user and token from server

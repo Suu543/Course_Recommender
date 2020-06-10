@@ -93,3 +93,28 @@ exports.activateRegistration = (req, res) => {
     }
   });
 };
+
+exports.login = async (req, res) => {
+  // const { email, password } = req.body;
+  // console.table({ email, password });
+
+  const user = await User.findOne({ email: req.body.email });
+  if (!user) {
+    return res.status(400).json({ error: "등록되지않은 계정입니다..." });
+  }
+
+  const validPassword = await user.authenticate(req.body.password);
+  if (!validPassword) {
+    return res
+      .status(400)
+      .json({ error: "해당 이메일과 입력하신 비밀번호가 일치하지않습니다." });
+  }
+
+  const token = user.generateAuthToken();
+  const { _id, name, email, role } = user;
+
+  return res.json({
+    token,
+    user: { _id, name, email, role },
+  });
+};
