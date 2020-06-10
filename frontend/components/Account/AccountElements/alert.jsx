@@ -1,6 +1,7 @@
 import styled from "styled-components";
 
 const ShowSuccessAlert = styled.div`
+  line-height: 45px;
   color: white;
   font-size: 15px;
   background: #007bff;
@@ -17,8 +18,9 @@ const ShowSuccessAlert = styled.div`
 `;
 
 const ShowErrorAlert = styled.div`
+  line-height: 30px;
   color: black;
-  font-size: 13px;
+  font-size: 15px;
   background: #ee5a66;
   width: 100%;
   margin: auto;

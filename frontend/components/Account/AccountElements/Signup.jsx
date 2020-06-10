@@ -1,3 +1,5 @@
+import { API } from "../../../config.js";
+
 import axios from "axios";
 import React, { useState } from "react";
 import {
@@ -39,14 +41,17 @@ const Signup = ({ over, setOver }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setState({ ...state, buttonText: "Registering..." });
+
     if (password == confirmed) {
       try {
-        let response = await axios.post("http://localhost:8000/api/register", {
+        let response = await axios.post(`${API}/register`, {
           name,
           email,
           password,
         });
+
         console.log("Signup-Response", response);
+
         setState({
           ...state,
           name: "",
@@ -58,6 +63,7 @@ const Signup = ({ over, setOver }) => {
         });
       } catch (error) {
         console.log("Signup-Error", error);
+
         setState({
           ...state,
           buttonText: "Register",
@@ -83,6 +89,7 @@ const Signup = ({ over, setOver }) => {
             onChange={handleChange("name")}
             placeholder="이름을 입력해주세요!"
             type="text"
+            required
           />
         </Field>
         <Field>
@@ -92,6 +99,7 @@ const Signup = ({ over, setOver }) => {
             onChange={handleChange("email")}
             type="email"
             placeholder="이메일을 입력해주세요!"
+            required
           />
         </Field>
         <Field>
@@ -101,6 +109,7 @@ const Signup = ({ over, setOver }) => {
             onChange={handleChange("password")}
             type="password"
             placeholder="비밀번호를 입력해주세요!"
+            required
           />
         </Field>
         <Field>
@@ -110,6 +119,7 @@ const Signup = ({ over, setOver }) => {
             onChange={handleChange("confirmed")}
             type="password"
             placeholder="비밀번호를 한 번 더 입력해주세요!"
+            required
           />
         </Field>
         <Field>
