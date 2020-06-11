@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import Router from "next/router";
 import { API } from "../../../config";
-import { ShowSuccessAlert, ShowErrorAlert } from "../../Helper/alert";
+import { ShowSuccessAlert, ShowErrorAlert } from "../../../helpers/alert";
 import {
   SigninWrapper,
   Field,
@@ -10,8 +10,9 @@ import {
   Button,
   Input,
 } from "./AccountComponents";
+import { authenticate, isAuth } from "../../../helpers/auth";
 
-const Signin = ({ over, setOver }) => {
+const Signin = ({ userInfo, setUserInfo, over, setOver, open, setOpen }) => {
   const [state, setState] = useState({
     email: "",
     password: "",
@@ -20,7 +21,21 @@ const Signin = ({ over, setOver }) => {
     buttonText: "Login",
   });
 
+  const emailReference = useRef(null);
+  const passwordReference = useRef(null);
+
+  const clearInputFields = () => {
+    emailReference.current.value = "";
+    passwordReference.current.value = "";
+  };
+
   const { email, password, error, success, buttonText } = state;
+
+  const checkAuth = () => {
+    return isAuth() && isAuth().role == "admin"
+      ? Router.push("/admin")
+      : Router.push("/user");
+  };
 
   const handleChange = (name) => (e) => {
     setState({
@@ -34,7 +49,10 @@ const Signin = ({ over, setOver }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setState({ ...state, buttonText: "Logging in..." });
+    setState({
+      ...state,
+      buttonText: "Logging in...",
+    });
 
     try {
       const response = await axios.post(`${API}/login`, {
@@ -42,7 +60,17 @@ const Signin = ({ over, setOver }) => {
         password,
       });
 
-      console.log("Signin-Response", response); // User Token > data > token / user
+      const { name, role } = response.data.user;
+
+      // console.log("response", response);
+      // console.log("Signin-Response", response); // User Token > data > token / user
+      authenticate(response, () => {
+        setOpen(!open);
+        setUserInfo({ auth: true, name, role });
+        checkAuth();
+        setState({ ...state, buttonText: "Login" });
+        clearInputFields();
+      });
     } catch (error) {
       console.log("Signin-Error", error);
 
@@ -67,9 +95,10 @@ const Signin = ({ over, setOver }) => {
         <Field>
           <label>Email</label>
           <Input
-            type="text"
+            type="email"
             onChange={handleChange("email")}
             placeholder="이메일을 입력해주세요..."
+            ref={emailReference}
           />
         </Field>
         <Field>
@@ -78,6 +107,7 @@ const Signin = ({ over, setOver }) => {
             type="password"
             onChange={handleChange("password")}
             placeholder="비밀번호를 입력해주세요..."
+            ref={passwordReference}
           />
         </Field>
         <Field>

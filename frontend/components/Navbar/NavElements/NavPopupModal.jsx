@@ -1,7 +1,14 @@
 import Account from "../../Account/Account";
 
-const NavPopUpModal = ({ open, setOpen }) => {
-  return <Account open={open} setOpen={setOpen} />;
+const NavPopUpModal = ({ userInfo, setUserInfo, open, setOpen }) => {
+  return (
+    <Account
+      userInfo={userInfo}
+      setUserInfo={setUserInfo}
+      open={open}
+      setOpen={setOpen}
+    />
+  );
 };
 
 export default NavPopUpModal;

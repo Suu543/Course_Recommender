@@ -61,7 +61,7 @@ const Overlay = styled.div`
   z-index: 2;
 `;
 
-const Account = ({ open, setOpen }) => {
+const Account = ({ userInfo, setUserInfo, open, setOpen }) => {
   const [over, setOver] = useState(false);
 
   return (
@@ -69,7 +69,14 @@ const Account = ({ open, setOpen }) => {
       <Overlay onClick={() => setOpen(!open)} open={open} />
       <AccountWrapper open={open}>
         <AccountSigninWrapper over={over}>
-          <Signin over={over} setOver={setOver} />
+          <Signin
+            userInfo={userInfo}
+            setUserInfo={setUserInfo}
+            over={over}
+            setOver={setOver}
+            open={open}
+            setOpen={setOpen}
+          />
           <SocialAccount open={open} setOpen={setOpen} />
         </AccountSigninWrapper>
         <AccountSignupWrapper over={over}>

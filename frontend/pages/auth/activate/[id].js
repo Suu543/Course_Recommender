@@ -3,10 +3,6 @@ import { withRouter } from "next/router";
 import jwt from "jsonwebtoken";
 import axios from "axios";
 import {
-  ShowSuccessAlert,
-  ShowErrorAlert,
-} from "../../../components/Helper/alert";
-import {
   ActivationWrapper,
   ActivationHeading,
   ActivationButton,

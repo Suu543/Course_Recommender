@@ -10,7 +10,7 @@ import {
   Input,
 } from "./AccountComponents";
 
-import { ShowSuccessAlert, ShowErrorAlert } from "../../Helper/alert";
+import { ShowSuccessAlert, ShowErrorAlert } from "../../../helpers/alert";
 
 const Signup = ({ over, setOver }) => {
   const [state, setState] = useState({

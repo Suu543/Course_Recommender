@@ -1,6 +1,7 @@
 // Next
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import Router from "next/router";
 
 // Wrapper
 import Header from "./NavWrapper/Header";
@@ -13,8 +14,30 @@ import NavAnchor from "./NavElements/NavAnchor";
 import NavUl from "./NavElements/NavUl";
 import NavPopUpModal from "./NavElements/NavPopupModal";
 
+import { logout } from "../../helpers/auth";
+
 const Navbar = () => {
+  console.log("Navbar Constructor");
   const [open, setOpen] = useState(false);
+  const [userInfo, setUserInfo] = useState({ auth: false, name: "", role: "" });
+
+  const checkStorage = (key) => {
+    console.log("key", key);
+    const storedData = localStorage.getItem(key);
+    if (!storedData || key !== "user") {
+      logout();
+      setUserInfo({ auth: false, name: "", role: "" });
+      Router.push("/");
+    }
+  };
+
+  useEffect(() => {
+    // checkStorage("user");
+
+    const handler = ({ key }) => checkStorage(key);
+    window.addEventListener("storage", handler);
+    return () => window.removeEventListener("storage", handler);
+  }, []);
 
   return (
     <React.Fragment>
@@ -33,17 +56,36 @@ const Navbar = () => {
               <Link passHref href="/home">
                 <NavAnchor>+Submit a Link</NavAnchor>
               </Link>
-              <Link passHref href="/home">
-                <NavAnchor>Home</NavAnchor>
-              </Link>
-              <NavAnchor open={open} onClick={() => setOpen(!open)}>
-                Signup/Signin
-              </NavAnchor>
+
+              {!userInfo.auth ? (
+                <NavAnchor open={open} onClick={() => setOpen(!open)}>
+                  Signup/Signin
+                </NavAnchor>
+              ) : userInfo.role == "admin" ? (
+                <React.Fragment>
+                  <Link passHref href="/admin">
+                    <NavAnchor>Admin</NavAnchor>
+                  </Link>
+                  <NavAnchor onClick={checkStorage}>Logout</NavAnchor>
+                </React.Fragment>
+              ) : (
+                <React.Fragment>
+                  <Link passHref href="/user">
+                    <NavAnchor>User</NavAnchor>
+                  </Link>
+                  <NavAnchor onClick={checkStorage}>Logout</NavAnchor>
+                </React.Fragment>
+              )}
             </NavUl>
           </Nav>
         </NavContainer>
       </Header>
-      <NavPopUpModal open={open} setOpen={setOpen} />
+      <NavPopUpModal
+        userInfo={userInfo}
+        setUserInfo={setUserInfo}
+        open={open}
+        setOpen={setOpen}
+      />
     </React.Fragment>
   );
 };

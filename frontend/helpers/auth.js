@@ -1,4 +1,5 @@
 import cookie from "js-cookie";
+import Router from "next/router";
 
 // set in cookie
 export const setCookie = (key, value) => {
@@ -13,7 +14,7 @@ export const setCookie = (key, value) => {
 // remove from cookie
 export const removeCookie = (key, value) => {
   if (process.browser) {
-    cookie.set(key);
+    cookie.remove(key);
   }
 };
 
@@ -49,7 +50,7 @@ export const authenticate = (response, next) => {
   next();
 };
 
-// access user info from localstorage
+// access user info from localstorage isAuth()
 export const isAuth = () => {
   if (process.browser) {
     //   localstorage에만 의존하지 않기 cookie도 항상 확인
@@ -63,4 +64,9 @@ export const isAuth = () => {
       }
     }
   }
+};
+
+export const logout = () => {
+  removeCookie("token");
+  removeLocalStorage("user");
 };
