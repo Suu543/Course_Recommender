@@ -12,7 +12,7 @@ import {
 } from "./AccountComponents";
 import { authenticate, isAuth } from "../../../helpers/auth";
 
-const Signin = ({ userInfo, setUserInfo, over, setOver, open, setOpen }) => {
+const Signin = ({ setUserInfo, over, setOver, open, setOpen }) => {
   const [state, setState] = useState({
     email: "",
     password: "",
