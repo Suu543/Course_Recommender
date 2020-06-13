@@ -51,3 +51,32 @@
 2. Show Success/Error Message
 
 3. Receive user and token from server
+
+#
+
+- Currently Anyone can access these pages
+
+- lets restrict to only logged in user or admin user
+
+- we could do it client side only
+
+- using isAuth() > we could check if cookie and user exists in local storage and based on that allow access to this page
+
+- but a better way to do it would be to do it server side in terms of security and user experience
+
+- we will make flexible enough so that it can be re-used in multiple pages
+
+---
+
+- We need to create an endpoint in our server
+
+- that will check if user is authenticated (we can send token from the cookie to authenticated user)
+
+- our server will then receive the jwt/token sent from react client
+
+- If it is valid, then it will allow access or send some success response
+
+- Based on that in the client side we will either allow access or reject
+
+- So let's go to server and create two endpoints
+- one for logged in user and another for admin user

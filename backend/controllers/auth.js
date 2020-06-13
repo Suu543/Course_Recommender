@@ -109,12 +109,57 @@ exports.login = async (req, res) => {
       .status(400)
       .json({ error: "해당 이메일과 입력하신 비밀번호가 일치하지않습니다." });
   }
-
-  const token = user.generateAuthToken();
   const { _id, name, email, role } = user;
 
-  return res.json({
+  const token = user.generateAuthToken();
+
+  res.header("x-auth-token", token);
+  res.cookie("token", token, { expiresIn: "1d" });
+  res.json({
     token,
     user: { _id, name, email, role },
   });
+};
+
+exports.requireSignin = (req, res, next) => {
+  const token = req.cookies.token;
+  if (!token) {
+    return res
+      .status(401)
+      .send("접근 권한에 사용되는 토큰이 없습니다... 다시 로그인 해주세요...");
+  }
+  const decoded = jwt.verify(token, process.env.JWT_SECRET);
+  req.user = decoded;
+  next();
+};
+
+exports.authMiddleware = async (req, res, next) => {
+  const user = await User.findById({
+    _id: req.user._id,
+  });
+
+  if (!user)
+    return res.status(400).json({ error: "사용자를 찾지 못했습니다..." });
+
+  req.profile = user;
+  next();
+};
+
+exports.adminMiddleware = async (req, res, next) => {
+  const user = await User.findById({
+    _id: req.user._id,
+  });
+
+  if (!user) {
+    return res.status(404).json({ error: "사용자를 찾지 못했습니다..." });
+  }
+
+  if (user.role !== "admin") {
+    return res.status(403).json({
+      error: "접근이 거부되었습니다. 관리자 권한입니다. ",
+    });
+  }
+
+  req.profile = user;
+  next();
 };

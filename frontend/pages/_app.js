@@ -14,7 +14,7 @@ import Navbar from "../components/Navbar/Navbar";
 
 export default class RootApp extends App {
   render() {
-    const { Component, ...other } = this.props;
+    const { Component, pageProps, ...other } = this.props;
     return (
       <React.Fragment>
         <Head>
@@ -23,10 +23,15 @@ export default class RootApp extends App {
         <div>
           <Navbar />
           <main>
-            <Component {...other} />
+            <Component {...pageProps} {...other} />
           </main>
         </div>
       </React.Fragment>
     );
   }
 }
+
+RootApp.getInitialProps = async (appContext) => {
+  const appProps = await App.getInitialProps(appContext);
+  return { ...appProps };
+};

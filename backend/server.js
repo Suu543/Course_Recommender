@@ -3,12 +3,15 @@ const mongoose = require("mongoose");
 const morgan = require("morgan");
 const cors = require("cors");
 const dotenv = require("dotenv");
+const cookieParser = require("cookie-parser");
+const { stream } = require("./utils/logger");
 dotenv.config();
 
 const app = express();
 
 // Import Routes
 const authRoutes = require("./routes/auth");
+const userRoutes = require("./routes/user");
 
 // Database
 const DB_OPTIONS = {
@@ -25,9 +28,18 @@ mongoose
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(morgan("dev", { stream }));
 app.use(cors({ origin: process.env.CLIENT_URL }));
+
 // middlewares
 app.use("/api", authRoutes);
+app.use("/api", userRoutes);
+app.use(function (error, req, res, next) {
+  if (error.name === "UnauthorizedError") {
+    res.status(401).send("Invalid Token...");
+  }
+});
 
 const port = process.env.PORT || 8000;
 app.listen(port, () => console.log(`API is running on port ${port}`));

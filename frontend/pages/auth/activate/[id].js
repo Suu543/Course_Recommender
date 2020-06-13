@@ -22,6 +22,8 @@ const ActivateAccount = ({ router }) => {
 
   const { name, token, buttonText, success, error } = state;
 
+  // useEffect method의 componentDidMount가 오직 compononet mounting이 끝나고 실행되기 때문에
+  // SSR 관점에서 원하고자 하는 데이터를 랜더링하는데 적합하지않다.
   useEffect(() => {
     //   Extract Information from JWT
     let token = router.query.id;

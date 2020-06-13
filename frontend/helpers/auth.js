@@ -1,5 +1,6 @@
 import cookie from "js-cookie";
-import Router from "next/router";
+import jwt from "jsonwebtoken";
+import { JWT_SECRET } from "../config";
 
 // set in cookie
 export const setCookie = (key, value) => {
@@ -64,6 +65,22 @@ export const isAuth = () => {
       }
     }
   }
+};
+
+export const maintainerAfterRefresh = async () => {
+  if (process.browser) {
+    try {
+      const tokenDecoded = await jwt.verify(cookie.get("token"), JWT_SECRET);
+      console.log("tokenDecoded", tokenDecoded);
+      if (tokenDecoded) {
+        return localStorage.getItem("user") ? true : false;
+      }
+    } catch (err) {
+      return false;
+    }
+  }
+
+  return false;
 };
 
 export const logout = () => {

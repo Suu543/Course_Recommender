@@ -14,12 +14,17 @@ import NavAnchor from "./NavElements/NavAnchor";
 import NavUl from "./NavElements/NavUl";
 import NavPopUpModal from "./NavElements/NavPopupModal";
 
-import { logout } from "../../helpers/auth";
+import { logout, maintainerAfterRefresh } from "../../helpers/auth";
 
 const Navbar = () => {
   console.log("Navbar Constructor");
+
   const [open, setOpen] = useState(false);
-  const [userInfo, setUserInfo] = useState({ auth: false, name: "", role: "" });
+  const [userInfo, setUserInfo] = useState({
+    auth: false,
+    name: "",
+    role: "",
+  });
 
   const checkStorage = (key) => {
     console.log("key", key);
@@ -32,7 +37,11 @@ const Navbar = () => {
   };
 
   useEffect(() => {
-    // checkStorage("user");
+    const status = maintainerAfterRefresh();
+
+    if (!userInfo.auth) {
+      setUserInfo({ ...userInfo, auth: status });
+    }
 
     const handler = ({ key }) => checkStorage(key);
     window.addEventListener("storage", handler);
