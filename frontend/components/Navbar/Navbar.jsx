@@ -27,7 +27,6 @@ const Navbar = () => {
   });
 
   const checkStorage = (key) => {
-    console.log("key", key);
     const storedData = localStorage.getItem(key);
     if (!storedData || key !== "user") {
       logout();
@@ -37,11 +36,10 @@ const Navbar = () => {
   };
 
   useEffect(() => {
-    const status = maintainerAfterRefresh();
+    let status = maintainerAfterRefresh();
 
-    if (!userInfo.auth) {
-      setUserInfo({ ...userInfo, auth: status });
-    }
+    if (status) setUserInfo({ ...userInfo, auth: true });
+    else setUserInfo({ ...userInfo, auth: false });
 
     const handler = ({ key }) => checkStorage(key);
     window.addEventListener("storage", handler);

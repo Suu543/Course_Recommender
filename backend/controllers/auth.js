@@ -4,6 +4,7 @@ const AWS = require("aws-sdk");
 const { registerEmailParams } = require("../helpers/email");
 const shortId = require("shortid");
 const dotenv = require("dotenv");
+const cookie = require("cookie");
 dotenv.config();
 
 AWS.config.update({
@@ -113,8 +114,9 @@ exports.login = async (req, res) => {
 
   const token = user.generateAuthToken();
 
-  res.header("x-auth-token", token);
-  res.cookie("token", token, { expiresIn: "1d" });
+  res.cookie("token", token, {
+    expiresIn: "1d",
+  });
   res.json({
     token,
     user: { _id, name, email, role },
@@ -122,12 +124,23 @@ exports.login = async (req, res) => {
 };
 
 exports.requireSignin = (req, res, next) => {
-  const token = req.cookies.token;
+  console.log("requireSignin1");
+
+  // console.log("req", req.headers.authorization);
+  // let cookies = {};
+  // cookies = cookie.parse(req.headers.cookie);
+  // // const token = req.cookies.token;
+
+  let token = req.headers.authorization.replace("Bearer ", "");
+  console.log("tt", token);
+
   if (!token) {
+    console.log("requireSignin2");
     return res
       .status(401)
       .send("접근 권한에 사용되는 토큰이 없습니다... 다시 로그인 해주세요...");
   }
+
   const decoded = jwt.verify(token, process.env.JWT_SECRET);
   req.user = decoded;
   next();
@@ -138,8 +151,9 @@ exports.authMiddleware = async (req, res, next) => {
     _id: req.user._id,
   });
 
-  if (!user)
+  if (!user) {
     return res.status(400).json({ error: "사용자를 찾지 못했습니다..." });
+  }
 
   req.profile = user;
   next();

@@ -28,6 +28,7 @@ mongoose
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+// req.cookies에 붙여줌
 app.use(cookieParser());
 app.use(morgan("dev", { stream }));
 app.use(cors({ origin: process.env.CLIENT_URL }));

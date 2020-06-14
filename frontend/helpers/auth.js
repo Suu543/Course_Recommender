@@ -20,13 +20,30 @@ export const removeCookie = (key, value) => {
 };
 
 // get from cookie such as stored token
-
 // will be useful when we need to make request to server with auth token
-export const getCookie = (key) => {
-  if (process.browser) {
-    //   ("token")
-    return cookie.get(key);
-  }
+export const getCookie = (key, req) => {
+  return process.browser
+    ? getCookieFromBrowser(key)
+    : getCookieFromServer(key, req);
+};
+
+export const getCookieFromBrowser = (key) => {
+  return cookie.get(key);
+};
+
+export const getCookieFromServer = (key, req) => {
+  if (!req.headers.cookie) return undefined;
+  console.log("req.headers.cookie", req.headers.cookie);
+
+  let token = req.headers.cookie
+    .split(";")
+    .find((c) => c.trim().startsWith(`${key}=`));
+
+  if (!token) return undefined;
+
+  let tokenValue = token.split("=")[1];
+  console.log("getCookieFromServer", tokenValue);
+  return tokenValue;
 };
 
 // set in localstorage
@@ -40,6 +57,12 @@ export const setLocalStorage = (key, value) => {
 export const removeLocalStorage = (key) => {
   if (process.browser) {
     localStorage.removeItem(key);
+  }
+};
+
+export const getLocalStorage = (key) => {
+  if (process.browser) {
+    return localStorage.getItem(key);
   }
 };
 
@@ -67,20 +90,18 @@ export const isAuth = () => {
   }
 };
 
-export const maintainerAfterRefresh = async () => {
+export const maintainerAfterRefresh = () => {
   if (process.browser) {
-    try {
-      const tokenDecoded = await jwt.verify(cookie.get("token"), JWT_SECRET);
-      console.log("tokenDecoded", tokenDecoded);
-      if (tokenDecoded) {
-        return localStorage.getItem("user") ? true : false;
-      }
-    } catch (err) {
-      return false;
-    }
-  }
+    let token = cookie.get("token");
+    let validToken = jwt.verify(token, JWT_SECRET, function (err, decoded) {
+      if (err) return false;
 
-  return false;
+      return true;
+    });
+
+    if (validToken) return true;
+    else return false;
+  }
 };
 
 export const logout = () => {

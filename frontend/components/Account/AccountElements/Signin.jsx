@@ -31,11 +31,11 @@ const Signin = ({ setUserInfo, over, setOver, open, setOpen }) => {
 
   const { email, password, error, success, buttonText } = state;
 
-  const checkAuth = () => {
-    return isAuth() && isAuth().role == "admin"
-      ? Router.push("/admin")
-      : Router.push("/user");
-  };
+  // const checkAuth = () => {
+  //   return isAuth() && isAuth().role == "admin"
+  //     ? Router.push("/admin")
+  //     : Router.push("/user");
+  // };
 
   const handleChange = (name) => (e) => {
     setState({
@@ -62,12 +62,13 @@ const Signin = ({ setUserInfo, over, setOver, open, setOpen }) => {
 
       const { name, role } = response.data.user;
 
+      console.log("login-data", response.data);
       // console.log("response", response);
       // console.log("Signin-Response", response); // User Token > data > token / user
       authenticate(response, () => {
         setOpen(!open);
         setUserInfo({ auth: true, name, role });
-        checkAuth();
+        // checkAuth();
         setState({ ...state, buttonText: "Login" });
         clearInputFields();
       });
