@@ -80,3 +80,14 @@
 
 - So let's go to server and create two endpoints
 - one for logged in user and another for admin user
+
+# Login - Client Side
+
+- We will create 2 HOC
+- One will be withUser and another will be withAdmin
+- they will make request to our backend endpoint "/user" and "/admin"
+- then later these components can be used as wrapper to any pages to protect them from unauthorized access
+- this way we don't have to make api request on each page we want to apply restrictions
+- we can simply use these HOC/withUser/withAdmin to perform authorization
+- if someone is trying to somehow access the pages that they are not supposed to
+- we will redirect them away to home page

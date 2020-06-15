@@ -14,7 +14,11 @@ import NavAnchor from "./NavElements/NavAnchor";
 import NavUl from "./NavElements/NavUl";
 import NavPopUpModal from "./NavElements/NavPopupModal";
 
-import { logout, maintainerAfterRefresh } from "../../helpers/auth";
+import {
+  getLocalStorage,
+  logout,
+  maintainerAfterRefresh,
+} from "../../helpers/auth";
 
 const Navbar = () => {
   console.log("Navbar Constructor");
@@ -38,13 +42,19 @@ const Navbar = () => {
   useEffect(() => {
     let status = maintainerAfterRefresh();
 
-    if (status) setUserInfo({ ...userInfo, auth: true });
-    else setUserInfo({ ...userInfo, auth: false });
+    if (status) {
+      const { role } = JSON.parse(getLocalStorage("user"));
+      setUserInfo({ ...userInfo, role, auth: true });
+    } else {
+      setUserInfo({ ...userInfo, auth: false });
+    }
 
     const handler = ({ key }) => checkStorage(key);
     window.addEventListener("storage", handler);
     return () => window.removeEventListener("storage", handler);
   }, []);
+
+  console.log("userInfo.role", userInfo.role);
 
   return (
     <React.Fragment>
