@@ -1,7 +1,10 @@
 const { User } = require("../models/user");
 const jwt = require("jsonwebtoken");
 const AWS = require("aws-sdk");
-const { registerEmailParams } = require("../helpers/email");
+const {
+  registerEmailParams,
+  forgotPasswordEmailParams,
+} = require("../helpers/email");
 const shortId = require("shortid");
 const dotenv = require("dotenv");
 const cookie = require("cookie");
@@ -176,4 +179,80 @@ exports.adminMiddleware = async (req, res, next) => {
 
   req.profile = user;
   next();
+};
+
+exports.forgotPassword = async (req, res) => {
+  const { email } = req.body;
+  // check if user exists with that email
+  try {
+    const user = await User.findOne({ email });
+
+    // Generate token and email to user
+    const token = jwt.sign({ _id: user._id }, process.env.JWT_RESET_PASSWORD, {
+      expiresIn: "10m",
+    });
+
+    // Send Email
+    const params = forgotPasswordEmailParams(email, token);
+
+    // Populate the db > user > resetPassword
+    await user.updateOne({ resetPasswordLink: token });
+
+    const sendEmail = ses.sendEmail(params).promise();
+
+    sendEmail
+      .then((data) => {
+        console.log("ses reset password success", data);
+        return res.json({
+          message: `Email has been sent to ${email}. Click on the link to reset your password`,
+        });
+      })
+      .catch((error) => {
+        console.log("ses reset password failed", error);
+        return res.json({
+          message: "We could not verify your email. Try Again!",
+        });
+      });
+  } catch (error) {
+    return res.status(400).json({
+      error: "Password Reset Failed... Try Again!",
+    });
+  }
+};
+
+exports.resetPassword = (req, res) => {
+  const { resetPasswordLink, newPassword } = req.body;
+  if (resetPasswordLink) {
+    jwt.verify(
+      resetPasswordLink,
+      process.env.JWT_RESET_PASSWORD,
+      async function (err, decoded) {
+        if (err) {
+          return res.status(401).json({
+            error: "유요하지않은 토큰입니다... 다시 시도해주세요!",
+          });
+        }
+        try {
+          const user = await User.findOne({ resetPasswordLink });
+          if (!user) {
+            return res.status(401).json({
+              error: "만료된 링크입니다. 다시 시도해주세요!",
+            });
+          }
+
+          user.resetPassword = "";
+          user.salt = await user.makeSalt();
+          user.hashed_password = await user.encryptPassword(newPassword);
+          await user.save();
+          return res.status(200).json({
+            message: `성공적으로 비밀번호가 변경되었습니다. 다시 로그인해주세요!`,
+          });
+        } catch (error) {
+          return res.status(400).json({
+            error: "Password reset failed. Try Again",
+          });
+        }
+      }
+    );
+  }
 };
