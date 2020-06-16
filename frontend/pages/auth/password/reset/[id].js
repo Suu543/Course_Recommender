@@ -64,6 +64,10 @@ const ResetPassword = ({ router }) => {
           buttonText: "Done",
           success: response.data.message,
         });
+
+        setTimeout(() => {
+          Router.push("/");
+        }, 2000);
       } catch (error) {
         console.log("Reset Password Error", error);
         setState({
