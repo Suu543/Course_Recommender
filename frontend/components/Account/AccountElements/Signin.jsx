@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
+import Link from "next/link";
+import NavAnchor from "../../Navbar/NavElements/NavAnchor";
 import axios from "axios";
-import Router from "next/router";
 import { API } from "../../../config";
 import { ShowSuccessAlert, ShowErrorAlert } from "../../../helpers/alert";
 import {
@@ -121,7 +122,13 @@ const Signin = ({ setUserInfo, over, setOver, open, setOpen }) => {
         </SmallButton>
       </Field>
       <Field>
-        <SmallButton>Trouble signing in?</SmallButton>
+        <SmallButton>
+          <Link passHref href="/auth/password/forgot">
+            <a open={open} onClick={() => setOpen(!open)}>
+              Forgot Password?
+            </a>
+          </Link>
+        </SmallButton>
       </Field>
     </SigninWrapper>
   );

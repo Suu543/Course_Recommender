@@ -187,10 +187,19 @@ exports.forgotPassword = async (req, res) => {
   try {
     const user = await User.findOne({ email });
 
+    if (!user) {
+      return res.status(400).json({
+        error: "User with that email does not exist",
+      });
+    }
     // Generate token and email to user
-    const token = jwt.sign({ _id: user._id }, process.env.JWT_RESET_PASSWORD, {
-      expiresIn: "10m",
-    });
+    const token = jwt.sign(
+      { name: user.name },
+      process.env.JWT_RESET_PASSWORD,
+      {
+        expiresIn: "10m",
+      }
+    );
 
     // Send Email
     const params = forgotPasswordEmailParams(email, token);
@@ -215,13 +224,14 @@ exports.forgotPassword = async (req, res) => {
       });
   } catch (error) {
     return res.status(400).json({
-      error: "Password Reset Failed... Try Again!",
+      error: ` ${error}Password Reset Failed... Try Again!`,
     });
   }
 };
 
 exports.resetPassword = (req, res) => {
   const { resetPasswordLink, newPassword } = req.body;
+  console.log("resetPasswordLink", req.body);
   if (resetPasswordLink) {
     jwt.verify(
       resetPasswordLink,
