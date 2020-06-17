@@ -1,6 +1,8 @@
 const Joi = require("@hapi/joi");
 
 exports.categoryCreateValidator = (req, res) => {
+  console.log("Validator - CategoryCreateValidator");
+
   const schema = Joi.object({
     name: Joi.string().required(),
     image: Joi.object().keys({
@@ -14,6 +16,8 @@ exports.categoryCreateValidator = (req, res) => {
 };
 
 exports.categoryUpdateValidator = (req, res) => {
+  console.log("Validator - CategoryUpdateValidator");
+
   const schema = Joi.object({
     name: Joi.string().required(),
     image: Joi.string().required(),
@@ -22,5 +26,3 @@ exports.categoryUpdateValidator = (req, res) => {
 
   return schema.validate(req);
 };
-
-

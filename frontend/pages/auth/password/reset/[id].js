@@ -4,14 +4,15 @@ import Router, { withRouter } from "next/router";
 import { API } from "../../../../config";
 import jwt from "jsonwebtoken";
 
-import PasswordWrapper from "../../../../components/Password/PasswordWrapper/PasswordWrapper";
-import PasswordForm from "../../../../components/Password/PasswordWrapper/PasswordForm";
-import PasswordInput from "../../../../components/Password/PasswordElements/PasswordInput";
-import PasswordBtn from "../../../../components/Password/PasswordElements/PasswordBtn";
-import PasswordHeading from "../../../../components/Password/PasswordElements/PasswordHeading";
-
-import PasswordSuccess from "../../../../components/Password/PasswordElements/PasswordSuccess";
-import PasswordError from "../../../../components/Password/PasswordElements/PasswordError";
+import {
+  FormWrapper,
+  Form,
+  FormInput,
+  FormBtn,
+  FormSuccess,
+  FormError,
+  FormHeading,
+} from "../../../../components/Form/FormElements";
 
 const ResetPassword = ({ router }) => {
   const [state, setState] = useState({
@@ -82,13 +83,13 @@ const ResetPassword = ({ router }) => {
   };
 
   return (
-    <PasswordWrapper>
-      <PasswordHeading>Hello {name}, Ready to Reset Password?</PasswordHeading>
-      <PasswordForm onSubmit={handleSubmit}>
-        {success && <PasswordSuccess>{success}</PasswordSuccess>}
-        {error && <PasswordError>{error}</PasswordError>}
+    <FormWrapper>
+      <FormHeading>Hello {name}, Ready to Reset Password?</FormHeading>
+      <Form onSubmit={handleSubmit}>
+        {success && <FormSuccess>{success}</FormSuccess>}
+        {error && <FormError>{error}</FormError>}
         <br />
-        <PasswordInput
+        <FormInput
           type="password"
           onChange={handleChange("newPassword")}
           value={newPassword}
@@ -97,7 +98,7 @@ const ResetPassword = ({ router }) => {
           required
         />
         <br />
-        <PasswordInput
+        <FormInput
           type="password"
           onChange={handleChange("confirmed")}
           value={confirmed}
@@ -106,9 +107,9 @@ const ResetPassword = ({ router }) => {
           required
         />
         <br />
-        <PasswordBtn>{buttonText}</PasswordBtn>
-      </PasswordForm>
-    </PasswordWrapper>
+        <FormBtn>{buttonText}</FormBtn>
+      </Form>
+    </FormWrapper>
   );
 };
 

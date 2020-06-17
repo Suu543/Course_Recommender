@@ -3,14 +3,15 @@ import axios from "axios";
 import { API } from "../../../config";
 import Router from "next/router";
 
-import PasswordWrapper from "../../../components/Password/PasswordWrapper/PasswordWrapper";
-import PasswordForm from "../../../components/Password/PasswordWrapper/PasswordForm.jsx";
-import PasswordInput from "../../../components/Password/PasswordElements/PasswordInput";
-import PasswordBtn from "../../../components/Password/PasswordElements/PasswordBtn.jsx";
-import PasswordHeading from "../../../components/Password/PasswordElements/PasswordHeading.jsx";
-
-import PasswordSuccess from "../../../components/Password/PasswordElements/PasswordSuccess";
-import PasswordError from "../../../components/Password/PasswordElements/PasswordError";
+import {
+  FormWrapper,
+  Form,
+  FormInput,
+  FormBtn,
+  FormSuccess,
+  FormError,
+  FormHeading,
+} from "../../../components/Form/FormElements";
 
 const ForgotPassword = () => {
   const [state, setState] = useState({
@@ -49,13 +50,13 @@ const ForgotPassword = () => {
   };
 
   return (
-    <PasswordWrapper>
-      <PasswordHeading>Forgot Password</PasswordHeading>
-      <PasswordForm onSubmit={handleSubmit}>
-        {success && <PasswordSuccess>{success}</PasswordSuccess>}
-        {error && <PasswordError>{error}</PasswordError>}
+    <FormWrapper>
+      <FormHeading>Forgot Password</FormHeading>
+      <Form onSubmit={handleSubmit}>
+        {success && <FormSuccess>{success}</FormSuccess>}
+        {error && <FormError>{error}</FormError>}
         <br />
-        <PasswordInput
+        <FormInput
           type="email"
           onChange={handleChange}
           value={email}
@@ -63,23 +64,10 @@ const ForgotPassword = () => {
           required
         />
         <br />
-        <PasswordBtn>{buttonText}</PasswordBtn>
-      </PasswordForm>
-    </PasswordWrapper>
+        <FormBtn>{buttonText}</FormBtn>
+      </Form>
+    </FormWrapper>
   );
-
-  //   return (
-  //     <div className="row">
-  //       <div className="col-md-6 offset-md-3">
-  //         <h1>Forgot Password</h1>
-  //         <br />
-  //         {passwordForgotForm()}
-  //       </div>
-  //       <div>
-  //         <button className="btn btn-outline-warning">{buttonText}</button>
-  //       </div>
-  //     </div>
-  //   );
 };
 
 export default ForgotPassword;

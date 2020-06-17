@@ -19,6 +19,7 @@ AWS.config.update({
 const ses = new AWS.SES({ apiVersion: "2010-12-01" });
 
 exports.register = async (req, res) => {
+  console.log("Auth - Register");
   const { name, email, password } = req.body;
 
   // 1. Check if user exists in database
@@ -60,6 +61,7 @@ exports.register = async (req, res) => {
 };
 
 exports.activateRegistration = (req, res) => {
+  console.log("Auth - ActivateRegistration");
   const { token } = req.body;
   // console.log(token);
   jwt.verify(token, process.env.JWT_ACCOUNT_ACTIVATION, async function (
@@ -101,6 +103,7 @@ exports.activateRegistration = (req, res) => {
 exports.login = async (req, res) => {
   // const { email, password } = req.body;
   // console.table({ email, password });
+  console.log("Auth - Login");
 
   const user = await User.findOne({ email: req.body.email });
   if (!user) {
@@ -127,7 +130,7 @@ exports.login = async (req, res) => {
 };
 
 exports.requireSignin = (req, res, next) => {
-  console.log("requireSignin1");
+  console.log("Auth - requireSignin");
 
   // console.log("req", req.headers.authorization);
   // let cookies = {};
@@ -135,7 +138,6 @@ exports.requireSignin = (req, res, next) => {
   // // const token = req.cookies.token;
 
   let token = req.headers.authorization.replace("Bearer ", "");
-  console.log("tt", token);
 
   if (!token) {
     console.log("requireSignin2");
@@ -150,6 +152,8 @@ exports.requireSignin = (req, res, next) => {
 };
 
 exports.authMiddleware = async (req, res, next) => {
+  console.log("Auth - AuthMiddleware");
+
   const user = await User.findById({
     _id: req.user._id,
   });
@@ -163,6 +167,8 @@ exports.authMiddleware = async (req, res, next) => {
 };
 
 exports.adminMiddleware = async (req, res, next) => {
+  console.log("Auth - AdminMiddleware");
+
   const user = await User.findById({
     _id: req.user._id,
   });
@@ -183,6 +189,8 @@ exports.adminMiddleware = async (req, res, next) => {
 };
 
 exports.forgotPassword = async (req, res) => {
+  console.log("Auth - ForgotPassword");
+
   const { email } = req.body;
   // check if user exists with that email
   try {
@@ -231,6 +239,8 @@ exports.forgotPassword = async (req, res) => {
 };
 
 exports.resetPassword = (req, res) => {
+  console.log("Auth - ResetPassword");
+
   const { resetPasswordLink, newPassword } = req.body;
   console.log("resetPasswordLink", req.body);
   if (resetPasswordLink) {

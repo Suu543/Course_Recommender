@@ -16,7 +16,7 @@ const s3 = new AWS.S3({
 });
 
 exports.create = (req, res) => {
-  console.log(req.files);
+  console.log("Category - create");
 
   let form = new formidable.IncomingForm();
   form.parse(req, (err, fields, files) => {
@@ -76,30 +76,6 @@ exports.create = (req, res) => {
 };
 
 // https://github.com/aws/aws-sdk-js/issues/296
-
-// exports.create = async (req, res) => {
-//   const { name, content } = req.body;
-//   const slug = slugify(name);
-//   const image = {
-//     url: `https://via.placeholder.com/200x150.png?text=${process.env.CLIENT_URL}`,
-//     key: "123",
-//   };
-
-//   const category = new Category({ name, slug, image });
-//   // userSignin Middleware에서 req.user에 붙여준 것.
-//   console.log("category", category);
-//   category.postedBy = req.user._id;
-
-//   try {
-//     let data = await category.save();
-//     res.status(200).json(data);
-//   } catch (error) {
-//     console.log("error", err);
-//     return res.status(400).json({
-//       error: "Category Create Failed",
-//     });
-//   }
-// };
 
 exports.list = (req, res) => {};
 
