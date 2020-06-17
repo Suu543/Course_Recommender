@@ -1,8 +1,9 @@
 import styled from "styled-components";
 
 const FormWrapper = styled.div`
-  display: grid;
-  grid-auto-rows: 10vh 45vh;
+  max-width: 100%;
+  display: flex;
+  flex-flow: column nowrap;
 `;
 
 const Form = styled.form`
@@ -22,8 +23,8 @@ const FormInput = styled.input`
   }
 `;
 
-const FormTextArea = styled.textarea`
-  width: 70%;
+const FormTextDiv = styled.div`
+  max-width: 70%;
   margin: auto;
   border: 3px solid orange;
   min-height: 50%;
@@ -107,7 +108,7 @@ export {
   FormSuccess,
   FormError,
   FormHeading,
-  FormTextArea,
+  FormTextDiv,
   FormImage,
   FormDiv,
 };

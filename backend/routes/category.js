@@ -22,14 +22,14 @@ const {
 // routes
 router.get("/categories", list);
 router.get("/category/:slug", read);
-// router.post(
-//   "/category",
-//   validate(categoryCreateValidator),
-//   requireSignin,
-//   adminMiddleware,
-//   create
-// );
-router.post("/category", requireSignin, adminMiddleware, create);
+router.post(
+  "/category",
+  validate(categoryCreateValidator),
+  requireSignin,
+  adminMiddleware,
+  create
+);
+// router.post("/category", requireSignin, adminMiddleware, create);
 router.put(
   "/category/:slug",
   validate(categoryUpdateValidator),

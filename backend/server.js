@@ -28,7 +28,7 @@ mongoose
   .then(() => console.log("DB Connected!"))
   .catch((err) => console.log(err));
 
-app.use(express.json());
+app.use(express.json({ limit: "5mb", type: "application/json" }));
 app.use(express.urlencoded({ extended: false }));
 // app.use(formData.parse());
 // req.cookies에 붙여줌

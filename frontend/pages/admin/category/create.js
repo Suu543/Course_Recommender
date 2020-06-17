@@ -1,7 +1,12 @@
-import { useState, useEffect } from "react";
+import dynamic from "next/dynamic";
+import { useState, useEffect, useRef } from "react";
 import axios from "axios";
+import Resizer from "react-image-file-resizer";
 import withAdmin from "../../withAdmin";
 import { API } from "../../../config";
+import "react-quill/dist/quill.bubble.css";
+
+const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
 import {
   FormWrapper,
@@ -11,7 +16,7 @@ import {
   FormSuccess,
   FormError,
   FormHeading,
-  FormTextArea,
+  FormTextDiv,
   FormImage,
   FormDiv,
 } from "../../../components/Form/FormElements";
@@ -19,69 +24,114 @@ import {
 const Create = ({ user, token }) => {
   const [state, setState] = useState({
     name: "",
-    content: "",
     error: "",
     success: "",
-    error: "",
-    formData: process.browser && new FormData(),
     buttonText: "Create",
-    imageUploadText: "Upload Image",
+    image: "",
   });
 
-  const {
-    name,
-    content,
-    success,
-    error,
-    formData,
-    buttonText,
-    imageUploadText,
-  } = state;
+  const [content, setContent] = useState("");
+
+  const inputFileReference = useRef(null);
+
+  const clearInputFields = () => {
+    inputFileReference.current.value = "";
+  };
+
+  const [imageUploadButtonName, setImageUploadButtonName] = useState(
+    "Upload image"
+  );
+
+  const { name, success, error, buttonText, image, imageUploadText } = state;
+
+  // const handleChange = (name) => (e) => {
+  //   // image는 e.target.files
+  //   const value = name === "image" ? e.target.files[0] : e.target.value;
+  //   const imageName =
+  //     name === "image" ? e.target.files[0].name : "Upload Image";
+
+  //   formData.set(name, value);
+
+  //   setState({
+  //     ...state,
+  //     [name]: value,
+  //     error: "",
+  //     success: "",
+  //     imageUploadText: imageName,
+  //   });
+  // };
+
+  const handleContent = (e) => {
+    console.log(e);
+    setContent(e);
+    setState({ ...state, success: "", error: "" });
+  };
 
   const handleChange = (name) => (e) => {
-    // image는 e.target.files
-    const value = name === "image" ? e.target.files[0] : e.target.value;
-    const imageName =
-      name === "image" ? e.target.files[0].name : "Upload Image";
-
-    formData.set(name, value);
-
     setState({
       ...state,
-      [name]: value,
+      [name]: e.target.value,
       error: "",
       success: "",
-      imageUploadText: imageName,
     });
+  };
+
+  const handleImage = (e) => {
+    let fileInput = false;
+    if (e.target.files[0]) {
+      fileInput = true;
+    }
+
+    setImageUploadButtonName(e.target.files[0].name);
+    if (fileInput) {
+      Resizer.imageFileResizer(
+        e.target.files[0],
+        300,
+        300,
+        "JPEG",
+        100,
+        0,
+        (uri) => {
+          // console.log(uri);
+          setState({ ...state, image: uri, success: "", error: "" });
+        },
+        "base64"
+      );
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setState({ ...state, buttonText: "Creating" });
     // console.log(...formData);
+    console.table({ name, image, content });
 
     try {
-      const response = await axios.post(`${API}/category`, formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axios.post(
+        `${API}/category`,
+        { name, content, image },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       console.log("Category Create Response", response);
+      setImageUploadButtonName("Upload Image");
       setState({
         ...state,
         name: "",
         content: "",
-        formData: "",
         buttonText: "Created",
         imageUploadText: "Upload Image",
         success: `${response.data.name} is created!`,
       });
+      clearInputFields();
     } catch (error) {
       console.log("Category Create Error", error);
       setState({
         ...state,
-        name: "",
         buttonText: "Create",
         error: error.response.data.error,
       });
@@ -103,17 +153,19 @@ const Create = ({ user, token }) => {
           required
         />
         <br />
-        <FormTextArea
-          onChange={handleChange("content")}
-          placeholder="Type Category Contents"
-          value={content}
-          type="text"
-          required
-        />
+        <FormTextDiv>
+          <ReactQuill
+            theme="bubble"
+            value={content}
+            onChange={handleContent}
+            placeholder="write something"
+          />
+        </FormTextDiv>
         <br />
-        <FormDiv>ImageUploadText: {imageUploadText}</FormDiv>
+        <FormDiv>ImageUploadText: {imageUploadButtonName}</FormDiv>
         <FormImage
-          onChange={handleChange("image")}
+          ref={inputFileReference}
+          onChange={handleImage}
           accept="image/*"
           type="file"
           required

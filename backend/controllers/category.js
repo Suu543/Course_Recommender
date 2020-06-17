@@ -17,67 +17,131 @@ const s3 = new AWS.S3({
 
 exports.create = (req, res) => {
   console.log("Category - create");
+  const { name, image, content } = req.body;
 
-  let form = new formidable.IncomingForm();
-  form.parse(req, (err, fields, files) => {
+  // image data
+
+  const base64Data = new Buffer.from(
+    image.replace(/^data:image\/\w+;base64,/, ""),
+    "base64"
+  );
+  const type = image.split(";")[0].split("/")[1];
+
+  const slug = slugify(name);
+  let category = new Category({ name, content, slug });
+  console.log("req,user.", req.user._id);
+  category.postedBy = req.user._id;
+
+  // upload image to s3
+  const params = {
+    Bucket: "sucr-su",
+    Key: `category/${uuidv4()}.${type}`,
+    Body: base64Data,
+    ACL: "public-read",
+    ContentEncoding: "base64",
+    ContentType: `image/${type}`,
+  };
+
+  s3.upload(params, async (err, data) => {
+    // if(err) console.log(err) 이런식으로 에러 잡기
     if (err) {
-      return res.status(400).json({
-        error: "Image could not upload",
-      });
+      console.log(err);
+      res.status(400).json({ error: "Upload to s3 failed..." });
     }
+    console.log("AWS UPLOAD RES DATA", data);
 
-    // console.table({err, fields, files})
-    const { name, content } = fields;
-    const { image } = files;
+    // S3에 저장후 Return 된 값
+    category.image.url = data.Location;
+    category.image.key = data.Key;
 
-    const slug = slugify(name);
-    let category = new Category({ name, content, slug });
+    // posted by
     category.postedBy = req.user._id;
 
-    if (image.size > 2000000) {
+    // Save to DB
+    try {
+      let data = await category.save();
+      res.status(200).json(data);
+    } catch (error) {
+      console.log("catch error", error);
       return res.status(400).json({
-        error: "Image should be less than 2mb",
+        error: "Error saving category to Database (Duplicated Category)",
       });
     }
-
-    // upload image to s3
-    const params = {
-      Bucket: "sucr-su",
-      Key: `category/${uuidv4()}`,
-      Body: fs.readFileSync(image.path),
-      ACL: "public-read",
-      ContentType: `image/jpg`,
-    };
-
-    s3.upload(params, async (err, data) => {
-      // if(err) console.log(err) 이런식으로 에러 잡기
-      if (err) {
-        console.log(err);
-        res.status(400).json({ error: "Upload to s3 failed..." });
-      }
-      console.log("AWS UPLOAD RES DATA", data);
-
-      // S3에 저장후 Return 된 값
-      category.image.url = data.Location;
-      category.image.key = data.Key;
-
-      // Save to DB
-      try {
-        let data = await category.save();
-        res.status(200).json(data);
-      } catch (error) {
-        console.log("catch error", error);
-        return res.status(400).json({
-          error: "Error saving category to Database (Duplicated Category)",
-        });
-      }
-    });
   });
 };
 
+// exports.create = (req, res) => {
+//   console.log("Category - create");
+
+//   let form = new formidable.IncomingForm();
+//   form.parse(req, (err, fields, files) => {
+//     if (err) {
+//       return res.status(400).json({
+//         error: "Image could not upload",
+//       });
+//     }
+
+//     // console.table({err, fields, files})
+//     const { name, content } = fields;
+//     const { image } = files;
+
+//     const slug = slugify(name);
+//     let category = new Category({ name, content, slug });
+//     category.postedBy = req.user._id;
+
+//     if (image.size > 2000000) {
+//       return res.status(400).json({
+//         error: "Image should be less than 2mb",
+//       });
+//     }
+
+//     // upload image to s3
+//     const params = {
+//       Bucket: "sucr-su",
+//       Key: `category/${uuidv4()}`,
+//       Body: fs.readFileSync(image.path),
+//       ACL: "public-read",
+//       ContentType: `image/jpg`,
+//     };
+
+//     s3.upload(params, async (err, data) => {
+//       // if(err) console.log(err) 이런식으로 에러 잡기
+//       if (err) {
+//         console.log(err);
+//         res.status(400).json({ error: "Upload to s3 failed..." });
+//       }
+//       console.log("AWS UPLOAD RES DATA", data);
+
+//       // S3에 저장후 Return 된 값
+//       category.image.url = data.Location;
+//       category.image.key = data.Key;
+
+//       // Save to DB
+//       try {
+//         let data = await category.save();
+//         res.status(200).json(data);
+//       } catch (error) {
+//         console.log("catch error", error);
+//         return res.status(400).json({
+//           error: "Error saving category to Database (Duplicated Category)",
+//         });
+//       }
+//     });
+//   });
+// };
+
 // https://github.com/aws/aws-sdk-js/issues/296
 
-exports.list = (req, res) => {};
+exports.list = async (req, res) => {
+  try {
+    let categories = await Category.find({});
+    if (categories) res.status(200).json(categories);
+  } catch (error) {
+    return res.status(400).json({
+      error: "Categories could not load...",
+    });
+  }
+};
 
 exports.read = (req, res) => {};
 

@@ -91,3 +91,9 @@
 - we can simply use these HOC/withUser/withAdmin to perform authorization
 - if someone is trying to somehow access the pages that they are not supposed to
 - we will redirect them away to home page
+
+# Base64
+-  https://pilot376.tistory.com/3
+- https://effectivesquid.tistory.com/entry/Base64-%EC%9D%B8%EC%BD%94%EB%94%A9%EC%9D%B4%EB%9E%80
+- https://stackoverflow.com/questions/38633061/how-can-i-strip-the-dataimage-part-from-a-base64-string-of-any-image-type-in-ja
+- https://okky.kr/article/276104 - 플팻폼에 관계없이 독립성을 가진 자료의 깨짐을 방지하기 위해
