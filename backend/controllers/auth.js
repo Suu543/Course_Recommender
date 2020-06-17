@@ -167,6 +167,7 @@ exports.adminMiddleware = async (req, res, next) => {
     _id: req.user._id,
   });
 
+  console.log("AdminMiddleware");
   if (!user) {
     return res.status(404).json({ error: "사용자를 찾지 못했습니다..." });
   }
