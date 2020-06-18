@@ -2,34 +2,37 @@ import Link from "next/link";
 import axios from "axios";
 import { API } from "../config";
 
+import {
+  Wrapper,
+  Container,
+  ContainerHeader,
+  CategoryContainer,
+  CategoryCard,
+  CategorySection,
+  CategoryImage,
+  CategoryName,
+} from "../components/Category/CategoryElements";
+
 const Home = ({ categories }) => {
   const listCategories = () =>
     categories.map((c, i) => (
       <Link href="/">
-        <a style={{ border: "1px solid red" }}>
-          <div>
-            <div>
-              <div>
-                <img
-                  src={c.image && c.image.url}
-                  alt={c.name}
-                  style={{ width: "100px", height: "auto" }}
-                />
-              </div>
-              <div>{c.name}</div>
-            </div>
-          </div>
-        </a>
+        <CategoryCard>
+          <CategorySection>
+            <CategoryImage src={c.image && c.image.url} alt={c.name} />
+            <CategoryName>{c.name}</CategoryName>
+          </CategorySection>
+        </CategoryCard>
       </Link>
     ));
 
   return (
-    <div>
-      <div>
-        <h1>Browser Tutorials/Courses</h1>
-      </div>
-      <div>{listCategories()}</div>
-    </div>
+    <Wrapper>
+      <Container>
+        <ContainerHeader>Programming Tutorials / Courses</ContainerHeader>
+      </Container>
+      <CategoryContainer>{listCategories()}</CategoryContainer>
+    </Wrapper>
   );
 };
 

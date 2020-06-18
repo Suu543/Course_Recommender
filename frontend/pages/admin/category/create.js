@@ -86,8 +86,8 @@ const Create = ({ user, token }) => {
     if (fileInput) {
       Resizer.imageFileResizer(
         e.target.files[0],
-        300,
-        300,
+        100,
+        1000,
         "JPEG",
         100,
         0,
