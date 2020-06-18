@@ -14,6 +14,7 @@ const app = express();
 const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/user");
 const categoryRoutes = require("./routes/category");
+const linkRoutes = require("./routes/link");
 
 // Database
 const DB_OPTIONS = {
@@ -40,6 +41,7 @@ app.use(cors({ origin: process.env.CLIENT_URL }));
 app.use("/api", authRoutes);
 app.use("/api", userRoutes);
 app.use("/api", categoryRoutes);
+app.use("/api", linkRoutes);
 app.use(function (error, req, res, next) {
   if (error.name === "UnauthorizedError") {
     res.status(401).send("Invalid Token...");
