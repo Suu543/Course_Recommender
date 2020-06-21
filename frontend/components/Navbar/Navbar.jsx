@@ -70,7 +70,7 @@ const Navbar = () => {
               <Link passHref href="/">
                 <NavAnchor>Home</NavAnchor>
               </Link>
-              <Link passHref href="/home">
+              <Link passHref href="/user/link/create">
                 <NavAnchor>+Submit a Link</NavAnchor>
               </Link>
 

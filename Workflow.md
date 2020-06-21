@@ -97,3 +97,20 @@
 - https://effectivesquid.tistory.com/entry/Base64-%EC%9D%B8%EC%BD%94%EB%94%A9%EC%9D%B4%EB%9E%80
 - https://stackoverflow.com/questions/38633061/how-can-i-strip-the-dataimage-part-from-a-base64-string-of-any-image-type-in-ja
 - https://okky.kr/article/276104 - 플팻폼에 관계없이 독립성을 가진 자료의 깨짐을 방지하기 위해
+
+# Steps to create / submit Link in the FrontEnd
+
+- imports
+- state
+- load categories when component mounts using useEffect
+- handle change title
+- handle change url
+- handle change type
+- handle change medium
+- handle submit > post request to server
+- show categories > checkbox
+- show types > radio buttons
+- handle toggle > selecting categories
+- link create form
+- return > show create forms, categories checkbox, radio buttons, success/error messages etc
+- get token of the logged in user - required to create link

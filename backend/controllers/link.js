@@ -8,11 +8,12 @@ exports.create = async (req, res) => {
   //   console.table({ title, url, categories, type, medium });
   const slug = url;
   let link = new Link({ title, url, categories, type, medium, slug });
+  // posted by user
   link.postedBy = req.user._id;
 
   // Categories
-  let arrayOfCategories = categories && categories.split(",");
-  link.categories = arrayOfCategories;
+  // let arrayOfCategories = categories && categories.split(",");
+  // link.categories = arrayOfCategories;
 
   // save link
   try {
