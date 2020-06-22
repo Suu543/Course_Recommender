@@ -114,3 +114,10 @@
 - link create form
 - return > show create forms, categories checkbox, radio buttons, success/error messages etc
 - get token of the logged in user - required to create link
+
+# Single Category
+-   imports
+-   state > links / limit / skip / size
+-   load more button / load updated links
+-   list of links
+-   use getInitialProps to server render category/links

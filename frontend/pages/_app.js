@@ -13,7 +13,7 @@ Router.onRouteChangeError = (url) => NProgress.done();
 import Navbar from "../components/Navbar/Navbar";
 
 export default class RootApp extends App {
-  static async getInitialProps({ Component, router, ctx, req, res }) {
+  static async getInitialProps({ Component, router, ctx, req, res, query }) {
     let pageProps = {};
 
     if (Component.getInitialProps) {
@@ -24,7 +24,7 @@ export default class RootApp extends App {
   }
 
   render() {
-    const { Component, req, res, pageProps, ...other } = this.props;
+    const { Component, req, res, pageProps, query, ...other } = this.props;
 
     return (
       <React.Fragment>
@@ -34,7 +34,7 @@ export default class RootApp extends App {
         <div>
           <Navbar />
           <main>
-            <Component {...req} {...res} {...pageProps} {...other} />
+            <Component {...req} {...res} {...pageProps} {...other} {...query} />
           </main>
         </div>
       </React.Fragment>

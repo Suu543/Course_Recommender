@@ -16,7 +16,7 @@ import {
 const Home = ({ categories }) => {
   const listCategories = () =>
     categories.map((c, i) => (
-      <Link href="/">
+      <Link href={`/links/${c.slug}`}>
         <CategoryCard>
           <CategorySection>
             <CategoryImage src={c.image && c.image.url} alt={c.name} />
