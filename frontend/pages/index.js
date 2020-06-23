@@ -15,12 +15,15 @@ import {
 
 const Home = ({ categories }) => {
   const listCategories = () =>
-    categories.map((c, i) => (
-      <Link href={`/links/${c.slug}`}>
+    categories.map((category, index) => (
+      <Link key={category._id} href={`/links/${category.slug}`}>
         <CategoryCard>
           <CategorySection>
-            <CategoryImage src={c.image && c.image.url} alt={c.name} />
-            <CategoryName>{c.name}</CategoryName>
+            <CategoryImage
+              src={category.image && category.image.url}
+              alt={category.name}
+            />
+            <CategoryName>{category.name}</CategoryName>
           </CategorySection>
         </CategoryCard>
       </Link>

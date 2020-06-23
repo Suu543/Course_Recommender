@@ -41,7 +41,7 @@ const HeaderNestedContainer = styled.div`
   flex-flow: column wrap;
 `;
 
-const Paragraph = styled.p`
+const Content = styled.div`
   color: #7b7b7b;
   font-size: 15px;
   margin-top: 4px;
@@ -139,7 +139,6 @@ const Links = ({
   linkSkip,
 }) => {
   const [allLinks, setAllLinks] = useState(links);
-
   return (
     <Wrapper>
       <HeaderContainer>
@@ -147,7 +146,7 @@ const Links = ({
           <Image src={category.image.url} alt={category.name} />
           <HeaderNestedContainer>
             <Title>{category.name} - URL/LINKS</Title>
-            <Paragraph>{renderHTML(category.content || "")}</Paragraph>
+            <Content>{renderHTML(category.content || "")}</Content>
           </HeaderNestedContainer>
         </HeaderInnerContainer>
       </HeaderContainer>
@@ -158,7 +157,7 @@ const Links = ({
             <LinkParagraph>{category.name} Tutorials</LinkParagraph>
           </LinkElementHeader>
           {allLinks.map((link, index) => (
-            <LinkElementContainer>
+            <LinkElementContainer key={link._id}>
               <LinkElementWrapper>
                 <LinkClicked></LinkClicked>
                 <LinkDetailsWrapper>
@@ -177,7 +176,7 @@ const Links = ({
                     <span>{link.type}</span>
                     <span>{link.medium}</span>
                     {link.categories.map((category, index) => (
-                      <span>{category.name}</span>
+                      <span key={index}>{category.name}</span>
                     ))}
                   </LinkDetails>
                 </LinkDetailsWrapper>
