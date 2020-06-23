@@ -205,11 +205,39 @@ const Links = ({
     setSkip(toSkip);
   };
 
-  // const loadMoreButton = () => {
-  //   return (
-  //     size > 0 && size >= limit && <button onClick={loadMore}>Load More</button>
-  //   );
-  // };
+  const listOfLinks = () =>
+    allLinks.map((link, index) => (
+      <LinkElementContainer key={link._id + index}>
+        <LinkElementWrapper>
+          <LinkNumOfClickContainer onClick={(e) => handleClick(link._id)}>
+            <LinkNumberOfClicked>
+              <i className="fa fa-thumbs-up"></i>
+            </LinkNumberOfClicked>
+            <LinkNumberOfClicked>{link.clicks}</LinkNumberOfClicked>
+          </LinkNumOfClickContainer>
+          <LinkDetailsWrapper>
+            <LinkTitle>
+              <a href={link.url} target="_blank">
+                <span>{link.title}</span>
+              </a>
+            </LinkTitle>
+            <LinkSubmitter>
+              <span>
+                {moment(link.createdAt).fromNow()} Submitted by{" "}
+                {link.postedBy.name}
+              </span>
+            </LinkSubmitter>
+            <LinkDetails>
+              <span>{link.type}</span>
+              <span>{link.medium}</span>
+              {link.categories.map((category, index) => (
+                <span key={index}>{category.name}</span>
+              ))}
+            </LinkDetails>
+          </LinkDetailsWrapper>
+        </LinkElementWrapper>
+      </LinkElementContainer>
+    ));
 
   return (
     <Wrapper>
@@ -227,42 +255,6 @@ const Links = ({
           <LinkElementHeader>
             <LinkParagraph>{category.name} Tutorials</LinkParagraph>
           </LinkElementHeader>
-          <LinkElementContent>
-            {allLinks.map((link, index) => (
-              <LinkElementContainer key={link._id + index}>
-                <LinkElementWrapper>
-                  <LinkNumOfClickContainer
-                    onClick={(e) => handleClick(link._id)}
-                  >
-                    <LinkNumberOfClicked>
-                      <i className="fa fa-thumbs-up"></i>
-                    </LinkNumberOfClicked>
-                    <LinkNumberOfClicked>{link.clicks}</LinkNumberOfClicked>
-                  </LinkNumOfClickContainer>
-                  <LinkDetailsWrapper>
-                    <LinkTitle>
-                      <a href={link.url} target="_blank">
-                        <span>{link.title}</span>
-                      </a>
-                    </LinkTitle>
-                    <LinkSubmitter>
-                      <span>
-                        {moment(link.createdAt).fromNow()} Submitted by{" "}
-                        {link.postedBy.name}
-                      </span>
-                    </LinkSubmitter>
-                    <LinkDetails>
-                      <span>{link.type}</span>
-                      <span>{link.medium}</span>
-                      {link.categories.map((category, index) => (
-                        <span key={index}>{category.name}</span>
-                      ))}
-                    </LinkDetails>
-                  </LinkDetailsWrapper>
-                </LinkElementWrapper>
-              </LinkElementContainer>
-            ))}
-          </LinkElementContent>
           <Loading>
             <InfiniteScroll
               pageStart={0}
@@ -272,7 +264,7 @@ const Links = ({
                 <img key={1} src="/static/images/loading.gif" alt="loading" />
               }
             >
-              {" "}
+              <LinkElementContent>{listOfLinks()}</LinkElementContent>
             </InfiniteScroll>
           </Loading>
         </LinkElementsContainer>

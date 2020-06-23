@@ -55,13 +55,28 @@ const CategoryFuncs = styled.div`
   justify-self: end;
   margin-right: 15%;
 
-  button {
+  span {
     padding: 8px 8px;
     margin: 2px;
-    color: white;
-    border: none;
     border-radius: 5px;
-    text-decoration: none;
+
+    button {
+      background: none;
+      font-size: 17px;
+      text-decoration: none;
+      color: white;
+      border: none;
+
+      :hover,
+      :active {
+        color: black;
+      }
+
+      :active,
+      :focus {
+        outline: none;
+      }
+    }
   }
 `;
 
@@ -90,6 +105,10 @@ const Read = ({ user, token }) => {
     loadCategories();
   }, []);
 
+  const confirmDelete = (slug) => {
+    console.log("Delete > ", slug);
+  };
+
   const loadCategories = async () => {
     const response = await axios.get(`${API}/categories`);
     setState({ ...state, categories: response.data });
@@ -112,8 +131,14 @@ const Read = ({ user, token }) => {
           </Link>
         </CategorySection>
         <CategoryFuncs>
-          <button style={{ background: "#1781EB" }}>Update</button>
-          <button style={{ background: "#E00B2E" }}>Delete</button>
+          <span style={{ background: "#1781EB" }}>
+            <Link href={`/admin/category/${category.slug}`}>
+              <button>Update</button>
+            </Link>
+          </span>
+          <span style={{ background: "#E00B2E" }}>
+            <button onClick={() => confirmDelete(category.slug)}>Delete</button>
+          </span>
         </CategoryFuncs>
       </CategoryCard>
     ));

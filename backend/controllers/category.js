@@ -177,6 +177,89 @@ exports.read = async (req, res) => {
   }
 };
 
-exports.update = (req, res) => {};
+exports.update = async (req, res) => {
+  const { slug } = req.params;
+  const { name, image, content } = req.body;
 
-exports.remove = (req, res) => {};
+  try {
+    const updated = await Category.findOneAndUpdate(
+      { slug },
+      { name, content },
+      { new: true }
+    );
+    console.log("Updated", updated);
+
+    if (image) {
+      // remove the existing image from s3 before uploading new/updated on
+      const deleteParams = {
+        Bucket: "sucr-su",
+        Key: `category/${updated.image.key}`,
+      };
+
+      s3.deleteObject(deleteParams, (err, data) => {
+        if (err) console.log("S3 DELETE ERROR DURING UPDATE", err);
+        else console.log("S3 DELETED DURING UPDATE", data); //deleted
+      });
+
+      // hondle update image
+      const params = {
+        Bucket: "sucr-su",
+        Key: `category/${uuidv4()}.${type}`,
+        Body: base64Data,
+        ACL: "public-read",
+        ContentEncoding: "base64",
+        ContentType: `image/${type}`,
+      };
+
+      s3.upload(params, async (err, data) => {
+        if (err) {
+          console.log(err);
+          return res.status(400).json({ error: "Upload to s3 failed" });
+        }
+
+        console.log("AWS UPLOAD RES DATA", data);
+        updated.image.url = data.Location;
+        updated.image.key = data.key;
+
+        try {
+          const updatedData = updated.save();
+          return res.status(200).json(updatedData);
+        } catch (error) {
+          console.log("catch error", error);
+          return res.status(400).json({
+            error: "Error saving category to Database (Duplicated Category)",
+          });
+        }
+      });
+    }
+  } catch (error) {
+    return res.status(400).json({
+      error: "Colud not find category to update",
+    });
+  }
+};
+
+exports.remove = async (req, res) => {
+  const { slug } = req.params;
+  try {
+    const removedData = await Category.findOneAndRemove({ slug });
+
+    const deleteParams = {
+      Bucket: "sucr-su",
+      Key: `category/${removedData.image.key}`,
+    };
+
+    s3.deleteObject(deleteParams, (err, data) => {
+      if (err) console.log("S3 DELETE ERROR DURING ", err);
+      else console.log("S3 DELETED DURING ", data); //deleted
+    });
+
+    return res.status(200).json({
+      message: "Category Deleted Successfully",
+    });
+  } catch (error) {
+    return res.status(400).json({
+      error: "Could not delete category",
+    });
+  }
+};
