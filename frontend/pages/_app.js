@@ -4,6 +4,8 @@ import Head from "next/head";
 import Router from "next/router";
 import NProgress from "nprogress";
 import "nprogress/nprogress.css";
+import "react-quill/dist/quill.bubble.css";
+import "@fortawesome/fontawesome-free/css/all.css";
 
 Router.onRouteChangeStart = (url) => NProgress.start();
 Router.onRouteChangeComplete = (url) => NProgress.done();

@@ -4,7 +4,6 @@ import axios from "axios";
 import Resizer from "react-image-file-resizer";
 import withAdmin from "../../withAdmin";
 import { API } from "../../../config";
-import "react-quill/dist/quill.bubble.css";
 
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 

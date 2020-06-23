@@ -5,6 +5,7 @@ import { API } from "../../config";
 import moment from "moment";
 import renderHTML from "react-render-html";
 import styled from "styled-components";
+import InfiniteScroll from "react-infinite-scroller";
 
 const Wrapper = styled.div`
   width: 80%;
@@ -79,12 +80,30 @@ const LinkElementWrapper = styled.div`
   grid-template-columns: 1fr 6fr;
 `;
 
-const LinkClicked = styled.div`
+const LinkNumOfClickContainer = styled.div`
   align-self: center;
   justify-self: center;
   width: 62px;
   height: 68px;
   background: #f5f5f5;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  :hover,
+  :active {
+    background: #a68f8f;
+  }
+`;
+
+const LinkNumberOfClicked = styled.span`
+  color: #464646;
+
+  i {
+    color: #007aff;
+  }
 `;
 
 const LinkDetailsWrapper = styled.div`
@@ -125,9 +144,10 @@ const LinkDetails = styled.div`
   }
 `;
 
-const LoadMoreParagraph = styled.p`
-  text-align: center;
-  margin: 1rem;
+const Loading = styled.div`
+  img {
+    background-color: #fafafa;
+  }
 `;
 
 const Links = ({
@@ -139,6 +159,39 @@ const Links = ({
   linkSkip,
 }) => {
   const [allLinks, setAllLinks] = useState(links);
+  const [limit, setLimit] = useState(linksLimit);
+  const [skip, setSkip] = useState(0);
+  const [size, setSize] = useState(totalLinks);
+
+  const handleClick = async (linkId) => {
+    const response = await axios.put(`${API}/click-count`, { linkId });
+    loadUpdatedLinks();
+  };
+
+  const loadUpdatedLinks = async () => {
+    const response = await axios.post(`${API}/category/${query.slug}`);
+    setAllLinks(response.data.links);
+  };
+
+  const loadMore = async () => {
+    let toSkip = skip + limit;
+    const response = await axios.post(`${API}/category/${query.slug}`, {
+      skip: toSkip,
+      limit,
+    });
+    setAllLinks([...allLinks, ...response.data.links]);
+    // console.log("allLinks", allLinks);
+    // console.log("response.data.links.length", response.data.links.length);
+    setSize(response.data.links.length);
+    setSkip(toSkip);
+  };
+
+  // const loadMoreButton = () => {
+  //   return (
+  //     size > 0 && size >= limit && <button onClick={loadMore}>Load More</button>
+  //   );
+  // };
+
   return (
     <Wrapper>
       <HeaderContainer>
@@ -159,7 +212,12 @@ const Links = ({
           {allLinks.map((link, index) => (
             <LinkElementContainer key={link._id}>
               <LinkElementWrapper>
-                <LinkClicked></LinkClicked>
+                <LinkNumOfClickContainer onClick={(e) => handleClick(link._id)}>
+                  <LinkNumberOfClicked>
+                    <i className="fa fa-thumbs-up"></i>
+                  </LinkNumberOfClicked>
+                  <LinkNumberOfClicked>{link.clicks}</LinkNumberOfClicked>
+                </LinkNumOfClickContainer>
                 <LinkDetailsWrapper>
                   <LinkTitle>
                     <a href={link.url} target="_blank">
@@ -183,7 +241,16 @@ const Links = ({
               </LinkElementWrapper>
             </LinkElementContainer>
           ))}
-          <LoadMoreParagraph>Load More</LoadMoreParagraph>
+          <InfiniteScroll
+            pageStart={0}
+            loadMore={loadMore}
+            hasMore={size > 0 && size >= limit}
+            loader={
+              <Loading>
+                <img src="/static/images/loading.gif" alt="loading" />
+              </Loading>
+            }
+          ></InfiniteScroll>
         </LinkElementsContainer>
       </GridContainer>
     </Wrapper>
@@ -192,9 +259,9 @@ const Links = ({
 
 Links.getInitialProps = async ({ query, req }) => {
   let skip = 0;
-  let limit = 2;
+  let limit = 3;
 
-  const response = await axios.get(`${API}/category/${query.slug}`, {
+  const response = await axios.post(`${API}/category/${query.slug}`, {
     skip,
     limit,
   });

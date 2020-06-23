@@ -11,7 +11,14 @@ const {
 
 // Controllers
 const { requireSignin, authMiddleware } = require("../controllers/auth");
-const { create, list, read, update, remove } = require("../controllers/link");
+const {
+  create,
+  list,
+  read,
+  update,
+  remove,
+  clickCount,
+} = require("../controllers/link");
 
 // routes
 router.get("/links", list);
@@ -23,6 +30,7 @@ router.post(
   authMiddleware,
   create
 );
+router.put("/click-count", clickCount);
 router.put(
   "/link/:slug",
   validate(linkUpdateValidator),
