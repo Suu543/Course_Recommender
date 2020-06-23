@@ -146,6 +146,7 @@ exports.list = async (req, res) => {
 
 exports.read = async (req, res) => {
   const { slug } = req.params;
+  console.log("req.body.limit", req.body);
   let limit = req.body.limit ? parseInt(req.body.limit) : 10;
   let skip = req.body.skip ? parseInt(req.body.skip) : 0;
 

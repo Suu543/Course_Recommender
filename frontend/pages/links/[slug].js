@@ -30,6 +30,9 @@ const HeaderContainer = styled.div`
   margin-bottom: 2.5rem;
   border: 2px solid #eee;
   padding: 1rem;
+  @media all and (max-width: 768px) {
+    grid-template-columns: 12fr;
+  }
 `;
 
 const HeaderInnerContainer = styled.div`
@@ -50,7 +53,12 @@ const Content = styled.div`
 
 const GridContainer = styled.div`
   display: grid;
-  grid-template-columns: 3fr 9fr;
+  grid-gap: 10px;
+  grid-template-columns: 9fr 3fr;
+
+  @media all and (max-width: 768px) {
+    grid-template-columns: 12fr;
+  }
 `;
 
 const LinkElementsContainer = styled.div`
@@ -62,11 +70,19 @@ const LinkElementHeader = styled.div`
   border: 1px solid #eee;
   padding: 0.3rem;
   background: #ffffff;
+  padding: 1rem;
+  font-size: 1rem;
+  font-weight: bold;
 `;
 
 const LinkParagraph = styled.p`
   color: #383838;
   padding: 0 0 0 20px;
+`;
+
+const LinkElementContent = styled.div`
+  height: 80vh;
+  overflow-y: auto;
 `;
 
 const LinkElementContainer = styled.div`
@@ -204,54 +220,60 @@ const Links = ({
         </HeaderInnerContainer>
       </HeaderContainer>
       <GridContainer>
-        <div>Most Popular In {category.name}</div>
         <LinkElementsContainer>
           <LinkElementHeader>
             <LinkParagraph>{category.name} Tutorials</LinkParagraph>
           </LinkElementHeader>
-          {allLinks.map((link, index) => (
-            <LinkElementContainer key={link._id}>
-              <LinkElementWrapper>
-                <LinkNumOfClickContainer onClick={(e) => handleClick(link._id)}>
-                  <LinkNumberOfClicked>
-                    <i className="fa fa-thumbs-up"></i>
-                  </LinkNumberOfClicked>
-                  <LinkNumberOfClicked>{link.clicks}</LinkNumberOfClicked>
-                </LinkNumOfClickContainer>
-                <LinkDetailsWrapper>
-                  <LinkTitle>
-                    <a href={link.url} target="_blank">
-                      <span>{link.title}</span>
-                    </a>
-                  </LinkTitle>
-                  <LinkSubmitter>
-                    <span>
-                      {moment(link.createdAt).fromNow()} Submitted by{" "}
-                      {link.postedBy.name}
-                    </span>
-                  </LinkSubmitter>
-                  <LinkDetails>
-                    <span>{link.type}</span>
-                    <span>{link.medium}</span>
-                    {link.categories.map((category, index) => (
-                      <span key={index}>{category.name}</span>
-                    ))}
-                  </LinkDetails>
-                </LinkDetailsWrapper>
-              </LinkElementWrapper>
-            </LinkElementContainer>
-          ))}
-          <InfiniteScroll
-            pageStart={0}
-            loadMore={loadMore}
-            hasMore={size > 0 && size >= limit}
-            loader={
-              <Loading>
-                <img src="/static/images/loading.gif" alt="loading" />
-              </Loading>
-            }
-          ></InfiniteScroll>
+          <LinkElementContent>
+            {allLinks.map((link, index) => (
+              <LinkElementContainer key={link._id + index}>
+                <LinkElementWrapper>
+                  <LinkNumOfClickContainer
+                    onClick={(e) => handleClick(link._id)}
+                  >
+                    <LinkNumberOfClicked>
+                      <i className="fa fa-thumbs-up"></i>
+                    </LinkNumberOfClicked>
+                    <LinkNumberOfClicked>{link.clicks}</LinkNumberOfClicked>
+                  </LinkNumOfClickContainer>
+                  <LinkDetailsWrapper>
+                    <LinkTitle>
+                      <a href={link.url} target="_blank">
+                        <span>{link.title}</span>
+                      </a>
+                    </LinkTitle>
+                    <LinkSubmitter>
+                      <span>
+                        {moment(link.createdAt).fromNow()} Submitted by{" "}
+                        {link.postedBy.name}
+                      </span>
+                    </LinkSubmitter>
+                    <LinkDetails>
+                      <span>{link.type}</span>
+                      <span>{link.medium}</span>
+                      {link.categories.map((category, index) => (
+                        <span key={index}>{category.name}</span>
+                      ))}
+                    </LinkDetails>
+                  </LinkDetailsWrapper>
+                </LinkElementWrapper>
+              </LinkElementContainer>
+            ))}
+          </LinkElementContent>
+          <Loading>
+            <InfiniteScroll
+              pageStart={0}
+              loadMore={loadMore}
+              hasMore={size > 0 && size >= limit}
+              loader={
+                <img key={1} src="/static/images/loading.gif" alt="loading" />
+              }
+            >
+              {" "}
+            </InfiniteScroll>
+          </Loading>
         </LinkElementsContainer>
+        <div>Most Popular In {category.name}</div>
       </GridContainer>
     </Wrapper>
   );

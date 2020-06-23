@@ -93,7 +93,8 @@
 - we will redirect them away to home page
 
 # Base64
--  https://pilot376.tistory.com/3
+
+- https://pilot376.tistory.com/3
 - https://effectivesquid.tistory.com/entry/Base64-%EC%9D%B8%EC%BD%94%EB%94%A9%EC%9D%B4%EB%9E%80
 - https://stackoverflow.com/questions/38633061/how-can-i-strip-the-dataimage-part-from-a-base64-string-of-any-image-type-in-ja
 - https://okky.kr/article/276104 - 플팻폼에 관계없이 독립성을 가진 자료의 깨짐을 방지하기 위해
@@ -116,8 +117,18 @@
 - get token of the logged in user - required to create link
 
 # Single Category
--   imports
--   state > links / limit / skip / size
--   load more button / load updated links
--   list of links
--   use getInitialProps to server render category/links
+
+- imports
+- state > links / limit / skip / size
+- load more button / load updated links
+- list of links
+- use getInitialProps to server render category/links
+
+# Category Update / Delete
+
+- Implement Update/Delete of CRUD on admin/user category/link posts
+- Email Users when a new link is posted on their favorite category
+- Custom Head for SEO in index and link slug page
+- preparing for production
+- Deploy to EC2
+- Done...
