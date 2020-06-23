@@ -81,8 +81,11 @@ const LinkParagraph = styled.p`
 `;
 
 const LinkElementContent = styled.div`
-  height: 80vh;
-  overflow-y: auto;
+  max-height: 50vh;
+  overflow-y: scroll;
+  ::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 const LinkElementContainer = styled.div`

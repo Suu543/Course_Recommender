@@ -45,7 +45,17 @@ const Admin = ({ user }) => {
             </DashboardContent>
           </DashboardContentWrapper>
         </DashboardBoard>
-        <DashboardBoard style={{ background: "#66B92E" }}>2</DashboardBoard>
+        <DashboardBoard style={{ background: "#66B92E" }}>
+          <DashboardContentWrapper>
+            <DashboardContent>
+              <h1>
+                <Link href="/admin/category/read">
+                  <a>Read All Categories</a>
+                </Link>
+              </h1>
+            </DashboardContent>
+          </DashboardContentWrapper>
+        </DashboardBoard>
         <DashboardBoard style={{ background: "#DA932C" }}>3</DashboardBoard>
         <DashboardBoard style={{ background: "#D65B4A" }}>4</DashboardBoard>
       </DashboardWrapper>
