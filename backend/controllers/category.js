@@ -141,6 +141,8 @@ exports.update = async (req, res) => {
         else console.log("S3 DELETED DURING UPDATE", data); //deleted
       });
 
+      const type = image.split(";")[0].split("/")[1];
+
       // hondle update image
       const params = {
         Bucket: "sucr-su",
@@ -162,7 +164,7 @@ exports.update = async (req, res) => {
         updated.image.key = data.key;
 
         try {
-          const updatedData = updated.save();
+          const updatedData = await updated.save();
           return res.status(200).json(updatedData);
         } catch (error) {
           console.log("catch error", error);
