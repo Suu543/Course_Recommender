@@ -37,11 +37,50 @@ exports.list = async (req, res) => {
   }
 };
 
-exports.read = (req, res) => {};
+exports.read = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const data = await Link.findOne({ _id: id });
+    res.status(200).json(data);
+  } catch (error) {
+    return res.status(400).json({
+      error: "Error Finding Link",
+    });
+  }
+};
 
-exports.update = (req, res) => {};
+exports.update = async (req, res) => {
+  const { id } = req.params;
+  const { title, url, categories, type, medium } = req.body;
 
-exports.remove = (req, res) => {};
+  try {
+    const updated = await Link.findOneAndUpdate(
+      { _id: id },
+      { title, url, categories, type, medium },
+      { new: true }
+    );
+
+    return res.status(200).json(updated);
+  } catch (error) {
+    return res.status(400).json({
+      error: "Error Updating the link",
+    });
+  }
+};
+
+exports.remove = async (req, res) => {
+  const { id } = req.params;
+  try {
+    await Link.findOneAndRemove({ _id: id });
+    return res.status(200).json({
+      message: "Link Removed Successfully",
+    });
+  } catch (error) {
+    return res.status(400).json({
+      error: "Error Removing the Link",
+    });
+  }
+};
 
 exports.clickCount = async (req, res) => {
   const { linkId } = req.body;

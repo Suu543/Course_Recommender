@@ -31,7 +31,7 @@ router.post(
 );
 // router.post("/category", requireSignin, adminMiddleware, create);
 router.put(
-  "/category/:slug",
+  "/category/:id",
   validate(categoryUpdateValidator),
   requireSignin,
   adminMiddleware,

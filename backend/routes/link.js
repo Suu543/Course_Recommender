@@ -22,7 +22,7 @@ const {
 
 // routes
 router.get("/links", list);
-router.get("/link/:slug", read);
+router.get("/link/:id", read);
 router.post(
   "/link",
   validate(linkCreateValidator),
@@ -32,12 +32,12 @@ router.post(
 );
 router.put("/click-count", clickCount);
 router.put(
-  "/link/:slug",
+  "/link/:id",
   validate(linkUpdateValidator),
   requireSignin,
   authMiddleware,
-  create
+  update
 );
-router.delete("/link/:slug", requireSignin, authMiddleware, remove);
+router.delete("/link/:id", requireSignin, authMiddleware, remove);
 
 module.exports = router;

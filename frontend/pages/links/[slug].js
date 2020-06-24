@@ -194,6 +194,7 @@ const Links = ({
 
   const loadMore = async () => {
     let toSkip = skip + limit;
+    console.log("toSkip", toSkip);
     const response = await axios.post(`${API}/category/${query.slug}`, {
       skip: toSkip,
       limit,
@@ -205,6 +206,7 @@ const Links = ({
     setSkip(toSkip);
   };
 
+  // 5개가 있음면 5, 4, 3 - 2, 1,
   const listOfLinks = () =>
     allLinks.map((link, index) => (
       <LinkElementContainer key={link._id + index}>
@@ -276,7 +278,7 @@ const Links = ({
 
 Links.getInitialProps = async ({ query, req }) => {
   let skip = 0;
-  let limit = 3;
+  let limit = 2;
 
   const response = await axios.post(`${API}/category/${query.slug}`, {
     skip,

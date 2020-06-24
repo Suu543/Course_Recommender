@@ -34,7 +34,7 @@ exports.linkUpdateValidator = (req, res) => {
   const schema = Joi.object({
     title: Joi.string().required(),
     url: Joi.string().required(),
-    categories: Joi.string().required(),
+    categories: Joi.array().required(),
     type: Joi.string().required(),
     medium: Joi.string().required(),
   });
