@@ -141,12 +141,16 @@ exports.update = async (req, res) => {
         else console.log("S3 DELETED DURING UPDATE", data); //deleted
       });
 
+      const base64Data = new Buffer.from(
+        image.replace(/^data:image\/\w+;base64,/, ""),
+        "base64"
+      );
       const type = image.split(";")[0].split("/")[1];
 
       // hondle update image
       const params = {
         Bucket: "sucr-su",
-        Key: `category/${uuidv4()}.${type}`,
+        Key: `${uuidv4()}.${type}`,
         Body: base64Data,
         ACL: "public-read",
         ContentEncoding: "base64",
@@ -188,7 +192,7 @@ exports.remove = async (req, res) => {
 
     const deleteParams = {
       Bucket: "sucr-su",
-      Key: `category/${removedData.image.key}`,
+      Key: `${removedData.image.key}`,
     };
 
     s3.deleteObject(deleteParams, (err, data) => {

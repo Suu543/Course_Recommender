@@ -20,28 +20,23 @@ import {
   FormDiv,
 } from "../../../components/Form/FormElements";
 
-const Create = ({ user, token }) => {
+const Update = ({ oldCategory, token }) => {
   const [state, setState] = useState({
-    name: "",
+    name: oldCategory.name,
     error: "",
     success: "",
-    buttonText: "Create",
+    buttonText: "Update",
+    imagePreview: oldCategory.image.url,
     image: "",
   });
 
-  const [content, setContent] = useState("");
-
-  const inputFileReference = useRef(null);
-
-  const clearInputFields = () => {
-    inputFileReference.current.value = "";
-  };
+  const [content, setContent] = useState(oldCategory.content);
 
   const [imageUploadButtonName, setImageUploadButtonName] = useState(
     "Upload image"
   );
 
-  const { name, success, error, buttonText, image, imageUploadText } = state;
+  const { name, success, error, buttonText, image, imagePreview } = state;
 
   const handleContent = (e) => {
     console.log(e);
@@ -75,7 +70,12 @@ const Create = ({ user, token }) => {
         0,
         (uri) => {
           // console.log(uri);
-          setState({ ...state, image: uri, success: "", error: "" });
+          setState({
+            ...state,
+            image: uri,
+            success: "",
+            error: "",
+          });
         },
         "base64"
       );
@@ -84,13 +84,13 @@ const Create = ({ user, token }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setState({ ...state, buttonText: "Creating" });
+    setState({ ...state, buttonText: "Updating" });
     // console.log(...formData);
     console.table({ name, image, content });
 
     try {
-      const response = await axios.post(
-        `${API}/category`,
+      const response = await axios.put(
+        `${API}/category/${oldCategory.slug}`,
         { name, content, image },
         {
           headers: {
@@ -99,23 +99,18 @@ const Create = ({ user, token }) => {
         }
       );
 
-      console.log("Category Create Response", response);
-      setImageUploadButtonName("Upload Image");
-      setContent("");
+      console.log("Category Update Response", response);
       setState({
         ...state,
-        name: "",
-        content: "",
-        buttonText: "Created",
-        imageUploadText: "Upload Image",
-        success: `${response.data.name} is created!`,
+        imagePreview: response.data.image.url,
+        success: `${response.data.name} is updated!`,
       });
-      clearInputFields();
+      setContent(response.data.content);
     } catch (error) {
       console.log("Category Create Error", error);
       setState({
         ...state,
-        buttonText: "Create",
+        buttonText: "Update",
         error: error.response.data.error,
       });
     }
@@ -123,7 +118,7 @@ const Create = ({ user, token }) => {
 
   return (
     <FormWrapper>
-      <FormHeading>Create Category</FormHeading>
+      <FormHeading>Update Category</FormHeading>
       <Form onSubmit={handleSubmit}>
         {success && <FormSuccess>{success}</FormSuccess>}
         {error && <FormError>{error}</FormError>}
@@ -145,36 +140,35 @@ const Create = ({ user, token }) => {
           />
         </FormTextDiv>
         <br />
-        <FormDiv>ImageUploadText: {imageUploadButtonName}</FormDiv>
+        <FormDiv>
+          <span>
+            ImagePreview
+            <br />
+            <img src={imagePreview} alt="image" height="40" />
+          </span>
+        </FormDiv>
+        <FormDiv>ImageUploadText: {imageUploadButtonName} </FormDiv>
         <FormImage
-          ref={inputFileReference}
           onChange={handleImage}
           accept="image/*"
           type="file"
           required
         />
         <br />
+
         <FormBtn>{buttonText}</FormBtn>
       </Form>
     </FormWrapper>
   );
 };
 
-export default withAdmin(Create);
+Update.getInitialProps = async ({ req, query, token }) => {
+  console.log("query", query);
+  const response = await axios.post(`${API}/category/${query.slug}`);
+  return {
+    oldCategory: response.data.category,
+    token,
+  };
+};
 
-// const handleChange = (name) => (e) => {
-//   // image는 e.target.files
-//   const value = name === "image" ? e.target.files[0] : e.target.value;
-//   const imageName =
-//     name === "image" ? e.target.files[0].name : "Upload Image";
-
-//   formData.set(name, value);
-
-//   setState({
-//     ...state,
-//     [name]: value,
-//     error: "",
-//     success: "",
-//     imageUploadText: imageName,
-//   });
-// };
+export default withAdmin(Update);
