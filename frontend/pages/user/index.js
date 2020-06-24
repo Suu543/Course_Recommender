@@ -5,7 +5,7 @@ import { API } from "../../config";
 import { getCookie } from "../../helpers/auth";
 import withUser from "../withUser";
 
-const User = ({ user }) => {
+const User = ({ user, userLinks }) => {
   const [data, setData] = useState({
     name: "",
     username: "",
@@ -27,10 +27,8 @@ const User = ({ user }) => {
   return (
     <div>
       <h1>Hello World This is User Page!</h1>
-      <p>{name}</p>
-      <p>{role}</p>
-      <p>{email}</p>
-      <p>{username}</p>
+      <div>{JSON.stringify(user)}</div>
+      <div>{JSON.stringify(userLinks)}</div>
     </div>
   );
 };

@@ -7,6 +7,7 @@ const withAdmin = (Page) => {
   WithAdminUser.getInitialProps = async ({ req, res, query }) => {
     const token = getCookie("token", req);
     let user = null;
+    let userLinks = [];
 
     if (token) {
       try {
@@ -16,7 +17,8 @@ const withAdmin = (Page) => {
             contentType: "application/json",
           },
         });
-        user = response.data;
+        user = response.data.user;
+        userLinks = response.data.links;
       } catch (error) {
         if (error.response.status === 401) {
           user = null;
@@ -37,6 +39,7 @@ const withAdmin = (Page) => {
           : {}),
         user,
         token,
+        userLinks,
       };
     }
   };

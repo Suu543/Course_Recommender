@@ -8,6 +8,7 @@ const withUser = (Page) => {
     const token = getCookie("token", req);
 
     let user = null;
+    let userLinks = [];
 
     if (token) {
       try {
@@ -17,7 +18,10 @@ const withUser = (Page) => {
             contentType: "application/json",
           },
         });
-        user = response.data;
+
+        // console.log("response in withUser", response);
+        user = response.data.user;
+        userLinks = response.data.links;
       } catch (error) {
         if (error.response.status === 401) {
           user = null;
@@ -39,6 +43,7 @@ const withUser = (Page) => {
           : {}),
         user,
         token,
+        userLinks,
       };
     }
   };
