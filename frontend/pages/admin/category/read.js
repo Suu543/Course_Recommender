@@ -123,7 +123,7 @@ const Read = ({ user, token }) => {
       });
 
       console.log("Category Delete Success", response);
-      await loadCategories();
+      loadCategories();
     } catch (error) {
       console.log("Category Delete", error);
     }

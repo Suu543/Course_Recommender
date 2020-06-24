@@ -38,9 +38,7 @@ const Admin = ({ user }) => {
           <DashboardContentWrapper>
             <DashboardContent>
               <h1>
-                <Link href="/admin/category/create">
-                  <a>Create Category</a>
-                </Link>
+                <a href="/admin/category/create">Create Category</a>
               </h1>
             </DashboardContent>
           </DashboardContentWrapper>
@@ -63,6 +61,8 @@ const Admin = ({ user }) => {
   );
 };
 export default withAdmin(Admin);
+
+// React-Quill 등 CSS가 완전히 rendering 됨을 보장하기 위해 ReFresh가 없는 Link 대신에 a 태그 사용
 
 // <div>
 // <h1>Admin Dashboard</h1>

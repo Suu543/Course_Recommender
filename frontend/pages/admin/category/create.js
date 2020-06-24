@@ -43,23 +43,6 @@ const Create = ({ user, token }) => {
 
   const { name, success, error, buttonText, image, imageUploadText } = state;
 
-  // const handleChange = (name) => (e) => {
-  //   // image는 e.target.files
-  //   const value = name === "image" ? e.target.files[0] : e.target.value;
-  //   const imageName =
-  //     name === "image" ? e.target.files[0].name : "Upload Image";
-
-  //   formData.set(name, value);
-
-  //   setState({
-  //     ...state,
-  //     [name]: value,
-  //     error: "",
-  //     success: "",
-  //     imageUploadText: imageName,
-  //   });
-  // };
-
   const handleContent = (e) => {
     console.log(e);
     setContent(e);
@@ -177,3 +160,20 @@ const Create = ({ user, token }) => {
 };
 
 export default withAdmin(Create);
+
+// const handleChange = (name) => (e) => {
+//   // image는 e.target.files
+//   const value = name === "image" ? e.target.files[0] : e.target.value;
+//   const imageName =
+//     name === "image" ? e.target.files[0].name : "Upload Image";
+
+//   formData.set(name, value);
+
+//   setState({
+//     ...state,
+//     [name]: value,
+//     error: "",
+//     success: "",
+//     imageUploadText: imageName,
+//   });
+// };
