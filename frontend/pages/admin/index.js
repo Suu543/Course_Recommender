@@ -54,8 +54,28 @@ const Admin = ({ user }) => {
             </DashboardContent>
           </DashboardContentWrapper>
         </DashboardBoard>
-        <DashboardBoard style={{ background: "#DA932C" }}>3</DashboardBoard>
-        <DashboardBoard style={{ background: "#D65B4A" }}>4</DashboardBoard>
+        <DashboardBoard style={{ background: "#DA932C" }}>
+          <DashboardContentWrapper>
+            <DashboardContent>
+              <h1>
+                <Link href="/admin/link/read">
+                  <a>All Links</a>
+                </Link>
+              </h1>
+            </DashboardContent>
+          </DashboardContentWrapper>
+        </DashboardBoard>
+        <DashboardBoard style={{ background: "#D65B4A" }}>
+          <DashboardContentWrapper>
+            <DashboardContent>
+              <h1>
+                <Link href="/admin/link/test">
+                  <a>All Links</a>
+                </Link>
+              </h1>
+            </DashboardContent>
+          </DashboardContentWrapper>
+        </DashboardBoard>
       </DashboardWrapper>
     </Wrapper>
   );
