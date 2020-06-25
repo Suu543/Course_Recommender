@@ -9,11 +9,11 @@ const {
 } = require("../controllers/auth");
 
 // import controllers
-const { read } = require("../controllers/user");
+const { read, likes } = require("../controllers/user");
 
 // routes
 router.get("/user", requireSignin, authMiddleware, read);
 router.get("/admin", requireSignin, adminMiddleware, read);
-
+router.post("/user/likes/:id", likes);
 
 module.exports = router;

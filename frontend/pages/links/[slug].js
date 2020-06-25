@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import Link from "next/link";
+import jwt from "jsonwebtoken";
+import { getCookie } from "../../helpers/auth";
 import { API } from "../../config";
 import moment from "moment";
 import renderHTML from "react-render-html";
@@ -113,7 +115,8 @@ const LinkNumOfClickContainer = styled.div`
 
   :hover,
   :active {
-    background: #a68f8f;
+    background: #e6dbdb;
+    color: #ffffff;
   }
 `;
 
@@ -121,7 +124,8 @@ const LinkNumberOfClicked = styled.span`
   color: #464646;
 
   i {
-    color: #007aff;
+    color: #808080;
+    font-size: 20px;
   }
 `;
 
@@ -176,19 +180,29 @@ const Links = ({
   totalLinks,
   linksLimit,
   linkSkip,
+  token,
+  userLikes,
 }) => {
   const [allLinks, setAllLinks] = useState(links);
   const [limit, setLimit] = useState(linksLimit);
   const [skip, setSkip] = useState(0);
   const [size, setSize] = useState(totalLinks);
+  const [likes, setLikes] = useState(userLikes);
+
+  useEffect(() => {
+    console.log("likes", userLikes);
+  });
 
   const handleClick = async (linkId) => {
-    const response = await axios.put(`${API}/click-count`, { linkId });
+    const userId = token._id;
+    const response = await axios.put(`${API}/click-count`, { linkId, userId });
     loadUpdatedLinks();
   };
 
   const loadUpdatedLinks = async () => {
+    const userResponse = await axios.post(`${API}/user/likes/${token._id}`);
     const response = await axios.post(`${API}/category/${query.slug}`);
+    setLikes(userResponse.data.likes);
     setAllLinks(response.data.links);
   };
 
@@ -211,12 +225,27 @@ const Links = ({
     allLinks.map((link, index) => (
       <LinkElementContainer key={link._id + index}>
         <LinkElementWrapper>
-          <LinkNumOfClickContainer onClick={(e) => handleClick(link._id)}>
-            <LinkNumberOfClicked>
-              <i className="fa fa-thumbs-up"></i>
-            </LinkNumberOfClicked>
-            <LinkNumberOfClicked>{link.clicks}</LinkNumberOfClicked>
-          </LinkNumOfClickContainer>
+          {likes.includes(link._id) ? (
+            <LinkNumOfClickContainer
+              style={{ background: "#4daf4e" }}
+              onClick={(e) => handleClick(link._id)}
+            >
+              <LinkNumberOfClicked>
+                <i className="fa fa-caret-up" style={{ color: "#FFFFFF" }} />
+              </LinkNumberOfClicked>
+              <LinkNumberOfClicked style={{ color: "#FFFFFF" }}>
+                {link.clicks}
+              </LinkNumberOfClicked>
+            </LinkNumOfClickContainer>
+          ) : (
+            <LinkNumOfClickContainer onClick={(e) => handleClick(link._id)}>
+              <LinkNumberOfClicked>
+                <i className="fa fa-caret-up"></i>
+              </LinkNumberOfClicked>
+              <LinkNumberOfClicked>{link.clicks}</LinkNumberOfClicked>
+            </LinkNumOfClickContainer>
+          )}
+
           <LinkDetailsWrapper>
             <LinkTitle>
               <a href={link.url} target="_blank">
@@ -280,19 +309,29 @@ Links.getInitialProps = async ({ query, req }) => {
   let skip = 0;
   let limit = 2;
 
-  const response = await axios.post(`${API}/category/${query.slug}`, {
-    skip,
-    limit,
-  });
+  const token = jwt.decode(getCookie("token", req));
 
-  return {
-    query,
-    category: response.data.category,
-    links: response.data.links,
-    totalLinks: response.data.links.length,
-    linksLimit: limit,
-    linkSkip: skip,
-  };
+  try {
+    const userResponse = await axios.post(`${API}/user/likes/${token._id}`);
+    const response = await axios.post(`${API}/category/${query.slug}`, {
+      skip,
+      limit,
+    });
+
+    // console.log("likes", userResponse.data.likes);
+    return {
+      query,
+      category: response.data.category,
+      links: response.data.links,
+      totalLinks: response.data.links.length,
+      linksLimit: limit,
+      linkSkip: skip,
+      token,
+      userLikes: userResponse.data.likes,
+    };
+  } catch (error) {
+    console.log("error", error);
+  }
 };
 
 export default Links;

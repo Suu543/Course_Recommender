@@ -31,3 +31,20 @@ exports.read = async (req, res) => {
     });
   }
 };
+
+exports.likes = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const user = await User.findById({ _id: id });
+    console.log("user", user.likes);
+
+    return res.status(200).json({
+      likes: user.likes,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      error: "User Not Found...",
+    });
+  }
+};

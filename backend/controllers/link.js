@@ -1,4 +1,5 @@
 const { Link } = require("../models/link");
+const { User } = require("../models/user");
 const slugify = require("slug");
 
 // create, list, read, update, remove
@@ -6,6 +7,7 @@ const slugify = require("slug");
 exports.create = async (req, res) => {
   const { title, url, categories, type, medium } = req.body;
   //   console.table({ title, url, categories, type, medium });
+  console.log("categoriescatetories", categories);
   const slug = url;
   let link = new Link({ title, url, categories, type, medium, slug });
   // posted by user
@@ -92,18 +94,64 @@ exports.remove = async (req, res) => {
 };
 
 exports.clickCount = async (req, res) => {
-  const { linkId } = req.body;
+  const { linkId, userId } = req.body;
   try {
-    const result = await Link.findByIdAndUpdate(
-      linkId,
-      { $inc: { clicks: 1 } },
-      { upsert: true, new: true }
-    );
+    const check = await likeChecker(linkId, userId);
 
-    res.status(200).json(result);
+    if (check) {
+      const result = await Link.findByIdAndUpdate(
+        linkId,
+        { $inc: { clicks: -1 } },
+        { upsert: true, new: true }
+      );
+
+      res.status(200).json(result);
+    } else {
+      const result = await Link.findByIdAndUpdate(
+        linkId,
+        { $inc: { clicks: 1 } },
+        { upsert: true, new: true }
+      );
+
+      res.status(200).json(result);
+    }
   } catch (error) {
     return res.status(400).json({
       error: "Could not update view count",
+    });
+  }
+};
+
+const likeChecker = async (linkId, _id) => {
+  try {
+    const link = linkId.toString();
+    const user = await User.findById({ _id });
+    const likes = user.likes;
+    const checker = likes.includes(link);
+    console.log("likes1", likes);
+
+    if (checker) {
+      let idx = likes.indexOf(link);
+      likes.splice(idx, 1);
+
+      console.log("likes2", likes);
+
+      user.likes = likes;
+
+      await user.save();
+
+      return true;
+    } else {
+      likes.push(link.toString());
+      user.likes = likes;
+
+      await user.save();
+
+      return false;
+    }
+  } catch (error) {
+    return res.status(400).json({
+      error: "Cannot Find User",
     });
   }
 };

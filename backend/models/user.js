@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const dotenv = require("dotenv");
+const { ObjectId } = mongoose.Schema;
 dotenv.config();
 
 const userSchema = new mongoose.Schema(
@@ -14,6 +15,11 @@ const userSchema = new mongoose.Schema(
       index: true,
       lowercase: true,
       required: true,
+    },
+
+    newUser: {
+      type: Boolean,
+      default: false,
     },
 
     name: {
@@ -46,6 +52,20 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+
+    likes: [
+      {
+        type: ObjectId,
+        ref: "Link",
+      },
+    ],
+
+    categories: [
+      {
+        type: ObjectId,
+        ref: "Category",
+      },
+    ],
   },
   { timestamps: true }
 );
