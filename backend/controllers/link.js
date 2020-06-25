@@ -27,8 +27,17 @@ exports.create = async (req, res) => {
 };
 
 exports.list = async (req, res) => {
+  let limit = req.body.limit ? parseInt(req.body.limit) : 10;
+  let skip = req.body.skip ? parseInt(req.body.skip) : 0;
+
   try {
-    let allLinks = await Link.find({});
+    let allLinks = await Link.find({})
+      .populate("postedBy", "name")
+      .populate("categories", "name, slug")
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+
     res.status(200).json(allLinks);
   } catch (error) {
     return res.status(400).json({

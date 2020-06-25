@@ -10,7 +10,11 @@ const {
 } = require("../validators/link");
 
 // Controllers
-const { requireSignin, authMiddleware } = require("../controllers/auth");
+const {
+  requireSignin,
+  authMiddleware,
+  adminMiddleware,
+} = require("../controllers/auth");
 const {
   create,
   list,
@@ -21,7 +25,7 @@ const {
 } = require("../controllers/link");
 
 // routes
-router.get("/links", list);
+router.post("/links", requireSignin, adminMiddleware, list);
 router.get("/link/:id", read);
 router.post(
   "/link",

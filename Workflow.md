@@ -132,3 +132,13 @@
 - preparing for production
 - Deploy to EC2
 - Done...
+
+# All Links for Admin
+- Show all links with infinite scroll in admin dashboard
+- Show categories in user register
+- mass email to users on new link post
+- user profile update
+- most popular
+- trending
+- SEO
+- Deploy
