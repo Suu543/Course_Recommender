@@ -43,3 +43,13 @@ exports.resetPasswordValidator = (req, res) => {
 
   return schema.validate(req);
 };
+
+exports.userUpdateValidator = (req, res) => {
+  console.log("Validator - UserSignupValidation");
+
+  const schema = Joi.object({
+    name: Joi.string().min(3).max(255).required(),
+  });
+
+  return schema.validate(req);
+};
