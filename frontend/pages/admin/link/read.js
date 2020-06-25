@@ -100,6 +100,26 @@ const Links = ({ token, links, totalLinks, linksLimit, linkSkip }) => {
   const [skip, setSkip] = useState(0);
   const [size, setSize] = useState(totalLinks);
 
+  const confirmDelete = (e, id) => {
+    e.preventDefault();
+    let answer = window.confirm("Are you sure you want to delete?");
+    if (answer) handleDelete(id);
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      const response = await axios.delete(`${API}/link/admin/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log("LINK DELETE SUCCESS", response);
+      process.browser && window.location.reload();
+    } catch (error) {
+      console.log("LINK DELETE", error);
+    }
+  };
+
   const loadMore = async () => {
     let toSkip = skip + limit;
     console.log("toSkip", toSkip);
@@ -154,14 +174,14 @@ const Links = ({ token, links, totalLinks, linksLimit, linkSkip }) => {
               </span>
             ))}
             <br />
-            <Link href={`/admin/link`}>
+            <Link href={`/user/link/${link._id}`}>
               <span
                 style={{
                   background: "#D1ECF1",
                   color: "#36757F",
                 }}
               >
-                Update
+                <a>Update</a>
               </span>
             </Link>
             <span

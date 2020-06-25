@@ -121,7 +121,7 @@ const Create = ({ token }) => {
           style={{ marginLeft: "0.5rem", marginRight: "0.5rem" }}
           type="radio"
           onChange={handleMediumClick}
-          checked={type === "book"}
+          checked={medium === "book"}
           value="book"
           name="medium"
         />

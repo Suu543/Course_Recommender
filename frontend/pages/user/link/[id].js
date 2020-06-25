@@ -58,9 +58,18 @@ const Update = ({ oldLink, token }) => {
     console.log("categories", categories);
     // console.log("Post to Server");
     // console.table({ title, url, categories, type, medium });
+    // USE UPDATE: Link based on logged in user role
+
+    let dynamicUpdateURL;
+    if (isAuth() && isAuth().role === "admin") {
+      dynamicUpdateURL = `${API}/link/admin/${oldLink._id}`;
+    } else {
+      dynamicUpdateURL = `${API}/link/${oldLink._id}`;
+    }
+
     try {
       await axios.put(
-        `${API}/link/${oldLink._id}`,
+        dynamicUpdateURL,
         {
           title,
           url,

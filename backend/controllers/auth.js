@@ -1,3 +1,4 @@
+const { Link } = require("../models/link");
 const { User } = require("../models/user");
 const jwt = require("jsonwebtoken");
 const AWS = require("aws-sdk");
@@ -275,5 +276,26 @@ exports.resetPassword = (req, res) => {
         }
       }
     );
+  }
+};
+
+exports.canUpdateDeleteLink = async (req, res, next) => {
+  const { id } = req.params;
+
+  try {
+    const data = await Link.findOne({ _id: id });
+    let authorizedUser =
+      data.postedBy._id.toString() === req.user._id.toString();
+
+    if (!authorizedUser)
+      return res.status(400).json({
+        error: "You are not authorized",
+      });
+
+    next();
+  } catch (error) {
+    return res.status(400).json({
+      error: "Could not find link",
+    });
   }
 };
