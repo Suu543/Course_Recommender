@@ -1,6 +1,6 @@
 const { Link } = require("../models/link");
 const { Category } = require("../models/category");
-const slugify = require("slugify");
+const slugify = require("slug");
 const formidable = require("formidable");
 const AWS = require("aws-sdk");
 // For unique key in image

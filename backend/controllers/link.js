@@ -1,5 +1,5 @@
 const { Link } = require("../models/link");
-const slugify = require("slugify");
+const slugify = require("slug");
 
 // create, list, read, update, remove
 
