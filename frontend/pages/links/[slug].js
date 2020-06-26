@@ -187,23 +187,33 @@ const Links = ({
   const [limit, setLimit] = useState(linksLimit);
   const [skip, setSkip] = useState(0);
   const [size, setSize] = useState(totalLinks);
-  const [likes, setLikes] = useState(userLikes);
-
-  useEffect(() => {
-    console.log("likes", userLikes);
-  });
+  const [likes, setLikes] = useState(
+    token !== null && userLikes ? userLikes : ""
+  );
 
   const handleClick = async (linkId) => {
-    const userId = token._id;
-    const response = await axios.put(`${API}/click-count`, { linkId, userId });
-    loadUpdatedLinks();
+    if (token !== null) {
+      const userId = token._id;
+      const response = await axios.put(`${API}/click-count`, {
+        linkId,
+        userId,
+      });
+      loadUpdatedLinks();
+    } else {
+      alert("Please Signin to hit the like button");
+    }
   };
 
   const loadUpdatedLinks = async () => {
-    const userResponse = await axios.post(`${API}/user/likes/${token._id}`);
-    const response = await axios.post(`${API}/category/${query.slug}`);
-    setLikes(userResponse.data.likes);
-    setAllLinks(response.data.links);
+    if (token !== null) {
+      const userResponse = await axios.post(`${API}/user/likes/${token._id}`);
+      const response = await axios.post(`${API}/category/${query.slug}`);
+      setLikes(userResponse.data.likes);
+      setAllLinks(response.data.links);
+    } else {
+      const response = await axios.post(`${API}/category/${query.slug}`);
+      setAllLinks(response.data.links);
+    }
   };
 
   const loadMore = async () => {
@@ -225,7 +235,7 @@ const Links = ({
     allLinks.map((link, index) => (
       <LinkElementContainer key={link._id + index}>
         <LinkElementWrapper>
-          {likes.includes(link._id) ? (
+          {token !== null && likes.includes(link._id) ? (
             <LinkNumOfClickContainer
               style={{ background: "#4daf4e" }}
               onClick={(e) => handleClick(link._id)}
@@ -309,26 +319,45 @@ Links.getInitialProps = async ({ query, req }) => {
   let skip = 0;
   let limit = 2;
 
-  const token = jwt.decode(getCookie("token", req));
+  let token = jwt.decode(getCookie("token", req));
 
   try {
-    const userResponse = await axios.post(`${API}/user/likes/${token._id}`);
-    const response = await axios.post(`${API}/category/${query.slug}`, {
-      skip,
-      limit,
-    });
+    if (token !== null) {
+      const userResponse = await axios.post(`${API}/user/likes/${token._id}`);
+      const response = await axios.post(`${API}/category/${query.slug}`, {
+        skip,
+        limit,
+      });
 
-    // console.log("likes", userResponse.data.likes);
-    return {
-      query,
-      category: response.data.category,
-      links: response.data.links,
-      totalLinks: response.data.links.length,
-      linksLimit: limit,
-      linkSkip: skip,
-      token,
-      userLikes: userResponse.data.likes,
-    };
+      // console.log("likes", userResponse.data.likes);
+      return {
+        query,
+        category: response.data.category,
+        links: response.data.links,
+        totalLinks: response.data.links.length,
+        linksLimit: limit,
+        linkSkip: skip,
+        token,
+        userLikes: userResponse.data.likes,
+      };
+    } else {
+      const response = await axios.post(`${API}/category/${query.slug}`, {
+        skip,
+        limit,
+      });
+
+      // console.log("likes", userResponse.data.likes);
+      return {
+        query,
+        category: response.data.category,
+        links: response.data.links,
+        totalLinks: response.data.links.length,
+        linksLimit: limit,
+        linkSkip: skip,
+        token,
+        userLikes: "",
+      };
+    }
   } catch (error) {
     console.log("error", error);
   }

@@ -1,5 +1,6 @@
 const { Link } = require("../models/link");
 const { User } = require("../models/user");
+const { Category } = require("../models/category");
 const slugify = require("slug");
 
 // create, list, read, update, remove
@@ -152,6 +153,46 @@ const likeChecker = async (linkId, _id) => {
   } catch (error) {
     return res.status(400).json({
       error: "Cannot Find User",
+    });
+  }
+};
+
+exports.popular = async (req, res) => {
+  try {
+    const links = await Link.find({})
+      .populate("postedBy", "name")
+      .populate("categories", "name")
+      .sort({ clicks: -1 })
+      .limit(5);
+
+    res.status(200).json(links);
+  } catch (error) {
+    return res.status(400).json({
+      error: "Links Not Found",
+    });
+  }
+};
+
+exports.popularInCategory = async (req, res) => {
+  const { slug } = req.params;
+
+  try {
+    const category = await Category.findOne({ slug });
+
+    try {
+      const links = await Link.find({ categories: category })
+        .sort({ clicks: -1 })
+        .limit(3);
+
+      res.status(200).json(links);
+    } catch (error) {
+      return res.status(400).json({
+        error: "Links Not Found",
+      });
+    }
+  } catch (error) {
+    return res.status(400).json({
+      error: "Could not load categories",
     });
   }
 };

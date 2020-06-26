@@ -1,20 +1,11 @@
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import axios from "axios";
 import { API } from "../config";
 import styled from "styled-components";
+import moment from "moment";
 
-// import {
-//   Wrapper,
-//   Container,
-//   ContainerHeader,
-//   CategoryContainer,
-//   CategoryCard,
-//   CategorySection,
-//   CategoryImage,
-//   CategoryName,
-// } from "../components/Category/CategoryElements";
-
-const Wrapper = styled.div``;
+const Container = styled.div``;
 
 const Header = styled.h1`
   margin: 1.5rem;
@@ -22,7 +13,7 @@ const Header = styled.h1`
   font-size: 34px;
 `;
 
-const Container = styled.div`
+const Row = styled.div`
   display: grid;
   grid-gap: 7px;
   grid-template-columns: 12fr;
@@ -40,7 +31,23 @@ const Container = styled.div`
   }
 `;
 
-const CategoryCard = styled.div`
+const TrendRow = styled.div`
+  display: grid;
+  grid-gap: 7px;
+  grid-template-columns: 12fr;
+  margin: auto;
+  width: 90%;
+
+  @media all and (min-width: 768px) and (max-width: 1024px) {
+    width: 80%;
+  }
+
+  @media all and (min-width: 1025px) {
+    width: 60%;
+  }
+`;
+
+const Column = styled.div`
   display: flex;
   flex-flow: row wrap;
   align-items: center;
@@ -56,9 +63,19 @@ const CategoryCard = styled.div`
   }
 `;
 
-const CategorySection = styled.div``;
+const Section = styled.div`
+  a {
+    text-decoration: none;
+    color: black;
+  }
 
-const CategoryImage = styled.img`
+  h5 {
+    padding: 1rem;
+    font-size: 1rem;
+  }
+`;
+
+const Image = styled.img`
   cursor: pointer;
   width: 60px;
   height: 60px;
@@ -66,33 +83,153 @@ const CategoryImage = styled.img`
   margin: 0px 15px 0px 15px;
 `;
 
-const CategoryName = styled.h3`
+const SectionTitle = styled.h3`
   cursor: pointer;
 `;
 
+const TrendSection = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 11fr;
+`;
+
+const TrendLinkClicks = styled.div`
+  align-self: center;
+  justify-self: center;
+  width: 84px;
+  height: 88px;
+  background: #f5f5f5;
+  margin-left: 30px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  :hover,
+  :active {
+    background: #e6dbdb;
+    color: #ffffff;
+  }
+`;
+
+const TrendNumOfClicks = styled.div`
+  color: #464646;
+
+  i {
+    color: #808080;
+    font-size: 20px;
+  }
+`;
+
+const TrendDetailsWrapper = styled.div`
+  display: flex;
+  flex-flow: column wrap;
+  margin-left: 30px;
+`;
+
+const TrendTitle = styled.div`
+  a {
+    text-decoration: none;
+  }
+
+  span {
+    color: #464646;
+    font-size: 18px;
+    font-weight: 500;
+  }
+`;
+
+const TrendSubmitter = styled.div`
+  margin-bottom: 9px;
+  span {
+    font-size: 15px;
+    color: #7b7b7b;
+  }
+`;
+
+const TrendDetails = styled.div`
+  span {
+    margin-right: 10px;
+    border-radius: 5px;
+    height: 3px;
+    color: #007aff;
+    background: #eef4fa;
+    padding: 4px 8px;
+    font-size: 11px;
+    font-weight: bold;
+  }
+`;
+
 const Home = ({ categories }) => {
+  const [popular, setPopular] = useState([]);
+
+  useEffect(() => {
+    loadPopular();
+  }, []);
+
+  const loadPopular = async () => {
+    const response = await axios.get(`${API}/link/popular`);
+    setPopular(response.data);
+  };
+
+  const listOfLinks = () =>
+    popular.map((link, index) => (
+      <Column key={index}>
+        <TrendSection>
+          <TrendLinkClicks>
+            <TrendNumOfClicks>
+              <i className="fa fa-caret-up"></i>
+            </TrendNumOfClicks>
+            <TrendNumOfClicks>{link.clicks}</TrendNumOfClicks>
+          </TrendLinkClicks>
+          <TrendDetailsWrapper>
+            <TrendTitle>
+              <a href={link.url} target="_blank">
+                <span>{link.title}</span>
+              </a>
+            </TrendTitle>
+            <TrendSubmitter>
+              <span>
+                {moment(link.createdAt).fromNow()} Submitted By{" "}
+                {link.postedBy.name}
+              </span>
+            </TrendSubmitter>
+            <TrendDetails>
+              <span>{link.type}</span>
+              <span>{link.medium}</span>
+              {link.categories.map((category, index) => (
+                <span key={index}>{category.name}</span>
+              ))}
+            </TrendDetails>
+          </TrendDetailsWrapper>
+        </TrendSection>
+      </Column>
+    ));
+
   const listCategories = () =>
     categories.map((category, index) => (
       <Link key={category._id} href={`/links/${category.slug}`}>
-        <CategoryCard>
-          <CategorySection>
-            <CategoryImage
+        <Column>
+          <Section>
+            <Image
               src={category.image && category.image.url}
               alt={category.name}
             />
-          </CategorySection>
-          <CategorySection>
-            <CategoryName>{category.name}</CategoryName>
-          </CategorySection>
-        </CategoryCard>
+          </Section>
+          <Section>
+            <SectionTitle>{category.name}</SectionTitle>
+          </Section>
+        </Column>
       </Link>
     ));
 
   return (
-    <Wrapper>
+    <Container>
       <Header>Programming Tutorials / Courses</Header>
-      <Container>{listCategories()}</Container>
-    </Wrapper>
+      <Row>{listCategories()}</Row>
+      <Header>Trending- Top 5 Links</Header>
+      <TrendRow>{listOfLinks()}</TrendRow>
+    </Container>
   );
 };
 

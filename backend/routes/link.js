@@ -23,9 +23,13 @@ const {
   update,
   remove,
   clickCount,
+  popular,
+  popularInCategory,
 } = require("../controllers/link");
 
 // routes
+router.get("/link/popular", popular);
+router.get("/link/popular/:slug", popularInCategory);
 router.post(
   "/link",
   validate(linkCreateValidator),

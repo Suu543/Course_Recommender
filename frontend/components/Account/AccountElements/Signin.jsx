@@ -82,6 +82,10 @@ const Signin = ({ setUserInfo, over, setOver, open, setOpen }) => {
         error: error.response.data.error,
       });
     }
+
+    setTimeout(() => {
+      window.location.reload(false);
+    }, 100);
   };
 
   return (
