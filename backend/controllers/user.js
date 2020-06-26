@@ -1,5 +1,6 @@
 const { User } = require("../models/user");
 const { Link } = require("../models/link");
+const bcrypt = require("bcryptjs");
 
 exports.read = async (req, res) => {
   console.log("User - read");
@@ -51,24 +52,35 @@ exports.likes = async (req, res) => {
 
 exports.update = async (req, res) => {
   const { name, password } = req.body;
+  let updated;
 
-  switch (true) {
-    case password && password.length < 6:
+  try {
+    if (password.length === 0) {
+      updated = await User.findOneAndUpdate(
+        { _id: req.user._id },
+        { name },
+        { new: true }
+      );
+    } else if (password.length > 0 && password.length < 6) {
       return res
         .status(400)
         .json({ error: "Password must be at least 6 characters long..." });
-      break;
-  }
-
-  try {
-    const updated = await User.findOneAndUpdate(
-      { _id: req.user._id },
-      { name, password },
-      { new: true }
-    );
-
+    } else if (password.length > 6) {
+      const salt = await bcrypt.genSalt(10);
+      const hashed_password = await bcrypt.hash(password, salt);
+      // console.log("salt", salt);
+      // console.log("hashed-password", hashed_password);
+      updated = await User.findOneAndUpdate(
+        { _id: req.user._id },
+        { name, salt, hashed_password },
+        { new: true }
+      );
+    }
+    // console.log("updated", updated);
     updated.hashed_password = undefined;
     updated.salt = undefined;
+
+    console.log("User Profile Updated...");
     return res.status(200).json(updated);
   } catch (error) {
     return res.status(400).json({
