@@ -85,7 +85,7 @@ const Signin = ({ setUserInfo, over, setOver, open, setOpen }) => {
 
     setTimeout(() => {
       window.location.reload(false);
-    }, 100);
+    }, 0);
   };
 
   return (

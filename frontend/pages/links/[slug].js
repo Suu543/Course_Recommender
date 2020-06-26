@@ -3,8 +3,9 @@ import axios from "axios";
 import Link from "next/link";
 import jwt from "jsonwebtoken";
 import { getCookie } from "../../helpers/auth";
-import { API } from "../../config";
+import { API, APP_NAME } from "../../config";
 import moment from "moment";
+import Head from "next/head";
 import renderHTML from "react-render-html";
 import styled from "styled-components";
 import InfiniteScroll from "react-infinite-scroller";
@@ -191,6 +192,24 @@ const Links = ({
     token !== null && userLikes ? userLikes : ""
   );
 
+  const stripHTML = (data) => data.replace(/<\/?[^>]+(>|$)/g, "");
+
+  const head = () => (
+    <Head>
+      <title>
+        {category.name} | {APP_NAME}
+      </title>
+      <meta
+        name="description"
+        content={stripHTML(category.content.substring(0, 160))}
+      />
+      <meta property="og:title" content={category.name} />
+      <meta property="og:description" content={stripHTML(category.content)} />
+      <meta property="og:image" content={category.image.url} />
+      <meta property="og:image:secure_url" content={category.image.url} />
+    </Head>
+  );
+
   const handleClick = async (linkId) => {
     if (token !== null) {
       const userId = token._id;
@@ -281,37 +300,40 @@ const Links = ({
     ));
 
   return (
-    <Wrapper>
-      <HeaderContainer>
-        <HeaderInnerContainer>
-          <Image src={category.image.url} alt={category.name} />
-          <HeaderNestedContainer>
-            <Title>{category.name} - URL/LINKS</Title>
-            <Content>{renderHTML(category.content || "")}</Content>
-          </HeaderNestedContainer>
-        </HeaderInnerContainer>
-      </HeaderContainer>
-      <GridContainer>
-        <LinkElementsContainer>
-          <LinkElementHeader>
-            <LinkParagraph>{category.name} Tutorials</LinkParagraph>
-          </LinkElementHeader>
-          <Loading>
-            <InfiniteScroll
-              pageStart={0}
-              loadMore={loadMore}
-              hasMore={size > 0 && size >= limit}
-              loader={
-                <img key={1} src="/static/images/loading.gif" alt="loading" />
-              }
-            >
-              <LinkElementContent>{listOfLinks()}</LinkElementContent>
-            </InfiniteScroll>
-          </Loading>
-        </LinkElementsContainer>
-        <div>Most Popular In {category.name}</div>
-      </GridContainer>
-    </Wrapper>
+    <React.Fragment>
+      {head()}
+      <Wrapper>
+        <HeaderContainer>
+          <HeaderInnerContainer>
+            <Image src={category.image.url} alt={category.name} />
+            <HeaderNestedContainer>
+              <Title>{category.name} - URL/LINKS</Title>
+              <Content>{renderHTML(category.content || "")}</Content>
+            </HeaderNestedContainer>
+          </HeaderInnerContainer>
+        </HeaderContainer>
+        <GridContainer>
+          <LinkElementsContainer>
+            <LinkElementHeader>
+              <LinkParagraph>{category.name} Tutorials</LinkParagraph>
+            </LinkElementHeader>
+            <Loading>
+              <InfiniteScroll
+                pageStart={0}
+                loadMore={loadMore}
+                hasMore={size > 0 && size >= limit}
+                loader={
+                  <img key={1} src="/static/images/loading.gif" alt="loading" />
+                }
+              >
+                <LinkElementContent>{listOfLinks()}</LinkElementContent>
+              </InfiniteScroll>
+            </Loading>
+          </LinkElementsContainer>
+          <div>Most Popular In {category.name}</div>
+        </GridContainer>
+      </Wrapper>
+    </React.Fragment>
   );
 };
 
