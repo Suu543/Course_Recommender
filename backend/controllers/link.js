@@ -181,10 +181,13 @@ exports.popularInCategory = async (req, res) => {
 
     try {
       const links = await Link.find({ categories: category })
-        .sort({ clicks: -1 })
-        .limit(3);
+        .populate("postedBy", "name")
+        .populate("categories", "name")
+        .sort({ clicks: -1 });
 
-      res.status(200).json(links);
+      res.status(200).json({
+        links: links,
+      });
     } catch (error) {
       return res.status(400).json({
         error: "Links Not Found",

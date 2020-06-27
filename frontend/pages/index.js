@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import axios from "axios";
+import jwt from "jsonwebtoken";
 import { API } from "../config";
 import styled from "styled-components";
 import moment from "moment";
+import { getCookie } from "../helpers/auth";
 
 const Container = styled.div``;
 
@@ -160,28 +162,64 @@ const TrendDetails = styled.div`
   }
 `;
 
-const Home = ({ categories }) => {
+const Home = ({ categories, userLikes, token }) => {
   const [popular, setPopular] = useState([]);
+  const [likes, setLikes] = useState(
+    token !== null && userLikes ? userLikes : ""
+  );
 
   useEffect(() => {
     loadPopular();
   }, []);
 
+  const handleClick = async (linkId) => {
+    if (token !== null) {
+      const userId = token._id;
+      const response = await axios.put(`${API}/click-count`, {
+        linkId,
+        userId,
+      });
+
+      loadPopular();
+    } else {
+      alert("Please Signin to hit the like button");
+    }
+  };
+
   const loadPopular = async () => {
-    const response = await axios.get(`${API}/link/popular`);
-    setPopular(response.data);
+    if (token !== null) {
+      const userResponse = await axios.post(`${API}/user/likes/${token._id}`);
+      const response = await axios.get(`${API}/link/popular`);
+      setLikes(userResponse.data.likes);
+      setPopular(response.data);
+    } else {
+      const response = await axios.get(`${API}/link/popular`);
+      setPopular(response.data);
+    }
   };
 
   const listOfLinks = () =>
     popular.map((link, index) => (
       <Column key={index}>
         <TrendSection>
-          <TrendLinkClicks>
-            <TrendNumOfClicks>
-              <i className="fa fa-caret-up"></i>
-            </TrendNumOfClicks>
-            <TrendNumOfClicks>{link.clicks}</TrendNumOfClicks>
-          </TrendLinkClicks>
+          {token !== null && likes.includes(link._id) ? (
+            <TrendLinkClicks
+              style={{ background: "#4daf4e" }}
+              onClick={(e) => handleClick(link._id)}
+            >
+              <TrendNumOfClicks>
+                <i className="fa fa-caret-up" style={{ color: "#FFFFFF" }} />
+              </TrendNumOfClicks>
+              <TrendNumOfClicks>{link.clicks}</TrendNumOfClicks>
+            </TrendLinkClicks>
+          ) : (
+            <TrendLinkClicks onClick={(e) => handleClick(link._id)}>
+              <TrendNumOfClicks>
+                <i className="fa fa-caret-up"></i>
+              </TrendNumOfClicks>
+              <TrendNumOfClicks>{link.clicks}</TrendNumOfClicks>
+            </TrendLinkClicks>
+          )}
           <TrendDetailsWrapper>
             <TrendTitle>
               <a href={link.url} target="_blank">
@@ -233,12 +271,37 @@ const Home = ({ categories }) => {
   );
 };
 
-Home.getInitialProps = async () => {
-  const response = await axios.get(`${API}/categories`);
+Home.getInitialProps = async ({ req }) => {
+  let token = jwt.decode(getCookie("token", req));
 
-  return {
-    categories: response.data,
-  };
+  if (token !== null) {
+    try {
+      const userResponse = await axios.post(`${API}/user/likes/${token._id}`);
+      const response = await axios.get(`${API}/categories`);
+
+      // console.log("response", response);
+      return {
+        categories: response.data,
+        userLikes: userResponse.data.likes,
+        token,
+      };
+    } catch (error) {
+      console.log("error", error);
+    }
+  } else {
+    try {
+      const response = await axios.get(`${API}/categories`);
+
+      // console.log("response", response);
+      return {
+        categories: response.data,
+        userLikes: "",
+        token,
+      };
+    } catch (error) {
+      console.log("error", error);
+    }
+  }
 };
 
 export default Home;

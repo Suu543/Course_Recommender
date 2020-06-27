@@ -70,12 +70,27 @@ const LinkElementsContainer = styled.div`
 `;
 
 const LinkElementHeader = styled.div`
+  display: grid;
+  grid-template-columns: 5fr 1fr;
   border: 1px solid #eee;
   padding: 0.3rem;
   background: #ffffff;
   padding: 1rem;
-  font-size: 1rem;
+  font-size: 1.5rem;
   font-weight: bold;
+`;
+
+const LinkSort = styled.div`
+  display: flex;
+  flex-flow: row;
+
+  button {
+    border: none;
+    font-size: 13px;
+    margin-left: 10px;
+    background: white;
+    outline: none;
+  }
 `;
 
 const LinkParagraph = styled.p`
@@ -191,6 +206,7 @@ const Links = ({
   const [likes, setLikes] = useState(
     token !== null && userLikes ? userLikes : ""
   );
+  const [sort, setSort] = useState(false);
 
   const stripHTML = (data) => data.replace(/<\/?[^>]+(>|$)/g, "");
 
@@ -235,6 +251,19 @@ const Links = ({
     }
   };
 
+  const loadPopularLinks = async () => {
+    const response = await axios.get(`${API}/link/popular/${query.slug}`);
+    console.log("response", response.data.links);
+    setSort(true);
+    setAllLinks(response.data.links);
+  };
+
+  const loadRecentLinks = async () => {
+    const response = await axios.post(`${API}/category/${query.slug}`);
+    setSort(false);
+    setAllLinks(response.data.links);
+  };
+
   const loadMore = async () => {
     let toSkip = skip + limit;
     console.log("toSkip", toSkip);
@@ -249,7 +278,6 @@ const Links = ({
     setSkip(toSkip);
   };
 
-  // 5개가 있음면 5, 4, 3 - 2, 1,
   const listOfLinks = () =>
     allLinks.map((link, index) => (
       <LinkElementContainer key={link._id + index}>
@@ -316,6 +344,45 @@ const Links = ({
           <LinkElementsContainer>
             <LinkElementHeader>
               <LinkParagraph>{category.name} Tutorials</LinkParagraph>
+              {sort ? (
+                <LinkSort>
+                  <button
+                    style={{ color: "black" }}
+                    onClick={() => loadPopularLinks()}
+                  >
+                    <span>
+                      <i className="fas fa-arrow-up" />
+                      Upvote
+                    </span>
+                  </button>
+                  <button
+                    style={{ color: "#AEA6BA" }}
+                    onClick={() => loadRecentLinks()}
+                  >
+                    <i className="fas fa-arrow-up" />
+                    <span>Recent</span>
+                  </button>
+                </LinkSort>
+              ) : (
+                <LinkSort>
+                  <button
+                    style={{ color: "#AEA6BA" }}
+                    onClick={() => loadPopularLinks()}
+                  >
+                    <span>
+                      <i className="fas fa-arrow-up" />
+                      Upvote
+                    </span>
+                  </button>
+                  <button
+                    style={{ color: "black" }}
+                    onClick={() => loadRecentLinks()}
+                  >
+                    <i className="fas fa-arrow-up" />
+                    <span>Recent</span>
+                  </button>
+                </LinkSort>
+              )}
             </LinkElementHeader>
             <Loading>
               <InfiniteScroll
