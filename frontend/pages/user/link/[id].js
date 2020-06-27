@@ -3,18 +3,91 @@ import axios from "axios";
 import withUser from "../../withUser";
 import { getCookie, isAuth } from "../../../helpers/auth";
 import { API } from "../../../config";
-import {
-  Container,
-  LinkHeader,
-  LinkContainer,
-  ElementContainer,
-  LinkLabel,
-  LinkForm,
-  LinkInput,
-  LinkSubmit,
-  SuccessAlert,
-  ErrorAlert,
-} from "../../../components/Link/LinkElements";
+import styled from "styled-components";
+
+const Container = styled.div`
+  width: 90%;
+  margin: auto;
+`;
+
+const Header = styled.h1`
+  padding: 1rem;
+`;
+
+const Row = styled.div`
+  display: grid;
+  grid-template-columns: 3fr 1fr 8fr;
+`;
+
+const Column = styled.div`
+  display: flex;
+  flex-flow: column nowrap;
+`;
+
+const Form = styled.form``;
+
+const FormLabel = styled.label`
+  width: 90%;
+  display: block;
+  margin-left: 3rem;
+  margin-bottom: 1rem;
+  font-size: 20px;
+`;
+
+const Input = styled.input`
+  width: 90%;
+  margin: auto;
+  margin-bottom: 3rem;
+  border: 3px solid orange;
+  border-radius: 15px;
+  display: block;
+  padding: 1rem;
+
+  :focus {
+    outline: none;
+  }
+`;
+
+const Submit = styled.button`
+  width: 90%;
+  margin: auto;
+  padding: 1rem;
+  display: block;
+  border: 3px solid orange;
+  border-radius: 15px;
+  background: white;
+  color: orange;
+  font-size: 1rem;
+
+  :hover {
+    background: orange;
+    color: white;
+  }
+
+  :focus {
+    outline: none;
+  }
+`;
+
+const SuccessAlert = styled.div`
+  border-radius: 15px;
+  width: 100%;
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background: #cce5ff;
+  color: #5f8dbe;
+`;
+
+const ErrorAlert = styled.div`
+  width: 100%;
+  margin-bottom: 2rem;
+  border-radius: 15px;
+  padding: 1rem;
+  background: #f8d7da;
+  color: #975057;
+`;
+
+const Wrapper = styled.div``;
 
 const Update = ({ oldLink, token }) => {
   const [state, setState] = useState({
@@ -109,7 +182,7 @@ const Update = ({ oldLink, token }) => {
 
   const showMedium = () => (
     <React.Fragment>
-      <div>
+      <Wrapper>
         <input
           style={{ marginLeft: "0.5rem", marginRight: "0.5rem" }}
           type="radio"
@@ -119,8 +192,8 @@ const Update = ({ oldLink, token }) => {
           name="medium"
         />
         <label>Video</label>
-      </div>
-      <div>
+      </Wrapper>
+      <Wrapper>
         <input
           style={{ marginLeft: "0.5rem", marginRight: "0.5rem" }}
           type="radio"
@@ -130,13 +203,13 @@ const Update = ({ oldLink, token }) => {
           name="medium"
         />
         <label>Book</label>
-      </div>
+      </Wrapper>
     </React.Fragment>
   );
 
   const showTypes = () => (
     <React.Fragment>
-      <div>
+      <Wrapper>
         <input
           style={{ marginLeft: "0.5rem", marginRight: "0.5rem" }}
           type="radio"
@@ -146,8 +219,8 @@ const Update = ({ oldLink, token }) => {
           name="type"
         />
         <label>Free</label>
-      </div>
-      <div>
+      </Wrapper>
+      <Wrapper>
         <input
           style={{ marginLeft: "0.5rem", marginRight: "0.5rem" }}
           type="radio"
@@ -157,7 +230,7 @@ const Update = ({ oldLink, token }) => {
           name="type"
         />
         <label>paid</label>
-      </div>
+      </Wrapper>
     </React.Fragment>
   );
 
@@ -196,49 +269,49 @@ const Update = ({ oldLink, token }) => {
 
   return (
     <Container>
-      <LinkHeader>Update Link/URL</LinkHeader>
-      <LinkContainer>
-        <ElementContainer>
-          <div>
-            <LinkLabel>Category</LinkLabel>
+      <Header>Update Link/URL</Header>
+      <Row>
+        <Column>
+          <Wrapper>
+            <FormLabel>Category</FormLabel>
             <ul style={{ maxHeight: "100px", overflowY: "scroll" }}>
               {showCategories()}
             </ul>
-          </div>
-          <div style={{ marginTop: "1rem" }}>
-            <LinkLabel>Type</LinkLabel>
+          </Wrapper>
+          <Wrapper style={{ marginTop: "1rem" }}>
+            <FormLabel>Type</FormLabel>
             {showTypes()}
-          </div>
-          <div style={{ marginTop: "1rem" }}>
-            <LinkLabel>Mediun</LinkLabel>
+          </Wrapper>
+          <Wrapper style={{ marginTop: "1rem" }}>
+            <FormLabel>Mediun</FormLabel>
             {showMedium()}
-          </div>
-        </ElementContainer>
-        <ElementContainer />
-        <ElementContainer>
-          <LinkForm onSubmit={handleSubmit}>
+          </Wrapper>
+        </Column>
+        <Column />
+        <Column>
+          <Form onSubmit={handleSubmit}>
             {success && <SuccessAlert>{success}</SuccessAlert>}
             {error && <ErrorAlert>{error}</ErrorAlert>}
-            <LinkLabel>Title</LinkLabel>
-            <LinkInput
+            <FormLabel>Title</FormLabel>
+            <Input
               type="text"
               onChange={handleTitleChange}
               value={title}
               placeholder="Type Link Title..."
             />
-            <LinkLabel>URL</LinkLabel>
-            <LinkInput
+            <FormLabel>URL</FormLabel>
+            <Input
               type="url"
               onChange={handleURLChange}
               value={url}
               placeholder="Type URL..."
             />
-            <LinkSubmit disabled={!token} type="submit">
+            <Submit disabled={!token} type="submit">
               {isAuth() || token ? "Update" : "Login to post"}
-            </LinkSubmit>
-          </LinkForm>
-        </ElementContainer>
-      </LinkContainer>
+            </Submit>
+          </Form>
+        </Column>
+      </Row>
     </Container>
   );
 };

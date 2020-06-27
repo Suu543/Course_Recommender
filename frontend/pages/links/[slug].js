@@ -10,7 +10,7 @@ import renderHTML from "react-render-html";
 import styled from "styled-components";
 import InfiniteScroll from "react-infinite-scroller";
 
-const Wrapper = styled.div`
+const Container = styled.div`
   width: 80%;
   margin: auto;
 `;
@@ -26,7 +26,7 @@ const Image = styled.img`
   height: 100px;
 `;
 
-const HeaderContainer = styled.div`
+const RowHeader = styled.div`
   display: grid;
   grid-template-columns: 8fr 4fr;
   margin-top: 2rem;
@@ -38,12 +38,12 @@ const HeaderContainer = styled.div`
   }
 `;
 
-const HeaderInnerContainer = styled.div`
+const ColumnHeader = styled.div`
   display: flex;
   flex-flow: row;
 `;
 
-const HeaderNestedContainer = styled.div`
+const ColumnHeaderContent = styled.div`
   display: flex;
   flex-flow: column wrap;
 `;
@@ -54,7 +54,7 @@ const Content = styled.div`
   margin-top: 4px;
 `;
 
-const GridContainer = styled.div`
+const RowBody = styled.div`
   display: grid;
   grid-gap: 10px;
   grid-template-columns: 9fr 3fr;
@@ -64,12 +64,12 @@ const GridContainer = styled.div`
   }
 `;
 
-const LinkElementsContainer = styled.div`
+const LeftColumn = styled.div`
   display: flex;
   flex-flow: column;
 `;
 
-const LinkElementHeader = styled.div`
+const LeftColumnBodyHeader = styled.div`
   display: grid;
   grid-template-columns: 5fr 1fr;
   border: 1px solid #eee;
@@ -80,7 +80,7 @@ const LinkElementHeader = styled.div`
   font-weight: bold;
 `;
 
-const LinkSort = styled.div`
+const ColumnBodySort = styled.div`
   display: flex;
   flex-flow: row;
 
@@ -93,12 +93,12 @@ const LinkSort = styled.div`
   }
 `;
 
-const LinkParagraph = styled.p`
+const LeftColumnBodyParagraph = styled.p`
   color: #383838;
   padding: 0 0 0 20px;
 `;
 
-const LinkElementContent = styled.div`
+const LinkContainer = styled.div`
   max-height: 50vh;
   overflow-y: scroll;
   ::-webkit-scrollbar {
@@ -106,18 +106,18 @@ const LinkElementContent = styled.div`
   }
 `;
 
-const LinkElementContainer = styled.div`
+const LinkRow = styled.div`
   border: 1px solid #eee;
   padding: 1rem;
   background: #ffffff;
 `;
 
-const LinkElementWrapper = styled.div`
+const LinkColumn = styled.div`
   display: grid;
   grid-template-columns: 1fr 6fr;
 `;
 
-const LinkNumOfClickContainer = styled.div`
+const LinkNumberOfClicksWrapper = styled.div`
   align-self: center;
   justify-self: center;
   width: 62px;
@@ -136,7 +136,7 @@ const LinkNumOfClickContainer = styled.div`
   }
 `;
 
-const LinkNumberOfClicked = styled.span`
+const LinkNumberOfClicks = styled.span`
   color: #464646;
 
   i {
@@ -183,11 +183,29 @@ const LinkDetails = styled.div`
   }
 `;
 
-const Loading = styled.div`
+const LeftColumnBodyContent = styled.div`
   img {
     background-color: #fafafa;
   }
 `;
+
+const RightColumn = styled.div`
+  display: flex;
+  flex-flow: column wrap;
+  max-height: 60vh;
+  background: #f4f7fb;
+  border: 1px solid #007aff;
+  border-radius: 5px;
+`;
+
+const RightColumnHeader = styled.h4`
+  padding: 1rem;
+  font-size: 14px;
+  color: #383838;
+  border-bottom: 1px solid #007aff;
+`;
+
+const RightColumnWrapper = styled.div``;
 
 const Links = ({
   query,
@@ -280,27 +298,27 @@ const Links = ({
 
   const listOfLinks = () =>
     allLinks.map((link, index) => (
-      <LinkElementContainer key={link._id + index}>
-        <LinkElementWrapper>
+      <LinkRow key={link._id + index}>
+        <LinkColumn>
           {token !== null && likes.includes(link._id) ? (
-            <LinkNumOfClickContainer
+            <LinkNumberOfClicksWrapper
               style={{ background: "#4daf4e" }}
               onClick={(e) => handleClick(link._id)}
             >
-              <LinkNumberOfClicked>
+              <LinkNumberOfClicks>
                 <i className="fa fa-caret-up" style={{ color: "#FFFFFF" }} />
-              </LinkNumberOfClicked>
-              <LinkNumberOfClicked style={{ color: "#FFFFFF" }}>
+              </LinkNumberOfClicks>
+              <LinkNumberOfClicks style={{ color: "#FFFFFF" }}>
                 {link.clicks}
-              </LinkNumberOfClicked>
-            </LinkNumOfClickContainer>
+              </LinkNumberOfClicks>
+            </LinkNumberOfClicksWrapper>
           ) : (
-            <LinkNumOfClickContainer onClick={(e) => handleClick(link._id)}>
-              <LinkNumberOfClicked>
+            <LinkNumberOfClicksWrapper onClick={(e) => handleClick(link._id)}>
+              <LinkNumberOfClicks>
                 <i className="fa fa-caret-up"></i>
-              </LinkNumberOfClicked>
-              <LinkNumberOfClicked>{link.clicks}</LinkNumberOfClicked>
-            </LinkNumOfClickContainer>
+              </LinkNumberOfClicks>
+              <LinkNumberOfClicks>{link.clicks}</LinkNumberOfClicks>
+            </LinkNumberOfClicksWrapper>
           )}
 
           <LinkDetailsWrapper>
@@ -323,29 +341,31 @@ const Links = ({
               ))}
             </LinkDetails>
           </LinkDetailsWrapper>
-        </LinkElementWrapper>
-      </LinkElementContainer>
+        </LinkColumn>
+      </LinkRow>
     ));
 
   return (
     <React.Fragment>
       {head()}
-      <Wrapper>
-        <HeaderContainer>
-          <HeaderInnerContainer>
+      <Container>
+        <RowHeader>
+          <ColumnHeader>
             <Image src={category.image.url} alt={category.name} />
-            <HeaderNestedContainer>
+            <ColumnHeaderContent>
               <Title>{category.name} - URL/LINKS</Title>
               <Content>{renderHTML(category.content || "")}</Content>
-            </HeaderNestedContainer>
-          </HeaderInnerContainer>
-        </HeaderContainer>
-        <GridContainer>
-          <LinkElementsContainer>
-            <LinkElementHeader>
-              <LinkParagraph>{category.name} Tutorials</LinkParagraph>
+            </ColumnHeaderContent>
+          </ColumnHeader>
+        </RowHeader>
+        <RowBody>
+          <LeftColumn>
+            <LeftColumnBodyHeader>
+              <LeftColumnBodyParagraph>
+                {category.name} Tutorials
+              </LeftColumnBodyParagraph>
               {sort ? (
-                <LinkSort>
+                <ColumnBodySort>
                   <button
                     style={{ color: "black" }}
                     onClick={() => loadPopularLinks()}
@@ -362,9 +382,9 @@ const Links = ({
                     <i className="fas fa-arrow-up" />
                     <span>Recent</span>
                   </button>
-                </LinkSort>
+                </ColumnBodySort>
               ) : (
-                <LinkSort>
+                <ColumnBodySort>
                   <button
                     style={{ color: "#AEA6BA" }}
                     onClick={() => loadPopularLinks()}
@@ -381,10 +401,10 @@ const Links = ({
                     <i className="fas fa-arrow-up" />
                     <span>Recent</span>
                   </button>
-                </LinkSort>
+                </ColumnBodySort>
               )}
-            </LinkElementHeader>
-            <Loading>
+            </LeftColumnBodyHeader>
+            <LeftColumnBodyContent>
               <InfiniteScroll
                 pageStart={0}
                 loadMore={loadMore}
@@ -393,13 +413,19 @@ const Links = ({
                   <img key={1} src="/static/images/loading.gif" alt="loading" />
                 }
               >
-                <LinkElementContent>{listOfLinks()}</LinkElementContent>
+                <LinkContainer>{listOfLinks()}</LinkContainer>
               </InfiniteScroll>
-            </Loading>
-          </LinkElementsContainer>
-          <div>Most Popular In {category.name}</div>
-        </GridContainer>
-      </Wrapper>
+            </LeftColumnBodyContent>
+          </LeftColumn>
+          <RightColumn>
+            <RightColumnWrapper>
+              <RightColumnHeader>Filter Courses</RightColumnHeader>
+            </RightColumnWrapper>
+            <RightColumnWrapper></RightColumnWrapper>
+            <div></div>
+          </RightColumn>
+        </RowBody>
+      </Container>
     </React.Fragment>
   );
 };

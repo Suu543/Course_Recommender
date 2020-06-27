@@ -5,7 +5,7 @@ import Link from "next/link";
 import withAdmin from "../../withAdmin";
 import styled from "styled-components";
 
-const Wrapper = styled.div``;
+const Container = styled.div``;
 
 const Header = styled.h1`
   margin: 1.5rem;
@@ -13,7 +13,7 @@ const Header = styled.h1`
   font-size: 34px;
 `;
 
-const Container = styled.div`
+const Row = styled.div`
   display: grid;
   grid-gap: 7px;
   grid-template-columns: 12fr;
@@ -31,7 +31,7 @@ const Container = styled.div`
   }
 `;
 
-const CategoryCard = styled.div`
+const Column = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr 4fr;
   align-items: center;
@@ -47,9 +47,9 @@ const CategoryCard = styled.div`
   }
 `;
 
-const CategorySection = styled.div``;
+const Content = styled.div``;
 
-const CategoryFuncs = styled.div`
+const ButtonWrapper = styled.div`
   display: flex;
   flex-flow: column wrap;
   justify-self: end;
@@ -80,7 +80,7 @@ const CategoryFuncs = styled.div`
   }
 `;
 
-const CategoryImage = styled.img`
+const Image = styled.img`
   cursor: pointer;
   width: 70px;
   height: 70px;
@@ -88,7 +88,7 @@ const CategoryImage = styled.img`
   margin: 0px 15px 0px 15px;
 `;
 
-const CategoryName = styled.h3`
+const Name = styled.h3`
   cursor: pointer;
 `;
 
@@ -136,21 +136,21 @@ const Read = ({ user, token }) => {
 
   const listCategories = () =>
     categories.map((category, index) => (
-      <CategoryCard key={category._id}>
-        <CategorySection>
+      <Column key={category._id}>
+        <Content>
           <Link href={`/links/${category.slug}`}>
-            <CategoryImage
+            <Image
               src={category.image && category.image.url}
               alt={category.name}
             />
           </Link>
-        </CategorySection>
-        <CategorySection>
+        </Content>
+        <Content>
           <Link href={`/links/${category.slug}`}>
-            <CategoryName>{category.name}</CategoryName>
+            <Name>{category.name}</Name>
           </Link>
-        </CategorySection>
-        <CategoryFuncs>
+        </Content>
+        <ButtonWrapper>
           <span style={{ background: "#1781EB" }}>
             <Link href={`/admin/category/${category.slug}`}>
               <button>Update</button>
@@ -161,15 +161,15 @@ const Read = ({ user, token }) => {
               Delete
             </button>
           </span>
-        </CategoryFuncs>
-      </CategoryCard>
+        </ButtonWrapper>
+      </Column>
     ));
 
   return (
-    <Wrapper>
+    <Container>
       <Header>All Categories</Header>
-      <Container>{listCategories()}</Container>
-    </Wrapper>
+      <Row>{listCategories()}</Row>
+    </Container>
   );
 };
 

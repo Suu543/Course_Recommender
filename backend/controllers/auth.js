@@ -64,7 +64,7 @@ exports.register = async (req, res) => {
 exports.activateRegistration = (req, res) => {
   console.log("Auth - ActivateRegistration");
   const { token } = req.body;
-  // console.log(token);
+  
   jwt.verify(token, process.env.JWT_ACCOUNT_ACTIVATION, async function (
     err,
     decoded

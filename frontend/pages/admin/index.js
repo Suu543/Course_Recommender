@@ -1,15 +1,52 @@
 import { useEffect, useState } from "react";
 import withAdmin from "../withAdmin";
 import Link from "next/link";
+import styled from "styled-components";
 
-import {
-  Wrapper,
-  DashboardWrapper,
-  DashboardContentWrapper,
-  DashboardContent,
-} from "../../components/Dashboard/DashboardWrapper/DashboardWrapper";
+const Container = styled.div`
+  width: 90%;
+  height: 90vh;
+  margin: auto;
+  margin-top: 2rem;
+`;
 
-import { DashboardBoard } from "../../components/Dashboard/DashboardElements/Board";
+const Heading = styled.h1``;
+
+const Row = styled.div`
+  display: grid;
+  grid-gap: 1rem;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+
+  @media screen and (max-width: 992px) {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  @media screen and (max-width: 600px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+const Column = styled.div`
+  height: 20vh;
+  border-radius: 15px;
+`;
+
+const RowContent = styled.div`
+  display: flex;
+  flex-flow: column wrap;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+`;
+
+const ColumnContent = styled.div`
+  a {
+    color: black;
+    display: block;
+    text-decoration: none;
+  }
+`;
 
 const Admin = ({ user }) => {
   const [data, setData] = useState({
@@ -31,53 +68,53 @@ const Admin = ({ user }) => {
   }, []);
 
   return (
-    <Wrapper>
-      <h1 style={{ marginBottom: "2rem" }}>Admin Dashboard</h1>
-      <DashboardWrapper>
-        <DashboardBoard style={{ background: " #2298F1" }}>
-          <DashboardContentWrapper>
-            <DashboardContent>
-              <h1>
+    <Container>
+      <Heading style={{ marginBottom: "2rem" }}>Admin Dashboard</Heading>
+      <Row>
+        <Column style={{ background: " #2298F1" }}>
+          <RowContent>
+            <ColumnContent>
+              <Heading>
                 <a href="/admin/category/create">Create Category</a>
-              </h1>
-            </DashboardContent>
-          </DashboardContentWrapper>
-        </DashboardBoard>
-        <DashboardBoard style={{ background: "#66B92E" }}>
-          <DashboardContentWrapper>
-            <DashboardContent>
-              <h1>
+              </Heading>
+            </ColumnContent>
+          </RowContent>
+        </Column>
+        <Column style={{ background: "#66B92E" }}>
+          <RowContent>
+            <ColumnContent>
+              <Heading>
                 <Link href="/admin/category/read">
                   <a>Read All Categories</a>
                 </Link>
-              </h1>
-            </DashboardContent>
-          </DashboardContentWrapper>
-        </DashboardBoard>
-        <DashboardBoard style={{ background: "#DA932C" }}>
-          <DashboardContentWrapper>
-            <DashboardContent>
-              <h1>
+              </Heading>
+            </ColumnContent>
+          </RowContent>
+        </Column>
+        <Column style={{ background: "#DA932C" }}>
+          <RowContent>
+            <ColumnContent>
+              <Heading>
                 <Link href="/admin/link/read">
                   <a>All Links</a>
                 </Link>
-              </h1>
-            </DashboardContent>
-          </DashboardContentWrapper>
-        </DashboardBoard>
-        <DashboardBoard style={{ background: "#D65B4A" }}>
-          <DashboardContentWrapper>
-            <DashboardContent>
-              <h1>
+              </Heading>
+            </ColumnContent>
+          </RowContent>
+        </Column>
+        <Column style={{ background: "#D65B4A" }}>
+          <RowContent>
+            <ColumnContent>
+              <Heading>
                 <Link href="/admin/link/test">
                   <a>All Links</a>
                 </Link>
-              </h1>
-            </DashboardContent>
-          </DashboardContentWrapper>
-        </DashboardBoard>
-      </DashboardWrapper>
-    </Wrapper>
+              </Heading>
+            </ColumnContent>
+          </RowContent>
+        </Column>
+      </Row>
+    </Container>
   );
 };
 export default withAdmin(Admin);

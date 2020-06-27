@@ -2,18 +2,89 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { getCookie, isAuth } from "../../../helpers/auth";
 import { API } from "../../../config";
-import {
-  Container,
-  LinkHeader,
-  LinkContainer,
-  ElementContainer,
-  LinkLabel,
-  LinkForm,
-  LinkInput,
-  LinkSubmit,
-  SuccessAlert,
-  ErrorAlert,
-} from "../../../components/Link/LinkElements";
+import styled from "styled-components";
+
+const Container = styled.div`
+  width: 90%;
+  margin: auto;
+`;
+
+const Header = styled.h1`
+  padding: 1rem;
+`;
+
+const Row = styled.div`
+  display: grid;
+  grid-template-columns: 3fr 1fr 8fr;
+`;
+
+const Column = styled.div`
+  display: flex;
+  flex-flow: column nowrap;
+`;
+
+const Form = styled.form``;
+
+const Label = styled.label`
+  width: 90%;
+  display: block;
+  margin-left: 3rem;
+  margin-bottom: 1rem;
+  font-size: 20px;
+`;
+
+const Input = styled.input`
+  width: 90%;
+  margin: auto;
+  margin-bottom: 3rem;
+  border: 3px solid orange;
+  border-radius: 15px;
+  display: block;
+  padding: 1rem;
+
+  :focus {
+    outline: none;
+  }
+`;
+
+const Submit = styled.button`
+  width: 90%;
+  margin: auto;
+  padding: 1rem;
+  display: block;
+  border: 3px solid orange;
+  border-radius: 15px;
+  background: white;
+  color: orange;
+  font-size: 1rem;
+
+  :hover {
+    background: orange;
+    color: white;
+  }
+
+  :focus {
+    outline: none;
+  }
+`;
+
+const SuccessAlert = styled.div`
+  border-radius: 15px;
+  width: 100%;
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background: #cce5ff;
+  color: #5f8dbe;
+`;
+
+const ErrorAlert = styled.div`
+  width: 100%;
+  margin-bottom: 2rem;
+  border-radius: 15px;
+  padding: 1rem;
+  background: #f8d7da;
+  color: #975057;
+`;
 
 const Create = ({ token }) => {
   const [state, setState] = useState({
@@ -188,49 +259,49 @@ const Create = ({ token }) => {
 
   return (
     <Container>
-      <LinkHeader>Submit Link/URL</LinkHeader>
-      <LinkContainer>
-        <ElementContainer>
+      <Header>Submit Link/URL</Header>
+      <Row>
+        <Column>
           <div>
-            <LinkLabel>Category</LinkLabel>
+            <Label>Category</Label>
             <ul style={{ maxHeight: "100px", overflowY: "scroll" }}>
               {showCategories()}
             </ul>
           </div>
           <div style={{ marginTop: "1rem" }}>
-            <LinkLabel>Type</LinkLabel>
+            <Label>Type</Label>
             {showTypes()}
           </div>
           <div style={{ marginTop: "1rem" }}>
-            <LinkLabel>Mediun</LinkLabel>
+            <Label>Mediun</Label>
             {showMedium()}
           </div>
-        </ElementContainer>
-        <ElementContainer />
-        <ElementContainer>
-          <LinkForm onSubmit={handleSubmit}>
+        </Column>
+        <Column />
+        <Column>
+          <Form onSubmit={handleSubmit}>
             {success && <SuccessAlert>{success}</SuccessAlert>}
             {error && <ErrorAlert>{error}</ErrorAlert>}
-            <LinkLabel>Title</LinkLabel>
-            <LinkInput
+            <Label>Title</Label>
+            <Input
               type="text"
               onChange={handleTitleChange}
               value={title}
               placeholder="Type Link Title..."
             />
-            <LinkLabel>URL</LinkLabel>
-            <LinkInput
+            <Label>URL</Label>
+            <Input
               type="url"
               onChange={handleURLChange}
               value={url}
               placeholder="Type URL..."
             />
-            <LinkSubmit disabled={!token} type="submit">
+            <Submit disabled={!token} type="submit">
               {isAuth() || token ? "Post" : "Login to post"}
-            </LinkSubmit>
-          </LinkForm>
-        </ElementContainer>
-      </LinkContainer>
+            </Submit>
+          </Form>
+        </Column>
+      </Row>
     </Container>
   );
 };

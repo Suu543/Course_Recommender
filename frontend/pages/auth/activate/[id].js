@@ -1,15 +1,66 @@
 import { useState, useEffect } from "react";
 import { withRouter } from "next/router";
+import styled from "styled-components";
 import jwt from "jsonwebtoken";
 import axios from "axios";
-import {
-  ActivationWrapper,
-  ActivationHeading,
-  ActivationButton,
-  ActivationSuccessAlert,
-  ActivationErrorAlert,
-} from "../../../components/Activation/ActivationElements";
 import { API } from "../../../config";
+
+const Container = styled.div`
+  display: flex;
+  width: 90%;
+  margin: auto;
+  flex-flow: column wrap;
+  align-items: center;
+  justify-content: center;
+`;
+
+const Row = styled.div``;
+
+const Heading = styled.h1`
+  margin-top: 4rem;
+`;
+
+const Button = styled.button`
+  width: 100%;
+  font-size: 3rem;
+  text-align: center;
+  background: white;
+  border: 2px solid yellow;
+  color: #ffc107;
+
+  :hover {
+    background: #ffc107;
+    color: white;
+  }
+`;
+
+const SuccessAlert = styled.div`
+  min-height: 10vh;
+  width: 100%;
+  font-size: 3rem;
+  background: #007bff;
+  text-align: center;
+  border: none;
+  margin-top: 1rem;
+  outline: none;
+  border-radius: 5px;
+  text-shadow: 0 -1px #00506b;
+  padding: 0;
+`;
+
+const ErrorAlert = styled.div`
+  min-height: 10vh;
+  width: 100%;
+  font-size: 3rem;
+  background: #ee5a66;
+  text-align: center;
+  border: none;
+  margin-top: 1rem;
+  outline: none;
+  border-radius: 5px;
+  text-shadow: 0 -1px #00506b;
+  padding: 0;
+`;
 
 const ActivateAccount = ({ router }) => {
   const [state, setState] = useState({
@@ -35,7 +86,7 @@ const ActivateAccount = ({ router }) => {
 
   const clickSubmit = async (e) => {
     e.preventDefault();
-    // console.log("Activate Account!");
+    console.log("Activate Account!");
     setState({ ...state, buttonText: "Activating" });
 
     try {
@@ -58,20 +109,16 @@ const ActivateAccount = ({ router }) => {
   };
 
   return (
-    <ActivationWrapper>
-      {success && <ActivationSuccessAlert>{success}</ActivationSuccessAlert>}
-      {error && <ActivationErrorAlert>{error}</ActivationErrorAlert>}
-      <ActivationHeading>
-        Hello {name}, Are you ready to activate your account?
-      </ActivationHeading>
-      <br />
-      <ActivationButton onClick={clickSubmit}>{buttonText}</ActivationButton>
-    </ActivationWrapper>
+    <Container>
+      <Row>
+        {success && <SuccessAlert>{success}</SuccessAlert>}
+        {error && <ErrorAlert>{error}</ErrorAlert>}
+        <Heading>Hello {name}, Are you ready to activate your account?</Heading>
+        <br />
+        <Button onClick={clickSubmit}>{buttonText}</Button>
+      </Row>
+    </Container>
   );
 };
 
 export default withRouter(ActivateAccount);
-
-// const ActivateAccount = ({ router }) => {
-//   return <div>{JSON.stringify(router)}</div>;
-// };

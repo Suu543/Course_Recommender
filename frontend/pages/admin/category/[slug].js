@@ -3,22 +3,112 @@ import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import Resizer from "react-image-file-resizer";
 import withAdmin from "../../withAdmin";
+import styled from "styled-components";
 import { API } from "../../../config";
 
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
-import {
-  FormWrapper,
-  Form,
-  FormInput,
-  FormBtn,
-  FormSuccess,
-  FormError,
-  FormHeading,
-  FormTextDiv,
-  FormImage,
-  FormDiv,
-} from "../../../components/Form/FormElements";
+const Container = styled.div`
+  max-width: 100%;
+  display: flex;
+  flex-flow: column nowrap;
+`;
+
+const Column = styled.div``;
+
+const Heading = styled.h1`
+  margin: auto;
+`;
+
+const Form = styled.form`
+  margin-top: 1rem;
+`;
+
+const SuccessAlert = styled.div`
+  border-radius: 15px;
+  width: 70%;
+  margin: auto;
+  padding: 1rem;
+  background: #cce5ff;
+  color: #5f8dbe;
+`;
+
+const ErrorAlert = styled.div`
+  width: 70%;
+  margin: auto;
+  border-radius: 15px;
+  padding: 1rem;
+  background: #f8d7da;
+  color: #975057;
+`;
+
+const Input = styled.input`
+  width: 70%;
+  margin: auto;
+  border: 3px solid orange;
+  border-radius: 15px;
+  display: block;
+  padding: 1rem;
+
+  :focus {
+    outline: none;
+  }
+`;
+
+const Content = styled.div`
+  max-width: 70%;
+  margin: auto;
+  border: 3px solid orange;
+  min-height: 50%;
+  border-radius: 15px;
+  display: block;
+  padding: 1rem;
+  resize: none;
+
+  :focus {
+    outline: none;
+  }
+`;
+
+const Text = styled.div`
+  width: 70%;
+  margin: auto;
+  padding-bottom: 0.5rem;
+`;
+
+const Image = styled.input`
+  width: 70%;
+  margin: auto;
+  border: 3px solid orange;
+  border-radius: 15px;
+  display: block;
+  padding: 1rem;
+
+  :focus {
+    outline: none;
+  }
+`;
+
+const Button = styled.button`
+  width: 70%;
+  padding: 1rem;
+  margin: auto;
+  display: block;
+  border: 3px solid orange;
+  border-radius: 15px;
+  background: white;
+  color: orange;
+  font-size: 1rem;
+
+  :hover {
+    background: orange;
+    color: white;
+  }
+
+  :focus {
+    outline: none;
+  }
+`;
 
 const Update = ({ oldCategory, token }) => {
   const [state, setState] = useState({
@@ -117,48 +207,45 @@ const Update = ({ oldCategory, token }) => {
   };
 
   return (
-    <FormWrapper>
-      <FormHeading>Update Category</FormHeading>
-      <Form onSubmit={handleSubmit}>
-        {success && <FormSuccess>{success}</FormSuccess>}
-        {error && <FormError>{error}</FormError>}
-        <br />
-        <FormInput
-          onChange={handleChange("name")}
-          placeholder="Type Category Name Here"
-          value={name}
-          type="text"
-          required
-        />
-        <br />
-        <FormTextDiv>
-          <ReactQuill
-            theme="bubble"
-            value={content}
-            onChange={handleContent}
-            placeholder="write something"
+    <Container>
+      <Column>
+        <Heading>Update Category</Heading>
+        <Form onSubmit={handleSubmit}>
+          {success && <SuccessAlert>{success}</SuccessAlert>}
+          {error && <ErrorAlert>{error}</ErrorAlert>}
+          <br />
+          <Input
+            onChange={handleChange("name")}
+            placeholder="Type Category Name Here"
+            value={name}
+            type="text"
+            required
           />
-        </FormTextDiv>
-        <br />
-        <FormDiv>
-          <span>
-            ImagePreview
-            <br />
-            <img src={imagePreview} alt="image" height="40" />
-          </span>
-        </FormDiv>
-        <FormDiv>ImageUploadText: {imageUploadButtonName} </FormDiv>
-        <FormImage
-          onChange={handleImage}
-          accept="image/*"
-          type="file"
-          required
-        />
-        <br />
+          <br />
+          <Content>
+            <ReactQuill
+              theme="bubble"
+              value={content}
+              onChange={handleContent}
+              placeholder="write something"
+            />
+          </Content>
+          <br />
+          <Text>
+            <span>
+              ImagePreview
+              <br />
+              <img src={imagePreview} alt="image" height="40" />
+            </span>
+          </Text>
+          <Text>ImageUploadText: {imageUploadButtonName} </Text>
+          <Image onChange={handleImage} accept="image/*" type="file" required />
+          <br />
 
-        <FormBtn>{buttonText}</FormBtn>
-      </Form>
-    </FormWrapper>
+          <Button>{buttonText}</Button>
+        </Form>
+      </Column>
+    </Container>
   );
 };
 
