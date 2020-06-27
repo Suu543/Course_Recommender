@@ -208,8 +208,8 @@ const Update = ({ oldCategory, token }) => {
 
   return (
     <Container>
+      <Heading>Update Category</Heading>
       <Column>
-        <Heading>Update Category</Heading>
         <Form onSubmit={handleSubmit}>
           {success && <SuccessAlert>{success}</SuccessAlert>}
           {error && <ErrorAlert>{error}</ErrorAlert>}

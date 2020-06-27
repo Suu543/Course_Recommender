@@ -119,6 +119,7 @@ exports.read = async (req, res) => {
 
 exports.update = async (req, res) => {
   const { slug } = req.params;
+  // console.log("slug", slug);
   const { name, image, content } = req.body;
 
   try {
@@ -206,6 +207,17 @@ exports.remove = async (req, res) => {
   } catch (error) {
     return res.status(400).json({
       error: "Could not delete category",
+    });
+  }
+};
+
+exports.interest = async (req, res) => {
+  try {
+    let categories = await Category.find({}).sort({ createdAt: -1 }).limit(5);
+    return res.status(200).json(categories);
+  } catch (error) {
+    return res.status(400).json({
+      error: "Could not list links",
     });
   }
 };

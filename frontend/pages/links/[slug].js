@@ -193,21 +193,48 @@ const RightColumn = styled.div`
   display: flex;
   flex-flow: column wrap;
   max-height: 60vh;
-  background: #f4f7fb;
-  border: 1px solid #007aff;
-  border-radius: 5px;
 `;
 
-const RightColumnHeader = styled.h4`
+const RightColumnHeader = styled.div`
+  border: 1px solid #eee;
+  padding: 0.3rem;
+  background: #ffffff;
   padding: 1rem;
-  font-size: 14px;
-  color: #383838;
-  border-bottom: 1px solid #007aff;
+  font-size: 1rem;
+  font-weight: bold;
+
+  h5 {
+  }
 `;
 
-const RightColumnWrapper = styled.div``;
+const RightColumnContent = styled.div`
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  background: #ffffff;
+  padding: 10px 0px;
+  border: 1px solid #eeeeee;
+  border-radius: 10px;
+  margin: 1px 0 1px 0;
+
+  :hover {
+    box-shadow: 0px 13px 20px -15px rgba(0, 0, 0, 0.2);
+    transform: translate(0px, -1px);
+  }
+`;
+
+const SmallImage = styled.img`
+  cursor: pointer;
+  width: 60px;
+  height: 60px;
+
+  margin: 0px 15px 0px 15px;
+`;
+
+const RightColumnSection = styled.div``;
 
 const Links = ({
+  categories,
   query,
   category,
   links,
@@ -271,7 +298,7 @@ const Links = ({
 
   const loadPopularLinks = async () => {
     const response = await axios.get(`${API}/link/popular/${query.slug}`);
-    console.log("response", response.data.links);
+    // console.log("response", response.data.links);
     setSort(true);
     setAllLinks(response.data.links);
   };
@@ -284,7 +311,7 @@ const Links = ({
 
   const loadMore = async () => {
     let toSkip = skip + limit;
-    console.log("toSkip", toSkip);
+    // console.log("toSkip", toSkip);
     const response = await axios.post(`${API}/category/${query.slug}`, {
       skip: toSkip,
       limit,
@@ -343,6 +370,20 @@ const Links = ({
           </LinkDetailsWrapper>
         </LinkColumn>
       </LinkRow>
+    ));
+
+  const loadInterests = () =>
+    categories.map((c, index) => (
+      <Link href={`/links/${c.slug}`} key={c._id}>
+        <RightColumnContent>
+          <RightColumnSection>
+            <SmallImage src={c.image && c.image.url} alt={c.name} />
+          </RightColumnSection>
+          <RightColumnSection>
+            <h4>{c.name}</h4>
+          </RightColumnSection>
+        </RightColumnContent>
+      </Link>
     ));
 
   return (
@@ -418,11 +459,10 @@ const Links = ({
             </LeftColumnBodyContent>
           </LeftColumn>
           <RightColumn>
-            <RightColumnWrapper>
-              <RightColumnHeader>Filter Courses</RightColumnHeader>
-            </RightColumnWrapper>
-            <RightColumnWrapper></RightColumnWrapper>
-            <div></div>
+            <RightColumnHeader>
+              <h5>You might also be interested in...</h5>
+            </RightColumnHeader>
+            {loadInterests()}
           </RightColumn>
         </RowBody>
       </Container>
@@ -438,13 +478,17 @@ Links.getInitialProps = async ({ query, req }) => {
 
   try {
     if (token !== null) {
+      const categories = await axios.get(`${API}/categories/interested`);
       const userResponse = await axios.post(`${API}/user/likes/${token._id}`);
       const response = await axios.post(`${API}/category/${query.slug}`, {
         skip,
         limit,
       });
 
-      // console.log("likes", userResponse.data.likes);
+      const nonDuplicatedCategories = categories.data.filter(
+        (c) => c._id != response.data.category._id
+      );
+
       return {
         query,
         category: response.data.category,
@@ -454,14 +498,15 @@ Links.getInitialProps = async ({ query, req }) => {
         linkSkip: skip,
         token,
         userLikes: userResponse.data.likes,
+        categories: nonDuplicatedCategories,
       };
     } else {
+      const categories = await axios.get(`${API}/categories/interested`);
       const response = await axios.post(`${API}/category/${query.slug}`, {
         skip,
         limit,
       });
 
-      // console.log("likes", userResponse.data.likes);
       return {
         query,
         category: response.data.category,
@@ -471,6 +516,7 @@ Links.getInitialProps = async ({ query, req }) => {
         linkSkip: skip,
         token,
         userLikes: "",
+        categories: nonDuplicatedCategories,
       };
     }
   } catch (error) {

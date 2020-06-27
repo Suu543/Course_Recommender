@@ -14,6 +14,7 @@ const { requireSignin, adminMiddleware } = require("../controllers/auth");
 const {
   create,
   list,
+  interest,
   read,
   update,
   remove,
@@ -21,6 +22,7 @@ const {
 
 // routes
 router.get("/categories", list);
+router.get("/categories/interested", interest);
 router.post("/category/:slug", read);
 router.post(
   "/category",
@@ -31,7 +33,7 @@ router.post(
 );
 // router.post("/category", requireSignin, adminMiddleware, create);
 router.put(
-  "/category/:id",
+  "/category/:slug",
   validate(categoryUpdateValidator),
   requireSignin,
   adminMiddleware,

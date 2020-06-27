@@ -41,7 +41,7 @@ exports.list = async (req, res) => {
       .skip(skip)
       .limit(limit);
 
-    res.status(200).json(allLinks);
+    return res.status(200).json(allLinks);
   } catch (error) {
     return res.status(400).json({
       error: "Could not list links",
@@ -53,7 +53,7 @@ exports.read = async (req, res) => {
   const { id } = req.params;
   try {
     const data = await Link.findOne({ _id: id });
-    res.status(200).json(data);
+    return res.status(200).json(data);
   } catch (error) {
     return res.status(400).json({
       error: "Error Finding Link",
@@ -106,7 +106,7 @@ exports.clickCount = async (req, res) => {
         { upsert: true, new: true }
       );
 
-      res.status(200).json(result);
+      return res.status(200).json(result);
     } else {
       const result = await Link.findByIdAndUpdate(
         linkId,
@@ -114,7 +114,7 @@ exports.clickCount = async (req, res) => {
         { upsert: true, new: true }
       );
 
-      res.status(200).json(result);
+      return res.status(200).json(result);
     }
   } catch (error) {
     return res.status(400).json({
@@ -165,7 +165,7 @@ exports.popular = async (req, res) => {
       .sort({ clicks: -1 })
       .limit(5);
 
-    res.status(200).json(links);
+    return res.status(200).json(links);
   } catch (error) {
     return res.status(400).json({
       error: "Links Not Found",
@@ -185,7 +185,7 @@ exports.popularInCategory = async (req, res) => {
         .populate("categories", "name")
         .sort({ clicks: -1 });
 
-      res.status(200).json({
+      return res.status(200).json({
         links: links,
       });
     } catch (error) {

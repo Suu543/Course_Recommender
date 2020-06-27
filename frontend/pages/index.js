@@ -204,7 +204,7 @@ const Home = ({ categories, userLikes, token }) => {
         <TrendSection>
           {token !== null && likes.includes(link._id) ? (
             <TrendLinkClicks
-              style={{ background: "#4daf4e" }}
+              style={{ background: "#55f257" }}
               onClick={(e) => handleClick(link._id)}
             >
               <TrendNumOfClicks>
