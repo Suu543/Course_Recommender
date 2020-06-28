@@ -192,7 +192,7 @@ const LeftColumnBodyContent = styled.div`
 const RightColumn = styled.div`
   display: flex;
   flex-flow: column wrap;
-  max-height: 60vh;
+  max-height: 70vh;
 `;
 
 const RightColumnHeader = styled.div`
@@ -506,6 +506,10 @@ Links.getInitialProps = async ({ query, req }) => {
         skip,
         limit,
       });
+
+      const nonDuplicatedCategories = categories.data.filter(
+        (c) => c._id != response.data.category._id
+      );
 
       return {
         query,

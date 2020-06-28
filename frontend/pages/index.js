@@ -12,7 +12,18 @@ const Container = styled.div``;
 const Header = styled.h1`
   margin: 1.5rem;
   text-align: center;
-  font-size: 34px;
+  font-size: 28px;
+  color: #333333;
+`;
+
+const SearchBar = styled.input`
+  display: block;
+  width: 55%;
+  margin: 1.5rem auto;
+  padding: 0.8rem;
+  border: none;
+  box-shadow: 0 0 10px #719ece;
+  outline: none;
 `;
 
 const Row = styled.div`
@@ -264,6 +275,7 @@ const Home = ({ categories, userLikes, token }) => {
   return (
     <Container>
       <Header>Programming Tutorials / Courses</Header>
+      <SearchBar placeholder="Search For the language that you are interested in... " />
       <Row>{listCategories()}</Row>
       <Header>Trending- Top 5 Links</Header>
       <TrendRow>{listOfLinks()}</TrendRow>
