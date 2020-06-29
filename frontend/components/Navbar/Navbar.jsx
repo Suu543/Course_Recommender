@@ -2,6 +2,8 @@
 import Link from "next/link";
 import React, { useState, useEffect } from "react";
 import Router from "next/router";
+import axios from "axios";
+import { API } from "../../config";
 import styled, { css, keyframes } from "styled-components";
 
 import NavPopUpModal from "./NavElements/NavPopupModal";
@@ -30,8 +32,12 @@ const Row = styled.div`
 
 const Column = styled.nav`
   display: grid;
-  grid-template-columns: 2fr 4.5fr 5.5fr;
+  grid-template-columns: 2fr 6fr 4fr;
   padding: 3px;
+
+  @media screen and (max-width: 1100px) {
+    grid-template-columns: 2fr 5fr 5fr;
+  }
 
   @media screen and (max-width: 768px) {
     grid-template-columns: 2.5fr 3.5fr 6fr;
@@ -45,8 +51,49 @@ const Column = styled.nav`
 const Left = styled.section``;
 
 const Center = styled.section`
+  display: flex;
+  flex-direction: column;
+
   @media screen and (max-width: 614px) {
     display: none;
+  }
+`;
+
+const SearchResultsContainer = styled.section`
+  position: fixed;
+  left: 21.6%;
+  top: 3.8%;
+  display: ${(props) => (props.search ? "flex" : "none")};
+  flex-direction: column;
+  z-index: 200;
+  width: 16%;
+  background: white;
+  border-radius: 5px;
+  color: #007aff;
+
+  @media screen and (max-width: 1100px) {
+    left: 21.4%;
+  }
+
+  @media screen and (max-width: 768px) {
+    left: 25%;
+  }
+
+  @media screen and (max-width: 614px) {
+    display: none;
+  }
+`;
+
+// EEF4FA
+const SearchResultElem = styled.section`
+  padding: 4px;
+  color: #383838;
+  font-size: 12px;
+  cursor: pointer;
+
+  :hover {
+    background: #007aff;
+    color: #383838;
   }
 `;
 
@@ -76,11 +123,11 @@ const Hamburger = styled.section`
 const First = styled.section`
   width: 25px;
   height: 3px;
-  background-color: #c6c6c6;
+  background-color: #adadad;
   margin: 3px;
   transition: all 0.5s ease;
   transform: ${(props) =>
-    props.burgerOpen ? "rotate(-45deg) translate(-6.5px, 6px)" : ""};
+    props.burgerOpen ? "" : "rotate(-45deg) translate(-6.5px, 6px)"};
 `;
 
 const Second = styled.section`
@@ -89,7 +136,7 @@ const Second = styled.section`
   background-color: #c6c6c6;
   margin: 3px;
   transition: all 0.5s ease;
-  opacity: ${(props) => (props.burgerOpen ? "0" : "1")};
+  opacity: ${(props) => (props.burgerOpen ? "1" : "0")};
 `;
 
 const Third = styled.section`
@@ -99,7 +146,7 @@ const Third = styled.section`
   margin: 3px;
   transition: all 0.5s ease;
   transform: ${(props) =>
-    props.burgerOpen ? "rotate(45deg) translate(-6px, -6px)" : ""};
+    props.burgerOpen ? "" : "rotate(45deg) translate(-6px, -6px)"};
 `;
 
 const Right = styled.section`
@@ -124,10 +171,10 @@ const Ul = styled.ul`
     align-items: flex-start;
     height: 40vh;
     top: 6vh;
-    background: #e9d1ff;
+    background: #208294;
     display: ${(props) => (props.burgerOpen ? "none" : "flex")};
     flex-direction: column;
-    transition: all 1s ease-in;
+    transition: all 0.5s ease-in;
   }
 `;
 
@@ -148,6 +195,7 @@ const Icon = styled.i`
 
 const SearchBarInput = styled.input`
   display: block;
+  box-shadow: 0 0 10px #719ece;
   width: 95%;
   margin: 8.4px auto;
   border: 0.5px solid #d9d9d9;
@@ -162,8 +210,9 @@ const SearchBarInput = styled.input`
 
 const Anchor = styled.a`
   text-decoration: none;
-  color: rgb(154, 154, 154);
   font-size: 15px;
+  color: black;
+  font-weight: bold;
 
   @media screen and (max-width: 768px) {
     font-size: 13px;
@@ -177,6 +226,7 @@ const Anchor = styled.a`
 const Navbar = () => {
   console.log("Navbar Constructor");
 
+  const [search, setSearch] = useState([]);
   const [open, setOpen] = useState(false);
   const [userInfo, setUserInfo] = useState({
     auth: false,
@@ -184,8 +234,6 @@ const Navbar = () => {
     role: "",
   });
   const [burgerOpen, setBurgerOpen] = useState(false);
-
-  console.log("burger", burgerOpen);
 
   const checkStorage = (key) => {
     const storedData = localStorage.getItem(key);
@@ -211,7 +259,37 @@ const Navbar = () => {
     return () => window.removeEventListener("storage", handler);
   }, []);
 
-  // console.log("userInfo.role", userInfo.role);
+  const listSearch = async (params) => {
+    try {
+      let response = await axios.post(`${API}/categories/search`, {
+        search: params,
+      });
+
+      return response;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const clickChange = async (e) => {
+    let searchResults;
+    searchResults = await listSearch(e.target.value);
+    console.log("searchResults", searchResults.data);
+    if (searchResults.data == undefined) setSearch(false);
+    else if (searchResults.data.length > 0) setSearch(searchResults.data);
+    else setSearch(false);
+  };
+
+  const loadSearchResults = () => (
+    <SearchResultsContainer search={search}>
+      {search.length > 0 &&
+        search.map((category, index) => (
+          <Link key={category._id + index} href={`/links/${category.slug}`}>
+            <SearchResultElem>{category.name}</SearchResultElem>
+          </Link>
+        ))}
+    </SearchResultsContainer>
+  );
 
   return (
     <React.Fragment>
@@ -233,7 +311,10 @@ const Navbar = () => {
             </Left>
 
             <Center>
-              <SearchBarInput placeholder="Search For Topics" />
+              <SearchBarInput
+                onChange={clickChange}
+                placeholder="Search For Topics"
+              />
             </Center>
 
             <Right>
@@ -243,12 +324,14 @@ const Navbar = () => {
               >
                 <Link passHref href="/">
                   <Anchor>
-                    <Icon className="fas fa-igloo" /> Home
+                    <Icon className="fas fa-igloo" />{" "}
+                    <b style={{ color: "black" }}>Home</b>
                   </Anchor>
                 </Link>
                 <Link passHref href="/user/link/create">
                   <Anchor>
-                    <b style={{ color: "#007AFF" }}>+</b>Submit a Link
+                    <b style={{ color: "#007AFF" }}>+</b>
+                    <b style={{ color: "black" }}>Submit a Link</b>
                   </Anchor>
                 </Link>
 
@@ -299,6 +382,7 @@ const Navbar = () => {
         open={open}
         setOpen={setOpen}
       />
+      {loadSearchResults()}
     </React.Fragment>
   );
 };

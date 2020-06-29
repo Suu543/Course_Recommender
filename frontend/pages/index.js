@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import axios from "axios";
+import queryString from "query-string";
 import jwt from "jsonwebtoken";
 import { API } from "../config";
 import styled from "styled-components";
@@ -16,15 +17,15 @@ const Header = styled.h1`
   color: #333333;
 `;
 
-const SearchBar = styled.input`
-  display: block;
-  width: 55%;
-  margin: 1.5rem auto;
-  padding: 0.8rem;
-  border: none;
-  box-shadow: 0 0 10px #719ece;
-  outline: none;
-`;
+// const SearchBar = styled.input`
+//   display: block;
+//   width: 55%;
+//   margin: 1.5rem auto;
+//   padding: 0.8rem;
+//   border: none;
+//   box-shadow: 0 0 10px #719ece;
+//   outline: none;
+// `;
 
 const Row = styled.div`
   display: grid;
@@ -174,6 +175,7 @@ const TrendDetails = styled.div`
 `;
 
 const Home = ({ categories, userLikes, token }) => {
+  const [search, setSearch] = useState(false);
   const [popular, setPopular] = useState([]);
   const [likes, setLikes] = useState(
     token !== null && userLikes ? userLikes : ""
@@ -275,7 +277,6 @@ const Home = ({ categories, userLikes, token }) => {
   return (
     <Container>
       <Header>Programming Tutorials / Courses</Header>
-      <SearchBar placeholder="Search For the language that you are interested in... " />
       <Row>{listCategories()}</Row>
       <Header>Trending- Top 5 Links</Header>
       <TrendRow>{listOfLinks()}</TrendRow>

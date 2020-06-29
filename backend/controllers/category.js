@@ -222,62 +222,26 @@ exports.interest = async (req, res) => {
   }
 };
 
-// exports.create = (req, res) => {
-//   console.log("Category - create");
+exports.categorySearch = async (req, res) => {
+  const { search } = req.body;
+  console.log("search", search);
+  let searchResults;
 
-//   let form = new formidable.IncomingForm();
-//   form.parse(req, (err, fields, files) => {
-//     if (err) {
-//       return res.status(400).json({
-//         error: "Image could not upload",
-//       });
-//     }
+  try {
+    if (search) {
+      searchResults = await Category.find({
+        $or: [
+          { name: { $regex: search, $options: "i" } },
+          { slug: { $regex: search, $options: "i" } },
+        ],
+      });
 
-//     // console.table({err, fields, files})
-//     const { name, content } = fields;
-//     const { image } = files;
-
-//     const slug = slugify(name);
-//     let category = new Category({ name, content, slug });
-//     category.postedBy = req.user._id;
-
-//     if (image.size > 2000000) {
-//       return res.status(400).json({
-//         error: "Image should be less than 2mb",
-//       });
-//     }
-
-//     // upload image to s3
-//     const params = {
-//       Bucket: "sucr-su",
-//       Key: `category/${uuidv4()}`,
-//       Body: fs.readFileSync(image.path),
-//       ACL: "public-read",
-//       ContentType: `image/jpg`,
-//     };
-
-//     s3.upload(params, async (err, data) => {
-//       // if(err) console.log(err) 이런식으로 에러 잡기
-//       if (err) {
-//         console.log(err);
-//         res.status(400).json({ error: "Upload to s3 failed..." });
-//       }
-//       console.log("AWS UPLOAD RES DATA", data);
-
-//       // S3에 저장후 Return 된 값
-//       category.image.url = data.Location;
-//       category.image.key = data.Key;
-
-//       // Save to DB
-//       try {
-//         let data = await category.save();
-//         res.status(200).json(data);
-//       } catch (error) {
-//         console.log("catch error", error);
-//         return res.status(400).json({
-//           error: "Error saving category to Database (Duplicated Category)",
-//         });
-//       }
-//     });
-//   });
-// };
+      // console.log("searchResults", searchResults);
+      return res.status(200).json(searchResults);
+    } else {
+      return res.status(200).json([]);
+    }
+  } catch (error) {
+    return res.status(400).json(error);
+  }
+};

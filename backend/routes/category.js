@@ -18,11 +18,13 @@ const {
   read,
   update,
   remove,
+  categorySearch,
 } = require("../controllers/category");
 
 // routes
 router.get("/categories", list);
 router.get("/categories/interested", interest);
+router.post("/categories/search", categorySearch);
 router.post("/category/:slug", read);
 router.post(
   "/category",
