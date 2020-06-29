@@ -86,7 +86,7 @@ exports.list = async (req, res) => {
 
 exports.read = async (req, res) => {
   const { slug } = req.params;
-  console.log("req.body.limit", req.body);
+  // console.log("req.body.limit", req.body);
   let limit = req.body.limit ? parseInt(req.body.limit) : 10;
   let skip = req.body.skip ? parseInt(req.body.skip) : 0;
 
@@ -128,7 +128,7 @@ exports.update = async (req, res) => {
       { name, content },
       { new: true }
     );
-    console.log("Updated", updated);
+    // console.log("Updated", updated);
 
     if (image) {
       // remove the existing image from s3 before uploading new/updated on
@@ -224,7 +224,7 @@ exports.interest = async (req, res) => {
 
 exports.categorySearch = async (req, res) => {
   const { search } = req.body;
-  console.log("search", search);
+//  console.log("search", search);
   let searchResults;
 
   try {

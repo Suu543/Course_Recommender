@@ -17,16 +17,6 @@ const Header = styled.h1`
   color: #333333;
 `;
 
-// const SearchBar = styled.input`
-//   display: block;
-//   width: 55%;
-//   margin: 1.5rem auto;
-//   padding: 0.8rem;
-//   border: none;
-//   box-shadow: 0 0 10px #719ece;
-//   outline: none;
-// `;
-
 const Row = styled.div`
   display: grid;
   grid-gap: 7px;
@@ -174,16 +164,11 @@ const TrendDetails = styled.div`
   }
 `;
 
-const Home = ({ categories, userLikes, token }) => {
-  const [search, setSearch] = useState(false);
-  const [popular, setPopular] = useState([]);
+const Home = ({ categories, userLikes, token, popularData }) => {
+  const [popular, setPopular] = useState(popularData);
   const [likes, setLikes] = useState(
     token !== null && userLikes ? userLikes : ""
   );
-
-  useEffect(() => {
-    loadPopular();
-  }, []);
 
   const handleClick = async (linkId) => {
     if (token !== null) {
@@ -193,6 +178,7 @@ const Home = ({ categories, userLikes, token }) => {
         userId,
       });
 
+      // 좋아요 증가 이후 업데이트된 데이터 요청의 목적
       loadPopular();
     } else {
       alert("Please Signin to hit the like button");
@@ -201,10 +187,10 @@ const Home = ({ categories, userLikes, token }) => {
 
   const loadPopular = async () => {
     if (token !== null) {
-      const userResponse = await axios.post(`${API}/user/likes/${token._id}`);
       const response = await axios.get(`${API}/link/popular`);
-      setLikes(userResponse.data.likes);
+      const userResponse = await axios.post(`${API}/user/likes/${token._id}`);
       setPopular(response.data);
+      setLikes(userResponse.data.likes);
     } else {
       const response = await axios.get(`${API}/link/popular`);
       setPopular(response.data);
@@ -289,13 +275,14 @@ Home.getInitialProps = async ({ req }) => {
 
   if (token !== null) {
     try {
-      const userResponse = await axios.post(`${API}/user/likes/${token._id}`);
       const response = await axios.get(`${API}/categories`);
+      const userResponse = await axios.post(`${API}/user/likes/${token._id}`);
+      const popular = await axios.get(`${API}/link/popular`);
 
-      // console.log("response", response);
       return {
         categories: response.data,
         userLikes: userResponse.data.likes,
+        popularData: popular.data,
         token,
       };
     } catch (error) {
@@ -304,11 +291,13 @@ Home.getInitialProps = async ({ req }) => {
   } else {
     try {
       const response = await axios.get(`${API}/categories`);
+      const popular = await axios.get(`${API}/link/popular`);
 
       // console.log("response", response);
       return {
         categories: response.data,
         userLikes: "",
+        popularData: popular.data,
         token,
       };
     } catch (error) {

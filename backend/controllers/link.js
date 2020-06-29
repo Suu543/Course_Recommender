@@ -8,7 +8,7 @@ const slugify = require("slug");
 exports.create = async (req, res) => {
   const { title, url, categories, type, medium } = req.body;
   //   console.table({ title, url, categories, type, medium });
-  console.log("categoriescatetories", categories);
+  // console.log("categoriescatetories", categories);
   const slug = url;
   let link = new Link({ title, url, categories, type, medium, slug });
   // posted by user
@@ -129,13 +129,13 @@ const likeChecker = async (linkId, _id) => {
     const user = await User.findById({ _id });
     const likes = user.likes;
     const checker = likes.includes(link);
-    console.log("likes1", likes);
+    // console.log("likes1", likes);
 
     if (checker) {
       let idx = likes.indexOf(link);
       likes.splice(idx, 1);
 
-      console.log("likes2", likes);
+      // console.log("likes2", likes);
 
       user.likes = likes;
 

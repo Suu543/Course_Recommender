@@ -94,6 +94,7 @@ const TableBadge = styled.div`
   }
 `;
 
+// Infinite Scrolloing을 사용해서 /api/links route에 request를 여러 번 보냄
 const Links = ({ token, links, totalLinks, linksLimit, linkSkip }) => {
   const [allLinks, setAllLinks] = useState(links);
   const [limit, setLimit] = useState(linksLimit);

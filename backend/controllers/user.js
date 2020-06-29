@@ -38,7 +38,7 @@ exports.likes = async (req, res) => {
 
   try {
     const user = await User.findById({ _id: id });
-    console.log("user", user.likes);
+    // console.log("user", user.likes);
 
     return res.status(200).json({
       likes: user.likes,

@@ -233,6 +233,7 @@ const SmallImage = styled.img`
 
 const RightColumnSection = styled.div``;
 
+// Infinite Scroll 때문에 여러번 요청을 보낸다...
 const Links = ({
   categories,
   query,
