@@ -1,4 +1,4 @@
-##### Auth
+## Auth
 HTTP Method | Endpoint
 --------------------------------------------
 POST        - /register
@@ -8,7 +8,7 @@ POST        - /login
 PUT         - /forgot-password
 PUT         - /reset-password
 
-##### User
+## User
 HTTP Method | Endpoint
 --------------------------------------------
 GET         - /user
@@ -18,7 +18,7 @@ POST        - /user/likes/:id
 
 PUT         - /user
 
-##### Category
+## Category
 HTTP Method | Endpoint                  
 --------------------------------------------
 GET         - /categories               
@@ -32,7 +32,7 @@ PUT         - /category/:slug
 
 DELETE      - /category/:slug
 
-##### Link 
+## Link 
 HTTP Method | Endpoint                  
 --------------------------------------------
 GET         - /link/:id
@@ -49,7 +49,7 @@ PUT         - /link/admin/:id
 DELETE      - /link/:id
 DELETE      - /link/admin/:id
 
-##### Level
+## Level
 HTTP Method | Endpoint                  
 --------------------------------------------
 GET         - /levels
@@ -60,7 +60,7 @@ PUT         - /level/:id
 
 DELETE      - /level/:id
 
-##### Medium
+## Medium
 HTTP Method | Endpoint                  
 --------------------------------------------
 GET         - /mediums
@@ -71,6 +71,7 @@ PUT         - /medium/:id
 
 DELETE      - /medium/:id
 
+## Type
 HTTP Method | Endpoint                  
 --------------------------------------------
 GET         - /types
