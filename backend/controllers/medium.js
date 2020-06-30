@@ -1,4 +1,4 @@
-const { Medium } = require("../models/type");
+const { Medium } = require("../models/medium");
 
 // create, read, update, remove
 exports.create = async (req, res) => {

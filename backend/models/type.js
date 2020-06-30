@@ -4,6 +4,7 @@ const typeSchema = new mongoose.Schema({
   type: {
     type: String,
     default: "Free",
+    required: true
   },
 });
 

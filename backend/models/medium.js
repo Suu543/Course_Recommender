@@ -4,6 +4,7 @@ const modelSchema = new mongoose.Schema({
   medium: {
     type: String,
     default: "Video",
+    required: true
   },
 });
 

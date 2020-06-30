@@ -1,35 +1,35 @@
 const express = require("express");
 const router = express.Router();
 
-// Validators
+// Validator
 const validate = require("../middleware/validate");
 const {
-  typeCreateValidator,
-  typeUpdateValidator,
-} = require("../validators/type");
+  levelCreateValidator,
+  levelUpdateValidator,
+} = require("../validators/level");
 
 // Auth
 const { requireSignin, adminMiddleware } = require("../controllers/auth");
 
 // Controllers
-const { create, read, update, remove } = require("../controllers/type");
+const { create, read, update, remove } = require("../controllers/level");
 
 // Routes
-router.get("/types", read);
+router.get("/levels", read);
 router.post(
-  "/type",
-  validate(typeCreateValidator),
+  "/level",
+  validate(levelCreateValidator),
   requireSignin,
   adminMiddleware,
   create
 );
 router.put(
-  "/type/:id",
-  validate(typeUpdateValidator),
+  "/level/:id",
+  validate(levelUpdateValidator),
   requireSignin,
   adminMiddleware,
   update
 );
-router.delete("/type/:id", requireSignin, adminMiddleware, remove);
+router.delete("/level/:id", requireSignin, adminMiddleware, remove);
 
 module.exports = router;

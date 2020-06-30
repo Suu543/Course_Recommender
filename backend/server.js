@@ -17,6 +17,7 @@ const categoryRoutes = require("./routes/category");
 const linkRoutes = require("./routes/link");
 const typeRoutes = require("./routes/type");
 const mediumRoutes = require("./routes/medium");
+const levelRoutes = require("./routes/level");
 
 // Database
 const DB_OPTIONS = {
@@ -46,6 +47,7 @@ app.use("/api", categoryRoutes);
 app.use("/api", linkRoutes);
 app.use("/api", typeRoutes);
 app.use("/api", mediumRoutes);
+app.use("/api", levelRoutes);
 app.use(function (error, req, res, next) {
   if (error.name === "UnauthorizedError") {
     res.status(401).send("Invalid Token...");

@@ -18,16 +18,18 @@ const { create, read, update, remove } = require("../controllers/medium");
 router.get("/mediums", read);
 router.post(
   "/medium",
-  validate(typeCreateValidator),
+  validate(mediumCreateValidator),
   requireSignin,
   adminMiddleware,
   create
 );
 router.put(
   "/medium/:id",
-  validate(typeUpdateValidator),
+  validate(mediumUpdateValidator),
   requireSignin,
   adminMiddleware,
   update
 );
 router.delete("/medium/:id", requireSignin, adminMiddleware, remove);
+
+module.exports = router;

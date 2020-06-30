@@ -37,24 +37,29 @@ const linkSchema = new mongoose.Schema(
       },
     ],
 
-    type: {
-      type: ObjectId,
-      ref: "Type",
-    },
-
-    medium: {
-      type: ObjectId,
-      ref: "Medium",
-    },
     // type: {
-    //   type: String,
-    //   default: "Free",
+    //   type: ObjectId,
+    //   ref: "Type",
     // },
 
     // medium: {
-    //   type: String,
-    //   default: "Video",
+    //   type: ObjectId,
+    //   ref: "Medium",
     // },
+
+    // level: {
+    //   type: ObjectId,
+    //   ref: "Level"
+    // }
+    type: {
+      type: String,
+      default: "Free",
+    },
+
+    medium: {
+      type: String,
+      default: "Video",
+    },
 
     clicks: {
       type: Number,
