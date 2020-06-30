@@ -16,7 +16,7 @@ const userRoutes = require("./routes/user");
 const categoryRoutes = require("./routes/category");
 const linkRoutes = require("./routes/link");
 const typeRoutes = require("./routes/type");
-const mediumRoutes = require("./routes/medium");
+const mediaRoutes = require("./routes/media");
 const levelRoutes = require("./routes/level");
 
 // Database
@@ -46,7 +46,7 @@ app.use("/api", userRoutes);
 app.use("/api", categoryRoutes);
 app.use("/api", linkRoutes);
 app.use("/api", typeRoutes);
-app.use("/api", mediumRoutes);
+app.use("/api", mediaRoutes);
 app.use("/api", levelRoutes);
 app.use(function (error, req, res, next) {
   if (error.name === "UnauthorizedError") {

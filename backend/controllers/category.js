@@ -100,6 +100,9 @@ exports.read = async (req, res) => {
       const links = await Link.find({ categories: category })
         .populate("postedBy", "_id name username")
         .populate("categories", "name")
+        .populate("media", "media _id")
+        .populate("type", "type _id")
+        .populate("level", "level _id")
         .sort({ createdAt: -1 })
         .limit(limit)
         .skip(skip);
@@ -224,7 +227,7 @@ exports.interest = async (req, res) => {
 
 exports.categorySearch = async (req, res) => {
   const { search } = req.body;
-//  console.log("search", search);
+  //  console.log("search", search);
   let searchResults;
 
   try {

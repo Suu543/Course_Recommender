@@ -6,17 +6,12 @@ const slugify = require("slug");
 // create, list, read, update, remove
 
 exports.create = async (req, res) => {
-  const { title, url, categories, type, medium } = req.body;
-  //   console.table({ title, url, categories, type, medium });
-  // console.log("categoriescatetories", categories);
+  const { title, url, categories, type, media, level } = req.body;
   const slug = url;
-  let link = new Link({ title, url, categories, type, medium, slug });
+  let link = new Link({ title, url, categories, type, media, level, slug });
+
   // posted by user
   link.postedBy = req.user._id;
-
-  // Categories
-  // let arrayOfCategories = categories && categories.split(",");
-  // link.categories = arrayOfCategories;
 
   // save link
   try {
@@ -36,7 +31,10 @@ exports.list = async (req, res) => {
   try {
     let allLinks = await Link.find({})
       .populate("postedBy", "name")
-      .populate("categories", "name, slug")
+      .populate("categories", "name slug")
+      .populate("media", "media _id")
+      .populate("type", "type _id")
+      .populate("level", "level _id")
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit);
@@ -52,7 +50,12 @@ exports.list = async (req, res) => {
 exports.read = async (req, res) => {
   const { id } = req.params;
   try {
-    const data = await Link.findOne({ _id: id });
+    const data = await Link.findOne({ _id: id })
+      .populate("media", "media _id")
+      .populate("type", "type _id")
+      .populate("level", "level _id");
+
+    // console.log("readData", data);
     return res.status(200).json(data);
   } catch (error) {
     return res.status(400).json({
@@ -162,8 +165,13 @@ exports.popular = async (req, res) => {
     const links = await Link.find({})
       .populate("postedBy", "name")
       .populate("categories", "name")
+      .populate("media", "media _id")
+      .populate("type", "type _id")
+      .populate("level", "level _id")
       .sort({ clicks: -1 })
       .limit(5);
+
+    // console.log("links", links);
 
     return res.status(200).json(links);
   } catch (error) {
@@ -183,6 +191,9 @@ exports.popularInCategory = async (req, res) => {
       const links = await Link.find({ categories: category })
         .populate("postedBy", "name")
         .populate("categories", "name")
+        .populate("media", "media _id")
+        .populate("type", "type _id")
+        .populate("level", "level _id")
         .sort({ clicks: -1 });
 
       return res.status(200).json({

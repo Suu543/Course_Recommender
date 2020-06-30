@@ -156,8 +156,6 @@ const TrendDetails = styled.div`
     margin-right: 10px;
     border-radius: 5px;
     height: 3px;
-    color: #007aff;
-    background: #eef4fa;
     padding: 4px 8px;
     font-size: 11px;
     font-weight: bold;
@@ -232,10 +230,22 @@ const Home = ({ categories, userLikes, token, popularData }) => {
               </span>
             </TrendSubmitter>
             <TrendDetails>
-              <span>{link.type}</span>
-              <span>{link.medium}</span>
+              <span style={{ background: "#007BFF", color: "#FFFFFF" }}>
+                {link.type.type}
+              </span>
+              <span style={{ background: "#6C757D", color: "#FFFFFF" }}>
+                {link.media.media}
+              </span>
+              <span style={{ background: "#28A745", color: "#FFFFFF" }}>
+                {link.level.level}
+              </span>
               {link.categories.map((category, index) => (
-                <span key={index}>{category.name}</span>
+                <span
+                  style={{ background: "#DC3545", color: "#FFFFFF" }}
+                  key={index}
+                >
+                  {category.name}
+                </span>
               ))}
             </TrendDetails>
           </TrendDetailsWrapper>
@@ -279,6 +289,8 @@ Home.getInitialProps = async ({ req }) => {
       const userResponse = await axios.post(`${API}/user/likes/${token._id}`);
       const popular = await axios.get(`${API}/link/popular`);
 
+      // console.log("popular", popular.data);
+
       return {
         categories: response.data,
         userLikes: userResponse.data.likes,
@@ -294,6 +306,7 @@ Home.getInitialProps = async ({ req }) => {
       const popular = await axios.get(`${API}/link/popular`);
 
       // console.log("response", response);
+
       return {
         categories: response.data,
         userLikes: "",

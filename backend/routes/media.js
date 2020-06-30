@@ -4,32 +4,32 @@ const router = express.Router();
 // Validators
 const validate = require("../middleware/validate");
 const {
-  mediumCreateValidator,
-  mediumUpdateValidator,
-} = require("../validators/medium");
+  mediaCreateValidator,
+  mediaUpdateValidator,
+} = require("../validators/media");
 
 // Auth
 const { requireSignin, adminMiddleware } = require("../controllers/auth");
 
 // Controllers
-const { create, read, update, remove } = require("../controllers/medium");
+const { create, read, update, remove } = require("../controllers/media");
 
 // routes
-router.get("/mediums", read);
+router.get("/medias", read);
 router.post(
-  "/medium",
-  validate(mediumCreateValidator),
+  "/media",
+  validate(mediaCreateValidator),
   requireSignin,
   adminMiddleware,
   create
 );
 router.put(
-  "/medium/:id",
-  validate(mediumUpdateValidator),
+  "/media/:id",
+  validate(mediaUpdateValidator),
   requireSignin,
   adminMiddleware,
   update
 );
-router.delete("/medium/:id", requireSignin, adminMiddleware, remove);
+router.delete("/media/:id", requireSignin, adminMiddleware, remove);
 
 module.exports = router;

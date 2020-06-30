@@ -362,10 +362,22 @@ const Links = ({
               </span>
             </LinkSubmitter>
             <LinkDetails>
-              <span>{link.type}</span>
-              <span>{link.medium}</span>
+              <span style={{ background: "#007BFF", color: "#FFFFFF" }}>
+                {link.type.type}
+              </span>
+              <span style={{ background: "#6C757D", color: "#FFFFFF" }}>
+                {link.media.media}
+              </span>
+              <span style={{ background: "#28A745", color: "#FFFFFF" }}>
+                {link.level.level}
+              </span>
               {link.categories.map((category, index) => (
-                <span key={index}>{category.name}</span>
+                <span
+                  style={{ background: "#DC3545", color: "#FFFFFF" }}
+                  key={index}
+                >
+                  {category.name}
+                </span>
               ))}
             </LinkDetails>
           </LinkDetailsWrapper>

@@ -37,28 +37,19 @@ const linkSchema = new mongoose.Schema(
       },
     ],
 
-    // type: {
-    //   type: ObjectId,
-    //   ref: "Type",
-    // },
-
-    // medium: {
-    //   type: ObjectId,
-    //   ref: "Medium",
-    // },
-
-    // level: {
-    //   type: ObjectId,
-    //   ref: "Level"
-    // }
     type: {
-      type: String,
-      default: "Free",
+      type: ObjectId,
+      ref: "Type",
     },
 
-    medium: {
-      type: String,
-      default: "Video",
+    media: {
+      type: ObjectId,
+      ref: "Media",
+    },
+
+    level: {
+      type: ObjectId,
+      ref: "Level",
     },
 
     clicks: {
@@ -74,3 +65,13 @@ const Link = mongoose.model("Link", linkSchema);
 module.exports = {
   Link,
 };
+
+// type: {
+//   type: String,
+//   default: "Free",
+// },
+
+// medium: {
+//   type: String,
+//   default: "Video",
+// },

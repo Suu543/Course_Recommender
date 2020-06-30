@@ -86,7 +86,12 @@ const ErrorAlert = styled.div`
   color: #975057;
 `;
 
-const Create = ({ token }) => {
+const Create = ({ token, typesData, levelsData, mediasData }) => {
+  const [options, setOptions] = useState({
+    types: typesData,
+    levels: levelsData,
+    medias: mediasData,
+  });
   const [state, setState] = useState({
     title: "",
     url: "",
@@ -95,8 +100,11 @@ const Create = ({ token }) => {
     success: "",
     error: "",
     type: "",
-    medium: "",
+    media: "",
+    level: "",
   });
+
+  const { types, levels, medias } = options;
 
   const {
     title,
@@ -106,7 +114,8 @@ const Create = ({ token }) => {
     success,
     error,
     type,
-    medium,
+    media,
+    level,
   } = state;
 
   // load categories when component mounts using useEffect
@@ -124,9 +133,7 @@ const Create = ({ token }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(typeof categories);
-    // console.log("Post to Server");
-    // console.table({ title, url, categories, type, medium });
+
     try {
       const response = await axios.post(
         `${API}/link`,
@@ -135,7 +142,8 @@ const Create = ({ token }) => {
           url,
           categories,
           type,
-          medium,
+          media,
+          level,
         },
         {
           headers: {
@@ -153,7 +161,8 @@ const Create = ({ token }) => {
         loadedCategories: [],
         categories: [],
         type: "",
-        medium: "",
+        media: "",
+        level: "",
       });
     } catch (error) {
       console.log("LINK SUBMIT ERROR", error);
@@ -161,70 +170,77 @@ const Create = ({ token }) => {
     }
   };
 
-  const handleTypeClick = (e) => {
-    setState({ ...state, type: e.target.value, success: "", error: "" });
-  };
-
-  const handleMediumClick = (e) => {
-    setState({ ...state, medium: e.target.value, success: "", error: "" });
-  };
-
   const loadCategories = async () => {
     const response = await axios.get(`${API}/categories`);
     setState({ ...state, loadedCategories: response.data });
   };
 
-  const showMedium = () => (
+  const handleMediaChange = (e) => {
+    setState({ ...state, media: e.target.value, success: "", error: "" });
+  };
+
+  const showMedia = () => (
     <React.Fragment>
-      <div>
-        <input
-          style={{ marginLeft: "0.5rem", marginRight: "0.5rem" }}
-          type="radio"
-          onChange={handleMediumClick}
-          checked={medium === "video"}
-          value="video"
-          name="medium"
-        />
-        <label>Video</label>
-      </div>
-      <div>
-        <input
-          style={{ marginLeft: "0.5rem", marginRight: "0.5rem" }}
-          type="radio"
-          onChange={handleMediumClick}
-          checked={medium === "book"}
-          value="book"
-          name="medium"
-        />
-        <label>Book</label>
-      </div>
+      {medias &&
+        medias.map((m, index) => (
+          <div>
+            <input
+              style={{ marginLeft: "0.5rem", marginRight: "0.5rem" }}
+              type="radio"
+              onChange={handleMediaChange}
+              checked={media === m._id}
+              value={m._id}
+              name="media"
+            />
+            <label>{m.media}</label>
+          </div>
+        ))}
     </React.Fragment>
   );
 
+  const handleTypeChange = (e) => {
+    setState({ ...state, type: e.target.value, success: "", error: "" });
+  };
+
   const showTypes = () => (
     <React.Fragment>
-      <div>
-        <input
-          style={{ marginLeft: "0.5rem", marginRight: "0.5rem" }}
-          type="radio"
-          onChange={handleTypeClick}
-          checked={type === "free"}
-          value="free"
-          name="type"
-        />
-        <label>Free</label>
-      </div>
-      <div>
-        <input
-          style={{ marginLeft: "0.5rem", marginRight: "0.5rem" }}
-          type="radio"
-          onChange={handleTypeClick}
-          checked={type === "paid"}
-          value="paid"
-          name="type"
-        />
-        <label>paid</label>
-      </div>
+      {types &&
+        types.map((t, index) => (
+          <div>
+            <input
+              style={{ marginLeft: "0.5rem", marginRight: "0.5rem" }}
+              type="radio"
+              onChange={handleTypeChange}
+              checked={type === t._id}
+              value={t._id}
+              name="type"
+            />
+            <label>{t.type}</label>
+          </div>
+        ))}
+    </React.Fragment>
+  );
+
+  const handleLevelChange = (e) => {
+    setState({ ...state, level: e.target.value, success: "", error: "" });
+  };
+
+  const showLevels = () => (
+    <React.Fragment>
+      {levels &&
+        levels.map((l, index) => (
+          <div>
+            <input
+              style={{ marginLeft: "0.5rem", marginRight: "0.5rem" }}
+              type="radio"
+              onChange={handleLevelChange}
+              checked={level === l._id}
+              value={l._id}
+              name="level"
+            />
+            <label>{l.level}</label>
+          </div>
+        ))}
     </React.Fragment>
   );
 
@@ -273,8 +289,12 @@ const Create = ({ token }) => {
             {showTypes()}
           </div>
           <div style={{ marginTop: "1rem" }}>
-            <Label>Mediun</Label>
-            {showMedium()}
+            <Label>Medium</Label>
+            {showMedia()}
+          </div>
+          <div style={{ marginTop: "1rem" }}>
+            <Label>Level</Label>
+            {showLevels()}
           </div>
         </Column>
         <Column />
@@ -306,9 +326,22 @@ const Create = ({ token }) => {
   );
 };
 
-Create.getInitialProps = ({ req }) => {
-  const token = getCookie("token", req);
-  return { token };
+Create.getInitialProps = async ({ req }) => {
+  try {
+    const token = getCookie("token", req);
+    const types = await axios.get(`${API}/types`);
+    const levels = await axios.get(`${API}/levels`);
+    const medias = await axios.get(`${API}/medias`);
+
+    return {
+      token,
+      typesData: types.data,
+      levelsData: levels.data,
+      mediasData: medias.data,
+    };
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 export default Create;

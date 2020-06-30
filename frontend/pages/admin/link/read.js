@@ -16,7 +16,14 @@ const Container = styled.div`
 
 const Header = styled.div`
   height: 35vh;
-  background: linear-gradient(#e66465, #9198e5);
+  background: linear-gradient(
+    #96a29e,
+    #ff8a9a,
+    #feba9a,
+    #f8c58d,
+    #c9d7cb,
+    #89dcdf
+  );
   h1 {
     color: white;
     padding: 4rem;
@@ -160,14 +167,23 @@ const Links = ({ token, links, totalLinks, linksLimit, linkSkip }) => {
             </span>
           </TableColumn>
           <TableBadge>
-            <span>{link.clicks} clicks</span>
-            <span>{link.type}</span>
-            <span>{link.medium}</span>
+            <span style={{ background: "#6BD4D7", color: "#FFFFFF" }}>
+              {link.clicks} clicks
+            </span>
+            <span style={{ background: "#7C8B86", color: "#FFFFFF" }}>
+              {link.type.type}
+            </span>
+            <span style={{ background: "#FF6D80", color: "#FFFFFF" }}>
+              {link.media.media}
+            </span>
+            <span style={{ background: "#FEA982", color: "#FFFFFF" }}>
+              {link.level.level}
+            </span>
             {link.categories.map((category, index) => (
               <span
                 style={{
-                  background: "#FFF3CD",
-                  color: "#A18533",
+                  background: "#F6B770",
+                  color: "#FFFFFF",
                 }}
                 key={index}
               >
@@ -178,8 +194,8 @@ const Links = ({ token, links, totalLinks, linksLimit, linkSkip }) => {
             <Link href={`/user/link/${link._id}`}>
               <span
                 style={{
-                  background: "#D1ECF1",
-                  color: "#36757F",
+                  background: "#BBCDBF",
+                  color: "#F5F5F5",
                 }}
               >
                 <a>Update</a>
