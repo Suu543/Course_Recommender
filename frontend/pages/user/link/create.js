@@ -183,7 +183,7 @@ const Create = ({ token, typesData, levelsData, mediasData }) => {
     <React.Fragment>
       {medias &&
         medias.map((m, index) => (
-          <div>
+          <div key={m._id + index}>
             <input
               style={{ marginLeft: "0.5rem", marginRight: "0.5rem" }}
               type="radio"
@@ -206,7 +206,7 @@ const Create = ({ token, typesData, levelsData, mediasData }) => {
     <React.Fragment>
       {types &&
         types.map((t, index) => (
-          <div>
+          <div key={t._id + index}>
             <input
               style={{ marginLeft: "0.5rem", marginRight: "0.5rem" }}
               type="radio"
@@ -229,7 +229,7 @@ const Create = ({ token, typesData, levelsData, mediasData }) => {
     <React.Fragment>
       {levels &&
         levels.map((l, index) => (
-          <div>
+          <div key={l._id + index}>
             <input
               style={{ marginLeft: "0.5rem", marginRight: "0.5rem" }}
               type="radio"

@@ -66,12 +66,13 @@ exports.read = async (req, res) => {
 
 exports.update = async (req, res) => {
   const { id } = req.params;
-  const { title, url, categories, type, medium } = req.body;
+  const { title, url, categories, type, media, level } = req.body;
+  console.log("req.body", req.body);
 
   try {
     const updated = await Link.findOneAndUpdate(
       { _id: id },
-      { title, url, categories, type, medium },
+      { title, url, categories, type, media, level },
       { new: true }
     );
 

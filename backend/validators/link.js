@@ -24,6 +24,7 @@ exports.linkUpdateValidator = (req, res) => {
     categories: Joi.array().required(),
     type: Joi.string().required(),
     media: Joi.string().required(),
+    level: Joi.string().required(),
   });
 
   return schema.validate(req);

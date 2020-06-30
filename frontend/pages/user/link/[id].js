@@ -89,7 +89,13 @@ const ErrorAlert = styled.div`
 
 const Wrapper = styled.div``;
 
-const Update = ({ oldLink, token }) => {
+const Update = ({ oldLink, token, typesData, levelsData, mediasData }) => {
+  const [options, setOptions] = useState({
+    types: typesData,
+    levels: levelsData,
+    medias: mediasData,
+  });
+
   const [state, setState] = useState({
     title: oldLink.title,
     url: oldLink.url,
@@ -97,9 +103,12 @@ const Update = ({ oldLink, token }) => {
     loadedCategories: [],
     success: "",
     error: "",
-    type: oldLink.type,
-    medium: oldLink.medium,
+    type: oldLink.type._id,
+    media: oldLink.media._id,
+    level: oldLink.level._id,
   });
+
+  const { types, levels, medias } = options;
 
   const {
     title,
@@ -109,7 +118,8 @@ const Update = ({ oldLink, token }) => {
     success,
     error,
     type,
-    medium,
+    media,
+    level,
   } = state;
 
   // load categories when component mounts using useEffect
@@ -127,11 +137,6 @@ const Update = ({ oldLink, token }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(typeof categories);
-    console.log("categories", categories);
-    // console.log("Post to Server");
-    // console.table({ title, url, categories, type, medium });
-    // USE UPDATE: Link based on logged in user role
 
     let dynamicUpdateURL;
     if (isAuth() && isAuth().role === "admin") {
@@ -148,7 +153,8 @@ const Update = ({ oldLink, token }) => {
           url,
           categories,
           type,
-          medium,
+          media,
+          level,
         },
         {
           headers: {
@@ -167,70 +173,75 @@ const Update = ({ oldLink, token }) => {
     }
   };
 
-  const handleTypeClick = (e) => {
-    setState({ ...state, type: e.target.value, success: "", error: "" });
-  };
-
-  const handleMediumClick = (e) => {
-    setState({ ...state, medium: e.target.value, success: "", error: "" });
-  };
-
   const loadCategories = async () => {
     const response = await axios.get(`${API}/categories`);
     setState({ ...state, loadedCategories: response.data });
   };
 
-  const showMedium = () => (
+  const handleMediaChange = (e) => {
+    setState({ ...state, media: e.target.value, success: "", error: "" });
+  };
+
+  const showMedias = () => (
     <React.Fragment>
-      <Wrapper>
-        <input
-          style={{ marginLeft: "0.5rem", marginRight: "0.5rem" }}
-          type="radio"
-          onChange={handleMediumClick}
-          checked={medium === "video"}
-          value="video"
-          name="medium"
-        />
-        <label>Video</label>
-      </Wrapper>
-      <Wrapper>
-        <input
-          style={{ marginLeft: "0.5rem", marginRight: "0.5rem" }}
-          type="radio"
-          onChange={handleMediumClick}
-          checked={type === "book"}
-          value="book"
-          name="medium"
-        />
-        <label>Book</label>
-      </Wrapper>
+      {medias.map((m, index) => (
+        <Wrapper key={m._id + index}>
+          <input
+            style={{ marginLeft: "0.5rem", marginRight: "0.5rem" }}
+            type="radio"
+            onChange={handleMediaChange}
+            checked={media === m._id}
+            value={m._id}
+            name="media"
+          />
+          <label>{m.media}</label>
+        </Wrapper>
+      ))}
     </React.Fragment>
   );
 
+  const handleLevelChange = (e) => {
+    console.log("change", e.target.value);
+    setState({ ...state, level: e.target.value, success: "", error: "" });
+  };
+
+  const showLevels = () => (
+    <React.Fragment>
+      {levels.map((l, index) => (
+        <Wrapper key={l._id + index}>
+          <input
+            style={{ marginLeft: "0.5rem", marginRight: "0.5rem" }}
+            type="radio"
+            onChange={handleLevelChange}
+            checked={level === l._id}
+            value={l._id}
+            name="level"
+          />
+          <label>{l.level}</label>
+        </Wrapper>
+      ))}
+    </React.Fragment>
+  );
+
+  const handleTypeChange = (e) => {
+    setState({ ...state, type: e.target.value, success: "", error: "" });
+  };
+
   const showTypes = () => (
     <React.Fragment>
-      <Wrapper>
-        <input
-          style={{ marginLeft: "0.5rem", marginRight: "0.5rem" }}
-          type="radio"
-          onChange={handleTypeClick}
-          checked={type === "free"}
-          value="free"
-          name="type"
-        />
-        <label>Free</label>
-      </Wrapper>
-      <Wrapper>
-        <input
-          style={{ marginLeft: "0.5rem", marginRight: "0.5rem" }}
-          type="radio"
-          onChange={handleTypeClick}
-          checked={type === "paid"}
-          value="paid"
-          name="type"
-        />
-        <label>paid</label>
-      </Wrapper>
+      {types.map((t, index) => (
+        <Wrapper key={t._id + index}>
+          <input
+            style={{ marginLeft: "0.5rem", marginRight: "0.5rem" }}
+            type="radio"
+            onChange={handleTypeChange}
+            checked={type === t._id}
+            value={t._id}
+            name="type"
+          />
+          <label>{t.type}</label>
+        </Wrapper>
+      ))}
     </React.Fragment>
   );
 
@@ -283,8 +294,12 @@ const Update = ({ oldLink, token }) => {
             {showTypes()}
           </Wrapper>
           <Wrapper style={{ marginTop: "1rem" }}>
-            <FormLabel>Mediun</FormLabel>
-            {showMedium()}
+            <FormLabel>Medium</FormLabel>
+            {showMedias()}
+          </Wrapper>
+          <Wrapper style={{ marginTop: "1rem" }}>
+            <FormLabel>Level</FormLabel>
+            {showLevels()}
           </Wrapper>
         </Column>
         <Column />
@@ -317,8 +332,24 @@ const Update = ({ oldLink, token }) => {
 };
 
 Update.getInitialProps = async ({ req, token, query }) => {
-  const response = await axios.get(`${API}/link/${query.id}`);
-  return { oldLink: response.data, token };
+  try {
+    const response = await axios.get(`${API}/link/${query.id}`);
+    const types = await axios.get(`${API}/types`);
+    const levels = await axios.get(`${API}/levels`);
+    const medias = await axios.get(`${API}/medias`);
+
+    console.log("response", response.data);
+
+    return {
+      oldLink: response.data,
+      token,
+      typesData: types.data,
+      levelsData: levels.data,
+      mediasData: medias.data,
+    };
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 export default withUser(Update);
