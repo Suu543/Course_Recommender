@@ -15,23 +15,30 @@ const Header = styled.h1`
   text-align: center;
   font-size: 28px;
   color: #333333;
+
+  @media all and (max-width: 500px) {
+    font-size: 22px;
+  }
 `;
 
 const Row = styled.div`
   display: grid;
   grid-gap: 7px;
-  grid-template-columns: 12fr;
   margin: auto;
-  width: 90%;
+
+  @media all and (min-width: 1025px) {
+    grid-template-columns: 4fr 4fr 4fr;
+    width: 60%;
+  }
 
   @media all and (min-width: 768px) and (max-width: 1024px) {
     grid-template-columns: 6fr 6fr;
     width: 80%;
   }
 
-  @media all and (min-width: 1025px) {
-    grid-template-columns: 4fr 4fr 4fr;
-    width: 60%;
+  @media all and (max-width: 500px) {
+    grid-template-columns: 12fr;
+    width: 95%;
   }
 `;
 
@@ -42,12 +49,17 @@ const TrendRow = styled.div`
   margin: auto;
   width: 90%;
 
+  @media all and (min-width: 1025px) {
+    width: 60%;
+  }
+
   @media all and (min-width: 768px) and (max-width: 1024px) {
     width: 80%;
   }
 
-  @media all and (min-width: 1025px) {
-    width: 60%;
+  @media all and (max-width: 500px) {
+    grid-template-columns: 6fr;
+    width: 90%;
   }
 `;
 
@@ -60,6 +72,8 @@ const Column = styled.div`
   border: 1px solid #eeeeee;
   border-radius: 10px;
   margin: 1px 0 1px 0;
+  width: 100%;
+  margin: auto;
 
   :hover {
     box-shadow: 0px 13px 20px -15px rgba(0, 0, 0, 0.2);
@@ -89,11 +103,21 @@ const Image = styled.img`
 
 const SectionTitle = styled.h3`
   cursor: pointer;
+
+  @media all and (max-width: 500px) {
+    font-size: 20px;
+  }
 `;
 
 const TrendSection = styled.div`
   display: grid;
   grid-template-columns: 1fr 11fr;
+
+  @media all and (max-width: 500px) {
+    width: 80%;
+    grid-template-columns: 6fr;
+    margin: auto;
+  }
 `;
 
 const TrendLinkClicks = styled.div`
@@ -113,6 +137,12 @@ const TrendLinkClicks = styled.div`
   :active {
     background: #e6dbdb;
     color: #ffffff;
+  }
+
+  @media all and (max-width: 500px) {
+    width: 64px;
+    height: 68px;
+    margin: 0%;
   }
 `;
 
@@ -141,6 +171,12 @@ const TrendTitle = styled.div`
     font-size: 18px;
     font-weight: 500;
   }
+
+  @media all and (max-width: 500px) {
+    span {
+      font-size: 15px;
+    }
+  }
 `;
 
 const TrendSubmitter = styled.div`
@@ -148,6 +184,12 @@ const TrendSubmitter = styled.div`
   span {
     font-size: 15px;
     color: #7b7b7b;
+  }
+
+  @media all and (max-width: 500px) {
+    span {
+      font-size: 12px;
+    }
   }
 `;
 
@@ -157,8 +199,19 @@ const TrendDetails = styled.div`
     border-radius: 5px;
     height: 3px;
     padding: 4px 8px;
-    font-size: 11px;
+    font-size: 10px;
     font-weight: bold;
+  }
+
+  @media all and (max-width: 500px) {
+    display: flex;
+    flex-flow: row wrap;
+
+    span {
+      display: inline-block;
+      height: 25px;
+      margin-top: 3px;
+    }
   }
 `;
 

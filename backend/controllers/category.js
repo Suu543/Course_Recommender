@@ -5,7 +5,6 @@ const formidable = require("formidable");
 const AWS = require("aws-sdk");
 // For unique key in image
 const { v4: uuidv4 } = require("uuid"); // Unique String
-const fs = require("fs");
 const dotenv = require("dotenv");
 dotenv.config();
 
@@ -87,8 +86,8 @@ exports.list = async (req, res) => {
 exports.read = async (req, res) => {
   const { slug } = req.params;
   // console.log("req.body.limit", req.body);
-  let limit = req.body.limit ? parseInt(req.body.limit) : 10;
-  let skip = req.body.skip ? parseInt(req.body.skip) : 0;
+  // let limit = req.body.limit ? parseInt(req.body.limit) : 10;
+  // let skip = req.body.skip ? parseInt(req.body.skip) : 0;
 
   try {
     const category = await Category.findOne({ slug }).populate(
@@ -103,9 +102,9 @@ exports.read = async (req, res) => {
         .populate("media", "media _id")
         .populate("type", "type _id")
         .populate("level", "level _id")
-        .sort({ createdAt: -1 })
-        .limit(limit)
-        .skip(skip);
+        .sort({ createdAt: -1 });
+      // .limit(limit)
+      // .skip(skip);
 
       return res.status(200).json({ category, links });
     } catch (error) {

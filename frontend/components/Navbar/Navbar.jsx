@@ -44,6 +44,7 @@ const Column = styled.nav`
   }
 
   @media screen and (max-width: 614px) {
+    width: 100%;
     grid-template-columns: 6fr 6fr;
   }
 `;

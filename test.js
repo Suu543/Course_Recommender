@@ -8,24 +8,17 @@ import moment from "moment";
 import Head from "next/head";
 import renderHTML from "react-render-html";
 import styled from "styled-components";
-// import InfiniteScroll from "react-infinite-scroller";
+import InfiniteScroll from "react-infinite-scroller";
+import { options } from "../../../backend/routes/category";
 
 const Container = styled.div`
   width: 80%;
   margin: auto;
-
-  @media all and (max-width: 652px) {
-    width: 100%;
-  }
 `;
 
 const Title = styled.h1`
   color: #383838;
   font-size: 24px;
-
-  @media all and (max-width: 500px) {
-    font-size: 20px;
-  }
 `;
 
 const Image = styled.img`
@@ -41,10 +34,8 @@ const RowHeader = styled.div`
   margin-bottom: 2.5rem;
   border: 2px solid #eee;
   padding: 1rem;
-
   @media all and (max-width: 768px) {
     grid-template-columns: 12fr;
-    width: 100%;
   }
 `;
 
@@ -62,10 +53,6 @@ const Content = styled.div`
   color: #7b7b7b;
   font-size: 15px;
   margin-top: 4px;
-
-  @media all and (max-width: 500px) {
-    font-size: 11px;
-  }
 `;
 
 const RowBody = styled.div`
@@ -92,12 +79,6 @@ const LeftColumnBodyHeader = styled.div`
   padding: 1rem;
   font-size: 1.5rem;
   font-weight: bold;
-
-  @media all and (max-width: 652px) {
-    width: 90%;
-    grid-template-columns: 4fr 2fr;
-    margin: auto;
-  }
 `;
 
 const ColumnBodySort = styled.div`
@@ -116,23 +97,13 @@ const ColumnBodySort = styled.div`
 const LeftColumnBodyParagraph = styled.p`
   color: #383838;
   padding: 0 0 0 20px;
-
-  @media all and (max-width: 500px) {
-    font-size: 20px;
-    padding: 0 0 0 10px;
-  }
 `;
 
 const LinkContainer = styled.div`
-  height: 70vh;
+  height: 80vh;
   overflow-y: scroll;
   ::-webkit-scrollbar {
     display: none;
-  }
-
-  @media all and (max-width: 652px) {
-    width: 90%;
-    margin: auto;
   }
 `;
 
@@ -145,11 +116,6 @@ const LinkRow = styled.div`
 const LinkColumn = styled.div`
   display: grid;
   grid-template-columns: 1fr 6fr;
-
-  /* 652px */
-  @media all and (max-width: 652px) {
-    grid-template-columns: 6fr;
-  }
 `;
 
 const LinkNumberOfClicksWrapper = styled.div`
@@ -169,11 +135,6 @@ const LinkNumberOfClicksWrapper = styled.div`
     background: #e6dbdb;
     color: #ffffff;
   }
-
-  @media all and (max-width: 652px) {
-    width: 52px;
-    height: 58px;
-  }
 `;
 
 const LinkNumberOfClicks = styled.span`
@@ -187,7 +148,7 @@ const LinkNumberOfClicks = styled.span`
 
 const LinkDetailsWrapper = styled.div`
   display: flex;
-  flex-flow: column nowrap;
+  flex-flow: column wrap;
 `;
 
 const LinkTitle = styled.div`
@@ -212,23 +173,14 @@ const LinkSubmitter = styled.div`
 
 const LinkDetails = styled.div`
   span {
-    display: inline-block;
     margin-right: 10px;
     border-radius: 5px;
-    height: 25px;
+    height: 3px;
     color: #007aff;
     background: #eef4fa;
     padding: 4px 8px;
     font-size: 11px;
     font-weight: bold;
-  }
-
-  @media all and (max-width: 652px) {
-    flex-flow: row wrap;
-
-    span {
-      font-size: 10px;
-    }
   }
 `;
 
@@ -294,25 +246,19 @@ const RightColumnTypeSection = styled.section`
 
 const SmallImage = styled.img`
   cursor: pointer;
-  width: 60px;
-  height: 60px;
+  width: 70px;
+  height: 70px;
 `;
 
 const BottomContainer = styled.div`
   display: grid;
   width: 80%;
   margin: auto;
-  margin-bottom: 2rem;
-  margin-top: 3rem;
+  margin-bottom: 4rem;
   grid-template-columns: 4.5fr 1.5fr;
 
   @media all and (max-width: 768px) {
-    margin-bottom: 0rem;
     grid-template-columns: 12fr;
-  }
-
-  @media all and (max-width: 500px) {
-    width: 90%;
   }
 `;
 
@@ -322,10 +268,6 @@ const BottomContentRow = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   grid-gap: 3px;
-
-  @media all and (max-width: 652px) {
-    grid-template-columns: 6fr;
-  }
 `;
 
 const BottomColumnHeader = styled.div`
@@ -336,7 +278,6 @@ const BottomColumnHeader = styled.div`
   font-size: 1rem;
   font-weight: bold;
   margin-bottom: 2px;
-  border-radius: 10px;
 `;
 
 const BottomContent = styled.div`
@@ -363,30 +304,32 @@ const Links = ({
   category,
   links,
   totalLinks,
+  // linksLimit,
+  // linkSkip,
   token,
   userLikes,
   allTypes,
   allLevels,
   allMedias,
 }) => {
-  const [originalLinks, setOriginalLinks] = useState(links);
+  // const [filteredLinks, setFilterLinks] = useState(links);
   const [options, setOptions] = useState({
-    type: [],
-    level: [],
-    media: [],
+    type: "",
+    level: "",
+    media: "",
   });
   const [allLinks, setAllLinks] = useState(links);
+  // const [limit, setLimit] = useState(linksLimit);
+  // const [skip, setSkip] = useState(0);
   const [size, setSize] = useState(totalLinks);
   const [likes, setLikes] = useState(
     token !== null && userLikes ? userLikes : ""
   );
   const [sort, setSort] = useState(false);
 
-  useEffect(() => {
-    console.log("useEffect");
-    console.log("options", options);
-    filterLinks(options);
-  }, [options]);
+  // useEffect(() => {
+  //   filterLinks();
+  // }, [options]);
 
   const stripHTML = (data) => data.replace(/<\/?[^>]+(>|$)/g, "");
 
@@ -548,9 +491,93 @@ const Links = ({
       </ColumnBodySort>
     );
 
+  // function updateOptions(e) {
+  //   // Check and Uncheck Logic을 위해
+  //   if (options[e.target.name] == e.target.value) {
+  //     return setOptions({ ...options, [e.target.name]: "" });
+  //   } else {
+  //     return setOptions({ ...options, [e.target.name]: e.target.value });
+  //   }
+  // }
+
+  // function filterLinks() {
+  //   let filtered = "";
+
+  //   if (options.type == "" && options.level == "" && options.media == "") {
+  //     return setAllLinks(filteredLinks);
+  //   } else if (
+  //     options.type != "" &&
+  //     options.level == "" &&
+  //     options.media == ""
+  //   ) {
+  //     filtered = allLinks.filter((link) => link.type._id == options.link);
+  //     return setAllLinks(filtered);
+  //   } else if (
+  //     options.type == "" &&
+  //     options.level != "" &&
+  //     options.media == ""
+  //   ) {
+  //     filtered = allLinks.filter((link) => link.level._id == options.level);
+  //     return setAllLinks(filtered);
+  //   } else if (
+  //     options.type == "" &&
+  //     options.level == "" &&
+  //     options.media != ""
+  //   ) {
+  //     filtered = allLinks.filter((link) => link.media._id == options.media);
+  //     return setAllLinks(filtered);
+  //   } else if (
+  //     options.type != "" &&
+  //     options.level != "" &&
+  //     options.media == ""
+  //   ) {
+  //     filtered = allLinks.filter(
+  //       (link) =>
+  //         link.type._id == options.type && link.level._id == options.level
+  //     );
+  //     return setAllLinks(filtered);
+  //   } else if (
+  //     options.type != "" &&
+  //     options.level == "" &&
+  //     options.media != ""
+  //   ) {
+  //     filtered = allLinks.filter(
+  //       (link) =>
+  //         link.type._id == options.type && link.media._id == options.media
+  //     );
+  //     return setAllLinks(filtered);
+  //   } else if (
+  //     options.type == "" &&
+  //     options.level != "" &&
+  //     options.media != ""
+  //   ) {
+  //     filtered = allLink.filter(
+  //       (link) =>
+  //         link.level._id == options.level && link.media._id == options.media
+  //     );
+  //     return setAllLinks(filtered);
+  //   } else if (
+  //     options.type != "" &&
+  //     options.level != "" &&
+  //     options.media != ""
+  //   ) {
+  //     filtered = allLinks.filter(
+  //       (link) =>
+  //         link.type._id == options.type &&
+  //         link.level._id == options.level &&
+  //         options.media._id == options.media
+  //     );
+  //     return setAllLinks(filtered);
+  //   }
+  // }
+
+  // const clickOptions = (e) => {
+  //   console.log("e");
+  //   updateOptions(e);
+  // };
+
   const clickOptions = (e) => {
     console.log("clicked!...");
-    updateOptions(e);
   };
 
   const filterByTypes = () =>
@@ -562,7 +589,7 @@ const Links = ({
             type="checkbox"
             name="type"
             value={t._id}
-            checked={t._id == options.type.find((o) => o == t._id)}
+            checked={t._id == options.type}
           />
           <span>{t.type}</span>
         </label>
@@ -599,129 +626,16 @@ const Links = ({
       </RightColumnTypeSection>
     ));
 
-  const updateOptions = (e) => {
-    let checker = options[e.target.name].find(
-      (option) => option == e.target.value
-    );
-    if (checker) {
-      let arr = options[e.target.name];
-      let targetIndex = arr.indexOf(e.target.value);
-      arr.splice(targetIndex, 1);
-
-      return setOptions({ ...options, [e.target.name]: arr });
-    } else {
-      let arr = options[e.target.name];
-      arr.push(e.target.value);
-      return setOptions({ ...options, [e.target.name]: arr });
-    }
-  };
-
-  const filterLinks = (options) => {
-    console.log("fiterLinks", options);
-    let filtered = [];
-    console.log("allLinkss", allLinks);
-
-    if (
-      options.type.length == 0 &&
-      options.level.length == 0 &&
-      options.media.length == 0
-    ) {
-      // Yes
-      return setAllLinks(originalLinks);
-    } else if (
-      options.type.length > 0 &&
-      options.level.length == 0 &&
-      options.media.length == 0
-    ) {
-      // options.type(type => (
-      // filtered = originalLinks.filter((link) => link.type._id == options.type);
-      // ))
-
-      let filter = [];
-      if (options.type.length > 1) {
-        filter = options.type.map((t) =>
-          originalLinks.filter((link) => link.type._id == t)
-        );
-
-        filtered = filter.flat();
-        console.log("filtered", filtered);
-      } else {
-        filtered = originalLinks.filter(
-          (link) => link.type._id == options.type
-        );
-      }
-
-      console.log("type: Yes, level: No, media: No ");
-      console.log("filtered", filtered);
-      return setAllLinks(filtered);
-    } else if (
-      options.type == "" &&
-      options.level != "" &&
-      options.media == ""
-    ) {
-      filtered = originalLinks.filter(
-        (link) => link.level._id == options.level
-      );
-      console.log("type: No, level: Yes, media: No");
-      return setAllLinks(filtered);
-    } else if (
-      options.type == "" &&
-      options.level == "" &&
-      options.media != ""
-    ) {
-      filtered = originalLinks.filter(
-        (link) => link.media._id == options.media
-      );
-      console.log("type: No, level: No, media: Yes");
-      return setAllLinks(filtered);
-    } else if (
-      options.type != "" &&
-      options.level != "" &&
-      options.media == ""
-    ) {
-      filtered = originalLinks.filter(
-        (link) =>
-          link.type._id == options.type && link.level._id == options.level
-      );
-      console.log("type: Yes, level: Yes, media: No");
-      return setAllLinks(filtered);
-    } else if (
-      options.type != "" &&
-      options.level == "" &&
-      options.media != ""
-    ) {
-      filtered = originalLinks.filter(
-        (link) =>
-          link.type._id == options.type && link.media._id == options.media
-      );
-      console.log("type: Yes, level: No, media: Yes");
-      return setAllLinks(filtered);
-    } else if (
-      options.type == "" &&
-      options.level != "" &&
-      options.media != ""
-    ) {
-      filtered = originalLinks.filter(
-        (link) =>
-          link.level._id == options.level && link.media._id == options.media
-      );
-      console.log("type: No, level: Yes, media: Yes");
-      return setAllLinks(filtered);
-    } else if (
-      options.type != "" &&
-      options.level != "" &&
-      options.media != ""
-    ) {
-      filtered = originalLinks.filter(
-        (link) =>
-          link.type._id == options.type &&
-          link.level._id == options.level &&
-          link.media._id == options.media
-      );
-      console.log("type: Yes, level: Yes, media: Yes");
-      return setAllLinks(filtered);
-    }
-  };
+  //   <InfiniteScroll
+  //   pageStart={0}
+  //   loadMore={loadMore}
+  //   hasMore={size > 0 && size >= limit}
+  //   loader={
+  //     <img key={1} src="/static/images/loading.gif" alt="loading" />
+  //   }
+  // >
+  //   <LinkContainer>{listOfLinks()}</LinkContainer>
+  // </InfiniteScroll>
 
   return (
     <React.Fragment>
@@ -777,6 +691,9 @@ const Links = ({
 };
 
 Links.getInitialProps = async ({ query, req }) => {
+  // let skip = 0;
+  // let limit = 2;
+
   let token = jwt.decode(getCookie("token", req));
 
   try {
@@ -787,6 +704,11 @@ Links.getInitialProps = async ({ query, req }) => {
     if (token !== null) {
       const categories = await axios.get(`${API}/categories/interested`);
       const userResponse = await axios.post(`${API}/user/likes/${token._id}`);
+      // const response = await axios.post(`${API}/category/${query.slug}`, {
+      //   skip,
+      //   limit,
+      // });
+
       const response = await axios.post(`${API}/category/${query.slug}`);
 
       const nonDuplicatedCategories = categories.data.filter(
@@ -798,6 +720,8 @@ Links.getInitialProps = async ({ query, req }) => {
         category: response.data.category,
         links: response.data.links,
         totalLinks: response.data.links.length,
+        // linksLimit: limit,
+        // linkSkip: skip,
         token,
         userLikes: userResponse.data.likes,
         categories: nonDuplicatedCategories,
@@ -807,6 +731,10 @@ Links.getInitialProps = async ({ query, req }) => {
       };
     } else {
       const categories = await axios.get(`${API}/categories/interested`);
+      // const response = await axios.post(`${API}/category/${query.slug}`, {
+      //   skip,
+      //   limit,
+      // });
       const response = await axios.post(`${API}/category/${query.slug}`);
 
       const nonDuplicatedCategories = categories.data.filter(
@@ -818,6 +746,8 @@ Links.getInitialProps = async ({ query, req }) => {
         category: response.data.category,
         links: response.data.links,
         totalLinks: response.data.links.length,
+        // linksLimit: limit,
+        // linkSkip: skip,
         token,
         userLikes: "",
         categories: nonDuplicatedCategories,
