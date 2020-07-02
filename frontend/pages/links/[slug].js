@@ -578,6 +578,7 @@ const Links = ({
             type="checkbox"
             name="level"
             value={l._id}
+            checked={l._id == options.level.find((o) => o == l._id)}
           />
           <span>{l.level}</span>
         </label>
@@ -593,6 +594,7 @@ const Links = ({
             type="checkbox"
             name="media"
             value={m._id}
+            checked={m._id == options.media.find((o) => o == m._id)}
           />
           <span>{m.media}</span>
         </label>
@@ -616,6 +618,86 @@ const Links = ({
     }
   };
 
+  const filter_SingleOne = (options, option) => {
+    return originalLinks.filter(
+      (link) => link[`${option}`]._id == options[`${option}`]
+    );
+  };
+
+  const filter_Multiple_Choice_OF_SingleOne = (options, option) => {
+    return options[`${option}`]
+      .map((o) => originalLinks.filter((link) => link[`${option}`]._id == o))
+      .flat();
+  };
+
+  const filterMultiple = (options, firstType, secondType) => {
+    let filtered = [];
+    // let unique = [];`
+
+    let firstTypeFilter = options[`${firstType}`]
+      .map((f) => originalLinks.filter((link) => link[`${firstType}`]._id == f))
+      .flat();
+
+    let secondTypeFilter = options[`${secondType}`]
+      .map((s) =>
+        originalLinks.filter((link) => link[`${secondType}`]._id == s)
+      )
+      .flat();
+
+    filtered.push(firstTypeFilter);
+    filtered.push(secondTypeFilter);
+    filtered = filtered.flat();
+
+    filtered = filtered.filter((value, index, self) => {
+      return self.indexOf(value) === index;
+    });
+
+    filtered = filtered.filter(
+      (f) =>
+        f[`${firstType}`]._id == options[`${firstType}`] &&
+        f[`${secondType}`]._id == options[`${secondType}`]
+    );
+
+    return filtered.flat();
+  };
+
+  const filterTriple = (options, firstType, secondType, thirdType) => {
+    let filtered = [];
+    let unique = [];
+
+    let firstTypeFilter = options[`${firstType}`]
+      .map((f) => originalLinks.filter((link) => link[`${firstType}`]._id == f))
+      .flat();
+
+    let secondTypeFilter = options[`${secondType}`]
+      .map((s) =>
+        originalLinks.filter((link) => link[`${secondType}`]._id == s)
+      )
+      .flat();
+
+    let thirdTypeFilter = options[`${thirdType}`]
+      .map((t) => originalLinks.filter((link) => link[`${thirdType}`]._id == t))
+      .flat();
+
+    filtered.push(firstTypeFilter);
+    filtered.push(secondTypeFilter);
+    filtered.push(thirdTypeFilter);
+
+    filtered = filtered.flat();
+    filtered = filtered.filter((value, index, self) => {
+      return self.indexOf(value) === index;
+    });
+
+    filtered = filtered.filter(
+      (f) =>
+        f[`${firstType}`]._id == options[`${firstType}`] &&
+        f[`${secondType}`]._id == options[`${secondType}`] &&
+        f[`${thirdType}`]._id == options[`${thirdType}`]
+    );
+
+    return filtered.flat();
+  };
+
   const filterLinks = (options) => {
     console.log("fiterLinks", options);
     let filtered = [];
@@ -633,91 +715,70 @@ const Links = ({
       options.level.length == 0 &&
       options.media.length == 0
     ) {
-      // options.type(type => (
-      // filtered = originalLinks.filter((link) => link.type._id == options.type);
-      // ))
-
-      let filter = [];
       if (options.type.length > 1) {
-        filter = options.type.map((t) =>
-          originalLinks.filter((link) => link.type._id == t)
-        );
-
-        filtered = filter.flat();
-        console.log("filtered", filtered);
+        filtered = filter_Multiple_Choice_OF_SingleOne(options, "type");
       } else {
-        filtered = originalLinks.filter(
-          (link) => link.type._id == options.type
-        );
+        filtered = filter_SingleOne(options, "type");
       }
 
       console.log("type: Yes, level: No, media: No ");
       console.log("filtered", filtered);
       return setAllLinks(filtered);
     } else if (
-      options.type == "" &&
-      options.level != "" &&
-      options.media == ""
+      options.type.length == 0 &&
+      options.level.length > 0 &&
+      options.media.length == 0
     ) {
-      filtered = originalLinks.filter(
-        (link) => link.level._id == options.level
-      );
+      if (options.level.length > 1) {
+        filtered = filter_Multiple_Choice_OF_SingleOne(options, "level");
+      } else {
+        filtered = filter_SingleOne(options, "level");
+      }
       console.log("type: No, level: Yes, media: No");
       return setAllLinks(filtered);
     } else if (
-      options.type == "" &&
-      options.level == "" &&
-      options.media != ""
+      options.type.length == 0 &&
+      options.level.length == 0 &&
+      options.media.length > 0
     ) {
-      filtered = originalLinks.filter(
-        (link) => link.media._id == options.media
-      );
+      if (options.media.length > 1) {
+        filtered = filter_Multiple_Choice_OF_SingleOne(options, "media");
+      } else {
+        filtered = filter_SingleOne(options, "media");
+      }
+
       console.log("type: No, level: No, media: Yes");
       return setAllLinks(filtered);
     } else if (
-      options.type != "" &&
-      options.level != "" &&
-      options.media == ""
+      options.type.length > 0 &&
+      options.level.length > 0 &&
+      options.media.length == 0
     ) {
-      filtered = originalLinks.filter(
-        (link) =>
-          link.type._id == options.type && link.level._id == options.level
-      );
+      filtered = filterMultiple(options, "type", "level");
       console.log("type: Yes, level: Yes, media: No");
       return setAllLinks(filtered);
     } else if (
-      options.type != "" &&
-      options.level == "" &&
-      options.media != ""
+      options.type.length > 0 &&
+      options.level.length == 0 &&
+      options.media.length > 0
     ) {
-      filtered = originalLinks.filter(
-        (link) =>
-          link.type._id == options.type && link.media._id == options.media
-      );
+      filtered = filterMultiple(options, "type", "media");
       console.log("type: Yes, level: No, media: Yes");
       return setAllLinks(filtered);
     } else if (
-      options.type == "" &&
-      options.level != "" &&
-      options.media != ""
+      options.type.length == 0 &&
+      options.level.length > 0 &&
+      options.media.length > 0
     ) {
-      filtered = originalLinks.filter(
-        (link) =>
-          link.level._id == options.level && link.media._id == options.media
-      );
+      filtered = filterMultiple(options, "level", "media");
       console.log("type: No, level: Yes, media: Yes");
       return setAllLinks(filtered);
     } else if (
-      options.type != "" &&
-      options.level != "" &&
-      options.media != ""
+      options.type.length > 0 &&
+      options.level.length > 0 &&
+      options.media.length > 0
     ) {
-      filtered = originalLinks.filter(
-        (link) =>
-          link.type._id == options.type &&
-          link.level._id == options.level &&
-          link.media._id == options.media
-      );
+      filtered = filterTriple(options, "type", "level", "media");
       console.log("type: Yes, level: Yes, media: Yes");
       return setAllLinks(filtered);
     }
