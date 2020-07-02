@@ -9,11 +9,13 @@ import moment from "moment";
 import styled from "styled-components";
 
 const Container = styled.div`
-  width: 80%;
+  width: 100%;
   margin: auto;
+  background: linear-gradient(#99b898, #feceab, #ff847c, #e84a5f);
 `;
 
 const Row = styled.div`
+  width: 80%;
   display: grid;
   grid-template-columns: 12fr;
 
@@ -23,10 +25,10 @@ const Row = styled.div`
 `;
 
 const Heading = styled.h2`
-  margin: 1rem;
   border: 1px solid #eee;
   border-radius: 4px;
-  padding: 15px;
+  padding: 2rem;
+  margin-bottom: 1rem;
   font-weight: bold;
 
   span {
@@ -38,6 +40,7 @@ const Heading = styled.h2`
 const LeftColumn = styled.div`
   display: flex;
   flex-flow: column wrap;
+  align-items: center;
 `;
 
 const RightColumn = styled.div``;
@@ -116,6 +119,7 @@ const LinkBadge = styled.div`
 const ParagraphHeading = styled.h2`
   margin-bottom: 1rem;
   margin-left: 1rem;
+  align-self: flex-start;
 `;
 
 const User = ({ user, userLinks, token }) => {
@@ -153,14 +157,22 @@ const User = ({ user, userLinks, token }) => {
             {moment(link.createdAt).fromNow()} by {link.postedBy.name}
           </span>
           <LinkBadge>
-            <span>
-              {link.type} / {link.medium}
+            <span style={{ background: "#E84A5F", color: "white" }}>
+              {link.type.type}
+            </span>
+            <span style={{ background: "#FECEA8", color: "white" }}>
+              {link.media.media}
             </span>
             {link.categories.map((category, index) => (
-              <span key={index}>{category.name}</span>
+              <span
+                style={{ background: "#FF847C", color: "white" }}
+                key={index}
+              >
+                {category.name}
+              </span>
             ))}
             <LinkBadge>
-              <span style={{ background: "#E2E3E5", color: "#383D41" }}>
+              <span style={{ background: "#99B89B", color: "white" }}>
                 {link.clicks} clicks
               </span>
 

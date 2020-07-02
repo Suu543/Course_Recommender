@@ -10,6 +10,10 @@ import renderHTML from "react-render-html";
 import styled from "styled-components";
 // import InfiniteScroll from "react-infinite-scroller";
 
+const WholeContainer = styled.div`
+  background: linear-gradient(#fdfcfb, #e2d1c3);
+`;
+
 const Container = styled.div`
   width: 80%;
   margin: auto;
@@ -37,10 +41,9 @@ const Image = styled.img`
 const RowHeader = styled.div`
   display: grid;
   grid-template-columns: 8fr 4fr;
-  margin-top: 2rem;
   margin-bottom: 2.5rem;
   border: 2px solid #eee;
-  padding: 1rem;
+  padding: 2rem;
 
   @media all and (max-width: 768px) {
     grid-template-columns: 12fr;
@@ -137,9 +140,9 @@ const LinkContainer = styled.div`
 `;
 
 const LinkRow = styled.div`
-  border: 1px solid #eee;
+  border: 1.5px solid #ffffff;
   padding: 1rem;
-  background: #ffffff;
+  background: #faf5f5;
 `;
 
 const LinkColumn = styled.div`
@@ -259,12 +262,12 @@ const RightColumnHeader = styled.div`
 
 const RightColumnContent = styled.div`
   height: 55vh;
-  border: 1px solid #007aff;
+  border: 1px solid #ffffff;
   margin-top: 5px;
   display: flex;
   flex-direction: column;
   padding: 10px;
-  background: #f4f7fb;
+  background: #f7e5be;
 
   h3 {
     display: inline-block;
@@ -785,7 +788,7 @@ const Links = ({
   };
 
   return (
-    <React.Fragment>
+    <WholeContainer>
       {head()}
       <Container>
         <RowHeader>
@@ -833,7 +836,7 @@ const Links = ({
           <div>Advertisement</div>
         </BottomColumn>
       </BottomContainer>
-    </React.Fragment>
+    </WholeContainer>
   );
 };
 

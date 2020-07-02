@@ -14,6 +14,9 @@ exports.read = async (req, res) => {
       const links = await Link.find({ postedBy: user })
         .populate("categories", "name slug")
         .populate("postedBy", "name")
+        .populate("media", "media")
+        .populate("type", "type")
+        .populate("level", "level")
         .sort({ createdAt: -1 });
 
       user.hashed_password = undefined;

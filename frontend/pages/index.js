@@ -8,13 +8,18 @@ import styled from "styled-components";
 import moment from "moment";
 import { getCookie } from "../helpers/auth";
 
-const Container = styled.div``;
+const Container = styled.div`
+  background: linear-gradient(#cfd9df, #e2ebf0);
+  /* background: linear-gradient(#89f7fe, #66a6ff); */
+  /* background: linear-gradient(#7bd5f5, #787ff6, #4adede, #1ca7ec, #1f2f98); */
+  /* background: linear-gradient(#47cacc, #63bcc9, #cdb3d4, #e7b7c8, #ffbe88); */
+`;
 
 const Header = styled.h1`
-  margin: 1.5rem;
+  padding: 1rem;
   text-align: center;
-  font-size: 28px;
-  color: #333333;
+  font-size: 35px;
+  color: #193c76;
 
   @media all and (max-width: 500px) {
     font-size: 22px;
@@ -67,7 +72,7 @@ const Column = styled.div`
   display: flex;
   flex-flow: row wrap;
   align-items: center;
-  background: #ffffff;
+  background: #fcf3f2;
   padding: 10px 0px;
   border: 1px solid #eeeeee;
   border-radius: 10px;
